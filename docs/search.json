@@ -1,0 +1,25 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About This Blog",
+      "description": "On psychological research and methodology\n",
+      "author": [
+        {
+          "name": "Shu Fai Cheung",
+          "url": {}
+        }
+      ],
+      "contents": "\r\nThis is a “revival” of an old blog of mine on anything on psychological research and methodology (hence the name blogonreseach). I am still exploring ways to deploy this blog. This version was built using the distaill package.\r\nThis blog is still under construction.\r\n\r\n\r\n\r\n",
+      "last_modified": "2022-07-31T23:51:58+08:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Blogonresearch",
+      "author": [],
+      "contents": "\r\n\r\n\r\n\r\n",
+      "last_modified": "2022-07-31T23:51:59+08:00"
+    }
+  ],
+  "collections": ["posts/posts.json"]
+}

@@ -1,0 +1,18 @@
+---
+title: "About This Blog"
+description: |
+  On psychological research and methodology
+author:
+  - name: Shu Fai Cheung
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+This is a "revival" of an old blog of mine on anything on psychological research and methodology
+ (hence the name *blogonreseach*).
+I am still exploring ways to deploy this blog. This version was built using
+the [**distaill**](https://rstudio.github.io/distill) package.
+
+This blog is still under construction.

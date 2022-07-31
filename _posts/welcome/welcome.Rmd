@@ -1,0 +1,23 @@
+---
+title: "Welcome to Blogonresearch"
+description: |
+  This blog is under construction
+author:
+  - name: Shu Fai Cheung
+date: 07-31-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+I am trying to use [Distill](https://rstudio.github.io/distill) for this blog.
+
+Distill may be more suitable than blogdown because this blog is
+for academic and technical stuff and I do not want to spend time
+on aesthetic stuff.
+
+This blog is still under construction.
