@@ -4,55 +4,19 @@
     <title>Blogonresearch</title>
     <link>https://blogonresearch.github.io/</link>
     <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
-    <description>This is a "revival" of an old blog of mine on anything on research (hence the name *blogonreseach*).
-I am still exploring ways to deploy this blog. This version was built using
-the [**distaill**](https://rstudio.github.io/distill/) package.
+    <description>This is a "revival" of an old blog of mine on psychological research and methodology
+(hence the name *blogonreseach*). Just anything on research and methodology
+that are useful to me, and maybe also useful to others.
 </description>
     <generator>Distill</generator>
     <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate>
     <item>
-      <title>Test Post 1</title>
-      <dc:creator>Shu Fai Cheung</dc:creator>
-      <link>https://blogonresearch.github.io/posts/2022-07-31-test-post-1</link>
-      <description>Just a test post.</description>
-      <guid>https://blogonresearch.github.io/posts/2022-07-31-test-post-1</guid>
-      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Test Post with Category - 01</title>
-      <dc:creator>Shu Fai Cheung</dc:creator>
-      <link>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-01</link>
-      <description>A short description of the post.</description>
-      <category>R</category>
-      <guid>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-01</guid>
-      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Test Post with Category - 02</title>
-      <dc:creator>Shu Fai Cheung</dc:creator>
-      <link>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-02</link>
-      <description>A short description of the post.</description>
-      <category>Research</category>
-      <guid>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-02</guid>
-      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-    </item>
-    <item>
       <title>Welcome to Blogonresearch</title>
       <dc:creator>Shu Fai Cheung</dc:creator>
       <link>https://blogonresearch.github.io/posts/welcome</link>
-      <description>This blog is under construction</description>
+      <description>This is a "revival" of an old blog of mine on psychological research and methodology.</description>
       <guid>https://blogonresearch.github.io/posts/welcome</guid>
       <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Test Post 1 with Code</title>
-      <dc:creator>Shu Fai Cheung</dc:creator>
-      <link>https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code</link>
-      <description>A test post with code</description>
-      <category>R</category>
-      <guid>https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code</guid>
-      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-      <media:content url="https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code/test-post-1-with-code_files/figure-html5/unnamed-chunk-2-1.png" medium="image" type="image/png" width="1248" height="768"/>
     </item>
   </channel>
 </rss>

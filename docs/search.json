@@ -2,7 +2,7 @@
   "articles": [
     {
       "path": "about.html",
-      "title": "About This Blog",
+      "title": "About Blogonresearch",
       "description": "On psychological research and methodology\n",
       "author": [
         {
@@ -10,15 +10,15 @@
           "url": {}
         }
       ],
-      "contents": "\r\nThis is a “revival” of an old blog of mine on anything on psychological research and methodology (hence the name blogonreseach). I am still exploring ways to deploy this blog. This version was built using the distaill package.\r\nThis blog is still under construction.\r\n\r\n\r\n\r\n",
-      "last_modified": "2022-07-31T23:51:58+08:00"
+      "contents": "\r\nThis is a “revival” of an old blog of mine on psychological research and methodology (hence the name Blogonreseach). Just anything on research and methodology that are useful to me, and maybe also useful to others.\r\nThough I called it a “revival,” I will not import posts from the old and now offline blog. Some of the technical stuff on R are outdated. It is a “revival” in the sense that I will do what I did then.\r\n\r\n\r\n\r\n",
+      "last_modified": "2022-08-01T00:36:04+08:00"
     },
     {
       "path": "index.html",
       "title": "Blogonresearch",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2022-07-31T23:51:59+08:00"
+      "last_modified": "2022-08-01T00:36:05+08:00"
     }
   ],
   "collections": ["posts/posts.json"]
