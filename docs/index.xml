@@ -1,39 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
   <channel>
     <title>Blogonresearch</title>
     <link>https://blogonresearch.github.io/</link>
-    <description>Recent content on Blogonresearch</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>About</title>
-      <link>https://blogonresearch.github.io/about/</link>
-      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://blogonresearch.github.io/about/</guid>
-      <description>This is a &amp;ldquo;revival&amp;rdquo; of an old blog of mine on anything on research (hence the name blogonreseach). I am still exploring ways to deploy this blog. This version was built using the blogdown package, which likely I will use because this blog will have stuff on R.</description>
-    </item>
-    
-    <item>
-      <title>Test Post 2</title>
-      <link>https://blogonresearch.github.io/2022/07/31/test-post-2/</link>
-      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://blogonresearch.github.io/2022/07/31/test-post-2/</guid>
-      <description>This is another test posts.</description>
-    </item>
-    
+    <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
+    <description>This is a "revival" of an old blog of mine on anything on research (hence the name *blogonreseach*).
+I am still exploring ways to deploy this blog. This version was built using
+the [**distaill**](https://rstudio.github.io/distill/) package.
+</description>
+    <generator>Distill</generator>
+    <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate>
     <item>
       <title>Test Post 1</title>
-      <link>https://blogonresearch.github.io/2022/07/30/test-post-1/</link>
-      <pubDate>Sat, 30 Jul 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://blogonresearch.github.io/2022/07/30/test-post-1/</guid>
-      <description>Test PostJust a test
-dat &amp;lt;- MASS::mvrnorm(100, c(x = 0, y = 0), matrix(c(1, .8, .8, 1), 2, 2))cor.test(dat[, &amp;quot;x&amp;quot;], dat[, &amp;quot;y&amp;quot;])## ## Pearson&amp;#39;s product-moment correlation## ## data: dat[, &amp;quot;x&amp;quot;] and dat[, &amp;quot;y&amp;quot;]## t = 13.781, df = 98, p-value &amp;lt; 2.2e-16## alternative hypothesis: true correlation is not equal to 0## 95 percent confidence interval:## 0.7326169 0.8698252## sample estimates:## cor ## 0.</description>
+      <dc:creator>Shu Fai Cheung</dc:creator>
+      <link>https://blogonresearch.github.io/posts/2022-07-31-test-post-1</link>
+      <description>Just a test post.</description>
+      <guid>https://blogonresearch.github.io/posts/2022-07-31-test-post-1</guid>
+      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
     </item>
-    
+    <item>
+      <title>Test Post with Category - 01</title>
+      <dc:creator>Shu Fai Cheung</dc:creator>
+      <link>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-01</link>
+      <description>A short description of the post.</description>
+      <category>R</category>
+      <guid>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-01</guid>
+      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Test Post with Category - 02</title>
+      <dc:creator>Shu Fai Cheung</dc:creator>
+      <link>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-02</link>
+      <description>A short description of the post.</description>
+      <category>Research</category>
+      <guid>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-02</guid>
+      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Welcome to Blogonresearch</title>
+      <dc:creator>Shu Fai Cheung</dc:creator>
+      <link>https://blogonresearch.github.io/posts/welcome</link>
+      <description>This blog is under construction</description>
+      <guid>https://blogonresearch.github.io/posts/welcome</guid>
+      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Test Post 1 with Code</title>
+      <dc:creator>Shu Fai Cheung</dc:creator>
+      <link>https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code</link>
+      <description>A test post with code</description>
+      <category>R</category>
+      <guid>https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code</guid>
+      <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code/test-post-1-with-code_files/figure-html5/unnamed-chunk-2-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
   </channel>
 </rss>

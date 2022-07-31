@@ -1,47 +1,31 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" version="1.0">
   <url>
-    <loc>https://blogonresearch.github.io/about/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
+    <loc>https://blogonresearch.github.io/about.html</loc>
+    <lastmod>2022-07-31T23:14:13+08:00</lastmod>
+  </url>
+  <url>
     <loc>https://blogonresearch.github.io/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/categories/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/post/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/tags/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/categories/test-cat/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/2022/07/31/test-post-2/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/tags/test-tag-1/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/tags/test-tag-2/</loc>
-    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/tags/plot/</loc>
-    <lastmod>2022-07-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/categories/r/</loc>
-    <lastmod>2022-07-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/tags/r-markdown/</loc>
-    <lastmod>2022-07-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/tags/regression/</loc>
-    <lastmod>2022-07-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blogonresearch.github.io/2022/07/30/test-post-1/</loc>
-    <lastmod>2022-07-30T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-31T22:43:29+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/2022-07-31-test-post-1/</loc>
+    <lastmod>2022-07-31T23:06:07+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-01/</loc>
+    <lastmod>2022-07-31T23:32:59+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/2022-07-31-test-post-with-category-02/</loc>
+    <lastmod>2022-07-31T23:32:55+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/welcome/</loc>
+    <lastmod>2022-07-31T23:11:49+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/2022-08-01-test-post-1-with-code/</loc>
+    <lastmod>2022-08-01T00:03:34+08:00</lastmod>
   </url>
 </urlset>
