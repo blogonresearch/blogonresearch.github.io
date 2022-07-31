@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>R Markdown on A Hugo website</title>
+    <title>R Markdown on Blogonresearch</title>
     <link>https://blogonresearch.github.io/tags/r-markdown/</link>
-    <description>Recent content in R Markdown on A Hugo website</description>
+    <description>Recent content in R Markdown on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate><atom:link href="https://blogonresearch.github.io/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 30 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blogonresearch.github.io/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello R Markdown</title>
-      <link>https://blogonresearch.github.io/2020/12/01/hello-r-markdown/</link>
-      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <title>Test Post 1</title>
+      <link>https://blogonresearch.github.io/2022/07/30/test-post-1/</link>
+      <pubDate>Sat, 30 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/2020/12/01/hello-r-markdown/</guid>
-      <description>R MarkdownThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+      <guid>https://blogonresearch.github.io/2022/07/30/test-post-1/</guid>
+      <description>Test PostJust a test
+dat &amp;lt;- MASS::mvrnorm(100, c(x = 0, y = 0), matrix(c(1, .8, .8, 1), 2, 2))cor.test(dat[, &amp;quot;x&amp;quot;], dat[, &amp;quot;y&amp;quot;])## ## Pearson&amp;#39;s product-moment correlation## ## data: dat[, &amp;quot;x&amp;quot;] and dat[, &amp;quot;y&amp;quot;]## t = 13.781, df = 98, p-value &amp;lt; 2.2e-16## alternative hypothesis: true correlation is not equal to 0## 95 percent confidence interval:## 0.7326169 0.8698252## sample estimates:## cor ## 0.</description>
     </item>
     
   </channel>

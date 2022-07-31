@@ -1,7 +1,7 @@
 publishDir: '../docs'
 baseurl: https://blogonresearch.github.io/
 languageCode: en-us
-title: A Hugo website
+title: Blogonresearch
 theme: hugo-lithium
 googleAnalytics: ''
 disqusShortname: ''
@@ -18,14 +18,14 @@ menu:
     - name: About
       url: /about/
     - name: GitHub
-      url: https://github.com/rstudio/blogdown
+      url: https://github.com/blogonresearch
     - name: Twitter
-      url: https://twitter.com/rstudio
+      url: https://twitter.com/blogonresearch
 params:
   MathJaxCDN: //cdnjs.cloudflare.com/ajax/libs
   MathJaxVersion: 2.7.5
   description: A website built through Hugo and blogdown.
-  favicon: favicon.ico
+  favicon: blogonresearch.ico
   highlightjsCDN: //cdnjs.cloudflare.com/ajax/libs
   highlightjsLang:
     - r
@@ -33,9 +33,9 @@ params:
   highlightjsTheme: github
   highlightjsVersion: 9.12.0
   logo:
-    alt: Logo
+    alt: Blogonresearch Logo
     height: 50
-    url: logo.png
+    url: blongonresearch_logo.png
     width: 50
 markup:
   defaultMarkdownHandler: goldmark
