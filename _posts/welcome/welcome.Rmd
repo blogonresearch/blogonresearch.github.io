@@ -3,7 +3,9 @@ title: "Welcome to Blogonresearch"
 description: |
   This is a "revival" of an old blog of mine on psychological research and methodology.
 author:
-  - name: Shu Fai Cheung
+  - first_name: "Shu Fai"
+    last_name: "Cheung"
+    orcid_id: 0000-0002-9871-9448
 date: 07-31-2022
 output:
   distill::distill_article:
