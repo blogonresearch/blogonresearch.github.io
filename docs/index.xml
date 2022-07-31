@@ -8,6 +8,11 @@
 (hence the name *blogonreseach*). Just anything on research and methodology
 that are useful to me, and maybe also useful to others.
 </description>
+    <image>
+      <title>Blogonresearch</title>
+      <url>https://blogonresearch.github.io/images/favicon.ico</url>
+      <link>https://blogonresearch.github.io/</link>
+    </image>
     <generator>Distill</generator>
     <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate>
     <item>

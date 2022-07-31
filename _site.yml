@@ -7,6 +7,8 @@ description: |
 base_url: https://blogonresearch.github.io/
 output_dir: "docs"
 theme: theme.css
+favicon: images/favicon.ico
+creative_commons: CC BY
 navbar:
   logo:
     image: images/logo.png
