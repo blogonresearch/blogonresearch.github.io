@@ -1,0 +1,38 @@
+---
+title: "Test Post 1"
+author: "Shu Fai Cheung"
+date: 2022-07-30
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+
+
+<div id="test-post" class="section level1">
+<h1>Test Post</h1>
+<p>Just a test</p>
+<pre class="r"><code>dat &lt;- MASS::mvrnorm(100, c(x = 0, y = 0), matrix(c(1, .8, .8, 1), 2, 2))
+cor.test(dat[, &quot;x&quot;], dat[, &quot;y&quot;])
+## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  dat[, &quot;x&quot;] and dat[, &quot;y&quot;]
+## t = 13.781, df = 98, p-value &lt; 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.7326169 0.8698252
+## sample estimates:
+##       cor 
+## 0.8121651</code></pre>
+</div>
+<div id="test-plot" class="section level1">
+<h1>Test Plot</h1>
+<p>This is an plot. See Figure <a href="#fig:fig1">1</a>:</p>
+<pre class="r"><code>psych::pairs.panels(dat)</code></pre>
+<div class="figure"><span style="display:block;" id="fig:fig1"></span>
+<img src="{{< blogdown/postref >}}index_files/figure-html/fig1-1.png" alt="A test figure" width="672" />
+<p class="caption">
+Figure 1: A test figure
+</p>
+</div>
+</div>
