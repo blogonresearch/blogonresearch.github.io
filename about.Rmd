@@ -1,5 +1,5 @@
 ---
-title: "About This Blog"
+title: "About Blogonresearch"
 description: |
   On psychological research and methodology
 author:
@@ -10,9 +10,10 @@ author:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-This is a "revival" of an old blog of mine on anything on psychological research and methodology
- (hence the name *blogonreseach*).
-I am still exploring ways to deploy this blog. This version was built using
-the [**distaill**](https://rstudio.github.io/distill) package.
+This is a "revival" of an old blog of mine on psychological research and methodology
+ (hence the name *Blogonreseach*). Just anything on research and methodology
+ that are useful to me, and maybe also useful to others.
 
-This blog is still under construction.
+Though I called it a "revival," I will not import posts from the old and
+now offline blog. Some of the technical stuff on `R` are outdated. It is
+a "revival" in the sense that I will do what I did then.

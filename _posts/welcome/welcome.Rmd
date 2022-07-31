@@ -1,7 +1,7 @@
 ---
 title: "Welcome to Blogonresearch"
 description: |
-  This blog is under construction
+  This is a "revival" of an old blog of mine on psychological research and methodology.
 author:
   - name: Shu Fai Cheung
 date: 07-31-2022
@@ -14,10 +14,15 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-I am trying to use [Distill](https://rstudio.github.io/distill) for this blog.
+This is a "revival" of an old blog of mine on psychological research and methodology
+ (hence the name *Blogonreseach*). Just anything on research and methodology
+ that are useful to me, and maybe also useful to others.
 
-Distill may be more suitable than blogdown because this blog is
+I am still learning how to use [Distill](https://rstudio.github.io/distill/),
+which may be more suitable than
+blogdown because this blog is
 for academic and technical stuff and I do not want to spend time
 on aesthetic stuff.
 
-This blog is still under construction.
+As of 2022-08-01, this should be the only "post."
+Once I know enough about Distill, I will start adding posts here.

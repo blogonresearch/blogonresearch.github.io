@@ -1,63 +1,8 @@
 [
   {
-    "path": "posts/2022-07-31-test-post-1/",
-    "title": "Test Post 1",
-    "description": "Just a test post.",
-    "author": [
-      {
-        "name": "Shu Fai Cheung",
-        "url": {}
-      }
-    ],
-    "date": "2022-07-31",
-    "categories": [],
-    "contents": "\r\nI am trying to use Distill for this blog.\r\nDistill may be more suitable than blogdown because this blog is for academic and technical stuff and I do not want to spend time on aesthetic stuff.\r\n\r\n\r\n\r\n",
-    "preview": {},
-    "last_modified": "2022-07-31T23:06:07+08:00",
-    "input_file": {}
-  },
-  {
-    "path": "posts/2022-07-31-test-post-with-category-01/",
-    "title": "Test Post with Category - 01",
-    "description": "A short description of the post.",
-    "author": [
-      {
-        "name": "Shu Fai Cheung",
-        "url": {}
-      }
-    ],
-    "date": "2022-07-31",
-    "categories": [
-      "R"
-    ],
-    "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nLearn more about using Distill at https://rstudio.github.io/distill.\r\n\r\n\r\n\r\n",
-    "preview": {},
-    "last_modified": "2022-07-31T23:32:59+08:00",
-    "input_file": {}
-  },
-  {
-    "path": "posts/2022-07-31-test-post-with-category-02/",
-    "title": "Test Post with Category - 02",
-    "description": "A short description of the post.",
-    "author": [
-      {
-        "name": "Shu Fai Cheung",
-        "url": {}
-      }
-    ],
-    "date": "2022-07-31",
-    "categories": [
-      "Research"
-    ],
-    "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nLearn more about using Distill at https://rstudio.github.io/distill.\r\n\r\n\r\n\r\n",
-    "preview": {},
-    "last_modified": "2022-07-31T23:32:55+08:00",
-    "input_file": {}
-  },
-  {
     "path": "posts/welcome/",
     "title": "Welcome to Blogonresearch",
-    "description": "This blog is under construction",
+    "description": "This is a \"revival\" of an old blog of mine on psychological research and methodology.",
     "author": [
       {
         "name": "Shu Fai Cheung",
@@ -66,30 +11,9 @@
     ],
     "date": "2022-07-31",
     "categories": [],
-    "contents": "\r\nI am trying to use Distill for this blog.\r\nDistill may be more suitable than blogdown because this blog is for academic and technical stuff and I do not want to spend time on aesthetic stuff.\r\nThis blog is still under construction.\r\n\r\n\r\n\r\n",
+    "contents": "\r\nThis is a “revival” of an old blog of mine on psychological research and methodology (hence the name Blogonreseach). Just anything on research and methodology that are useful to me, and maybe also useful to others.\r\nI am still learning how to use Distill, which may be more suitable than blogdown because this blog is for academic and technical stuff and I do not want to spend time on aesthetic stuff.\r\nAs of 2022-08-01, this should be the only “post.” Once I know enough about Distill, I will start adding posts here.\r\n\r\n\r\n\r\n",
     "preview": {},
-    "last_modified": "2022-07-31T23:11:49+08:00",
+    "last_modified": "2022-08-01T00:32:45+08:00",
     "input_file": {}
-  },
-  {
-    "path": "posts/2022-08-01-test-post-1-with-code/",
-    "title": "Test Post 1 with Code",
-    "description": "A test post with code",
-    "author": [
-      {
-        "name": "Shu Fai Cheung",
-        "url": {}
-      }
-    ],
-    "date": "2022-08-01",
-    "categories": [
-      "R"
-    ],
-    "contents": "\r\nData\r\n\r\n\r\nset.seed(87041)\r\nn <- 100\r\nrho <- .8\r\nx <- rnorm(n)\r\ny <- rho * x + rnorm(n, 0, sqrt(1 - rho^2))\r\ndat <- data.frame(x, y)\r\nhead(dat)\r\n\r\n           x          y\r\n1  0.4890796  0.5944376\r\n2  0.7768509  0.3024797\r\n3 -0.6334110 -0.1373308\r\n4  0.8570800  0.1000692\r\n5  0.9279450  1.1277953\r\n6  0.4727834 -0.4470242\r\n\r\nPlot\r\n\r\n\r\npsych::pairs.panels(dat)\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
-    "preview": "posts/2022-08-01-test-post-1-with-code/test-post-1-with-code_files/figure-html5/unnamed-chunk-2-1.png",
-    "last_modified": "2022-08-01T00:03:34+08:00",
-    "input_file": "test-post-1-with-code.knit.md",
-    "preview_width": 1248,
-    "preview_height": 768
   }
 ]
