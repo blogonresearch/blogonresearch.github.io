@@ -35,8 +35,8 @@ languages:
       logo:
         logoHomeLink: /
         logoText: Blogonresearch
-        path: "img/blongonresearch_logo.png"
-        alt: "Blogonresearch"
+        # path: "img/blongonresearch_logo.png"
+        # alt: "Blogonresearch"
     readMore: Read more
     readOtherPosts: Read other posts
     subtitle: A blog on ... research
