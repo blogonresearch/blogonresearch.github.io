@@ -82,8 +82,8 @@ effects of &lt;code&gt;x&lt;/code&gt; on &lt;code&gt;y&lt;/code&gt; conditional 
 From the output of some functions, we
 have the slopes and intercepts
 when &lt;code&gt;w&lt;/code&gt; is “Low” or “High”:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “Low”: slope = 1, intercept = 2&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “High”: slope = 2, intercept = 3&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “Low”: intercept = 2, slope = 1&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “High”: intercept = 3, slope = 2&lt;/p&gt;
 &lt;p&gt;Write a simple function to compute the points&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Simple regression model
 xyline &amp;lt;- function(x, a, b) {a + b * x}&lt;/code&gt;&lt;/pre&gt;
@@ -98,19 +98,19 @@ if any, are equal to zero:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Generate the two points when moderator = &amp;quot;Low&amp;quot;
 dat0 &amp;lt;- data.frame(Moderator = &amp;quot;Low&amp;quot;,
                    x = x,
-                   y = xyline(x, a = 0, b = 0.5))
+                   y = xyline(x, a = 2, b = 1))
 # Generate the two points when moderator = &amp;quot;High&amp;quot;
 dat1 &amp;lt;- data.frame(Moderator = &amp;quot;High&amp;quot;,
                    x = x,
-                   y = xyline(x, a = 2, b = 1.0))&lt;/code&gt;&lt;/pre&gt;
+                   y = xyline(x, a = 3, b = 2))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Combine the datasets:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- rbind(dat0, dat1)
 dat&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##   Moderator  x  y
-## 1       Low  0  0
-## 2       Low 10  5
-## 3      High  0  2
-## 4      High 10 12&lt;/code&gt;&lt;/pre&gt;
+## 1       Low  0  2
+## 2       Low 10 12
+## 3      High  0  3
+## 4      High 10 23&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Draw the lines using &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
 p &amp;lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +

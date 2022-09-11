@@ -46,9 +46,9 @@ From the output of some functions, we
 have the slopes and intercepts
 when `w` is "Low" or "High":
 
-`w` is "Low": slope = 1, intercept = 2
+`w` is "Low": intercept = 2,  slope = 1
 
-`w` is "High": slope = 2, intercept = 3
+`w` is "High": intercept = 3, slope = 2
 
 Write a simple function to compute the points
 
@@ -74,11 +74,11 @@ if any, are equal to zero:
 # Generate the two points when moderator = "Low"
 dat0 <- data.frame(Moderator = "Low",
                    x = x,
-                   y = xyline(x, a = 0, b = 0.5))
+                   y = xyline(x, a = 2, b = 1))
 # Generate the two points when moderator = "High"
 dat1 <- data.frame(Moderator = "High",
                    x = x,
-                   y = xyline(x, a = 2, b = 1.0))
+                   y = xyline(x, a = 3, b = 2))
 ```
 
 Combine the datasets:

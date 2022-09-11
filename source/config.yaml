@@ -11,7 +11,7 @@ paginate: 5
 params:
   rssFullText: true
   contentTypeName: post
-  defaultTheme: light
+  defaultTheme: dark
   showMenuItems: 2
   showReadingTime: no
 languages:

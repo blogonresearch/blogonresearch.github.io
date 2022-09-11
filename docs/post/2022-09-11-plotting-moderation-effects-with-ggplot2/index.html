@@ -65,7 +65,7 @@
 
 
   </head>
-  <body class="light-theme">
+  <body class="dark-theme">
     <div class="container">
       <header class="header">
   <span class="header__inner">
@@ -210,8 +210,8 @@ effects of <code>x</code> on <code>y</code> conditional on <code>w</code>
 From the output of some functions, we
 have the slopes and intercepts
 when <code>w</code> is “Low” or “High”:</p>
-<p><code>w</code> is “Low”: slope = 1, intercept = 2</p>
-<p><code>w</code> is “High”: slope = 2, intercept = 3</p>
+<p><code>w</code> is “Low”: intercept = 2, slope = 1</p>
+<p><code>w</code> is “High”: intercept = 3, slope = 2</p>
 <p>Write a simple function to compute the points</p>
 <pre class="r"><code># Simple regression model
 xyline &lt;- function(x, a, b) {a + b * x}</code></pre>
@@ -226,19 +226,19 @@ if any, are equal to zero:</p>
 <pre class="r"><code># Generate the two points when moderator = &quot;Low&quot;
 dat0 &lt;- data.frame(Moderator = &quot;Low&quot;,
                    x = x,
-                   y = xyline(x, a = 0, b = 0.5))
+                   y = xyline(x, a = 2, b = 1))
 # Generate the two points when moderator = &quot;High&quot;
 dat1 &lt;- data.frame(Moderator = &quot;High&quot;,
                    x = x,
-                   y = xyline(x, a = 2, b = 1.0))</code></pre>
+                   y = xyline(x, a = 3, b = 2))</code></pre>
 <p>Combine the datasets:</p>
 <pre class="r"><code>dat &lt;- rbind(dat0, dat1)
 dat</code></pre>
 <pre><code>##   Moderator  x  y
-## 1       Low  0  0
-## 2       Low 10  5
-## 3      High  0  2
-## 4      High 10 12</code></pre>
+## 1       Low  0  2
+## 2       Low 10 12
+## 3      High  0  3
+## 4      High 10 23</code></pre>
 <p>Draw the lines using <code>ggplot2</code>:</p>
 <pre class="r"><code>library(ggplot2)
 p &lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
