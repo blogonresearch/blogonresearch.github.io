@@ -1,0 +1,40 @@
+publishDir: "../docs"
+baseurl: https://blogonresearch.github.io/
+languageCode: en-us
+theme: hugo-theme-hello-friend
+paginate: 5
+params:
+  rssFullText: true
+  contentTypeName: post
+  defaultTheme: light
+  showMenuItems: 2
+  showReadingTime: no
+languages:
+  en:
+    copyright: ''
+    dateFormatList: '2006-01-02'
+    dateFormatSingle: '2006-01-02'
+    keywords: ''
+    menu:
+      main:
+        - identifier: about
+          name: About
+          url: /about
+        # - identifier: showcase
+        #   name: Showcase
+        #   url: /showcase
+    menuMore: Show more
+    minuteReadingTime: min read
+    newerPosts: Newer posts
+    olderPosts: Older posts
+    params:
+      logo:
+        logoHomeLink: /
+        logoText: Blogonresearch
+        path: "resources/_gen/images/blongonresearch_logo.png"
+        alt: "Blogonresearch"
+    readMore: Read more
+    readOtherPosts: Read other posts
+    subtitle: A blog on ... research
+    title: Blogonresearch
+    writtenBy: Shu Fai Cheung

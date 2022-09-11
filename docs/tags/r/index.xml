@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on Blogonresearch</title>
+    
+    
+    
+    <link>https://blogonresearch.github.io/tags/r/</link>
+    <description>Recent content in R on Blogonresearch</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://blogonresearch.github.io/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Plotting Moderation Effects With ggplot2</title>
+      <link>https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</link>
+      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+
+
+&lt;p&gt;There are some R packages that help
+researchers to plot moderation (interaction)
+effects: The linear relations between
+&lt;code&gt;x&lt;/code&gt; (independent variable /
+predictor) and &lt;code&gt;y&lt;/code&gt; (dependent variable /
+outcome variable) for
+two or more levels of &lt;code&gt;w&lt;/code&gt; (moderator). For example, I
+have been using &lt;a href=&#34;https://pbreheny.github.io/visreg/&#34;&gt;visreg&lt;/a&gt;
+for multiple regression models fitted by &lt;code&gt;lm()&lt;/code&gt;
+for a long time. It is simple to use and supports
+both base R graphics and &lt;code&gt;ggplot2&lt;/code&gt;.
+&lt;a href=&#34;https://sfcheung.github.io/stdmod/index.html&#34;&gt;stdmod&lt;/a&gt;,
+which I maintained, also has the function
+&lt;a href=&#34;https://sfcheung.github.io/stdmod/articles/plotmod.html&#34;&gt;plotmod&lt;/a&gt; for plotting simple effects in moderated regression.
+For structural equation modelling, &lt;a href=&#34;https://github.com/simsem/semTools/wiki&#34;&gt;semTools&lt;/a&gt;
+can be used to plot interaction for latent
+variables using &lt;a href=&#34;https://rdrr.io/cran/semTools/man/plotProbe.html&#34;&gt;plotProbe()&lt;/a&gt;.
+&lt;code&gt;plotProbe()&lt;/code&gt; can also be used to on observed
+variables using this &lt;a href=&#34;https://groups.google.com/g/lavaan/c/h_LHQUFbx0k/m/jmQwRJEqBAAJ&#34;&gt;workaround&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;However, there may be case in which all
+we need is just two or more lines, and
+all we have are the simple effects: Two
+or more sets of intercepts of slopes.&lt;/p&gt;
+&lt;p&gt;This is how to plot the simple effect:&lt;/p&gt;
+&lt;p&gt;Suppose we want to plot the simple
+effects of &lt;code&gt;x&lt;/code&gt; on &lt;code&gt;y&lt;/code&gt; conditional on &lt;code&gt;w&lt;/code&gt;
+(the moderator).
+From the output of some functions, we
+have the slopes and intercepts
+when &lt;code&gt;w&lt;/code&gt; is “Low” or “High”:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “Low”: slope = 1, intercept = 2&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “High”: slope = 2, intercept = 3&lt;/p&gt;
+&lt;p&gt;Write a simple function to compute the points&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Simple regression model
+xyline &amp;lt;- function(x, a, b) {a + b * x}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Set the range for &lt;code&gt;x&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Range of x
+x &amp;lt;- c(0, 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Compute the predicted values of &lt;code&gt;y&lt;/code&gt; at
+the lower and upper limit of the range
+of &lt;code&gt;x&lt;/code&gt;, for each level of &lt;code&gt;w&lt;/code&gt;, when
+all other predictors of &lt;code&gt;y&lt;/code&gt; in the model,
+if any, are equal to zero:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Generate the two points when moderator = &amp;quot;Low&amp;quot;
+dat0 &amp;lt;- data.frame(Moderator = &amp;quot;Low&amp;quot;,
+                   x = x,
+                   y = xyline(x, a = 0, b = 0.5))
+# Generate the two points when moderator = &amp;quot;High&amp;quot;
+dat1 &amp;lt;- data.frame(Moderator = &amp;quot;High&amp;quot;,
+                   x = x,
+                   y = xyline(x, a = 2, b = 1.0))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Combine the datasets:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- rbind(dat0, dat1)
+dat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   Moderator  x  y
+## 1       Low  0  0
+## 2       Low 10  5
+## 3      High  0  2
+## 4      High 10 12&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Draw the lines using &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+p &amp;lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
+            geom_line() +
+            scale_color_manual(values = c(&amp;quot;Low&amp;quot; = &amp;quot;blue&amp;quot;, &amp;quot;High&amp;quot; = &amp;quot;red&amp;quot;))
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot can then be modified as necessary:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- p + xlab(&amp;quot;Independent Variable&amp;quot;) +
+          ylab(&amp;quot;Dependent Variable&amp;quot;)
+p2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This solution can be used for multiple
+regression or structural equation modelling.&lt;/p&gt;
+&lt;p&gt;Though not as elegant as using
+packages devoted to plotting moderation
+effects, this solution may be good
+enough for some simple scenarios. I
+believe it can be further improved. However,
+if we want more, maybe it is better to
+use packages like &lt;code&gt;semTools&lt;/code&gt; and
+&lt;code&gt;visreg&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;P.S.: This post is based on a suggestion I
+posted to the Google Group for &lt;code&gt;lavaan&lt;/code&gt;.&lt;/p&gt;
+
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

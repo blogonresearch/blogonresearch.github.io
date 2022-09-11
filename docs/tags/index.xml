@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Blogonresearch</title>
+    
+    
+    
+    <link>https://blogonresearch.github.io/tags/</link>
+    <description>Recent content in Tags on Blogonresearch</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://blogonresearch.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ggplot2</title>
+      <link>https://blogonresearch.github.io/tags/ggplot2/</link>
+      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/ggplot2/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>moderation</title>
+      <link>https://blogonresearch.github.io/tags/moderation/</link>
+      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/moderation/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>plot</title>
+      <link>https://blogonresearch.github.io/tags/plot/</link>
+      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/plot/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>https://blogonresearch.github.io/tags/r/</link>
+      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/r/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>
