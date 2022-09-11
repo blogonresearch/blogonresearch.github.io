@@ -51,7 +51,7 @@ when `w` is "Low" or "High":
 Write a simple function to compute the points
 
 
-```html
+```r
 # Simple regression model
 xyline <- function(x, a, b) {a + b * x}
 ```
@@ -109,7 +109,7 @@ p <- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
 p
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot_original-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot_original-1.png" width="672" style="display: block; margin: auto;" />
 
 This plot can then be modified as necessary:
 
@@ -120,7 +120,7 @@ p2 <- p + xlab("Independent Variable") +
 p2
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/plot_edited-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/plot_edited-1.png" width="672" style="display: block; margin: auto;" />
 
 This solution can be used for multiple
 regression or structural equation modelling.

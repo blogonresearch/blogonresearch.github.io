@@ -90,7 +90,7 @@ dat
 
 Draw the lines using `ggplot2`:
 
-```{r plot_original, tidy = FALSE}
+```{r plot_original, tidy = FALSE, fig.align = "center"}
 library(ggplot2)
 p <- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
             geom_line() +
@@ -100,7 +100,7 @@ p
 
 This plot can then be modified as necessary:
 
-```{r plot_edited, tidy = FALSE}
+```{r plot_edited, tidy = FALSE, fig.align = "center"}
 p2 <- p + xlab("Independent Variable") +
           ylab("Dependent Variable")
 p2
