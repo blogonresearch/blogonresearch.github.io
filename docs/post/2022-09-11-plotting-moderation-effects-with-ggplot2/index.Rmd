@@ -5,9 +5,6 @@ date: '2022-09-11'
 slug: []
 categories: ["R", "moderation"]
 tags: ["R", "plot", "moderation", "ggplot2"]
-output_format:
-  html_document:
-    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
