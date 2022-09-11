@@ -4,7 +4,7 @@ author: "Shu Fai Cheung"
 date: '2022-09-11'
 slug: []
 categories: []
-tags: []
+tags: ["blog"]
 ---
 
 This is a "revival" of an old blog of mine on psychological research and methodology

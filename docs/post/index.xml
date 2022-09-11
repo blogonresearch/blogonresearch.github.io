@@ -118,5 +118,32 @@ posted to the Google Group for &lt;code&gt;lavaan&lt;/code&gt;.&lt;/p&gt;
         </description>
     </item>
     
+    <item>
+      <title>Reviving an Old Blog</title>
+      <link>https://blogonresearch.github.io/post/2022-09-11-the-first-post/</link>
+      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/post/2022-09-11-the-first-post/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+
+
+&lt;p&gt;This is a “revival” of an old blog of mine on psychological research and methodology
+(hence the name &lt;em&gt;Blogonresearch&lt;/em&gt;). Just anything on research and methodology
+that are useful to me, and maybe also useful to others.&lt;/p&gt;
+&lt;p&gt;I tried &lt;code&gt;distill&lt;/code&gt;. I liked it. However, there are some problems
+with the RSS and so I decided to try &lt;code&gt;blogdown&lt;/code&gt; and &lt;code&gt;hugo&lt;/code&gt;,
+again.&lt;/p&gt;
+
+        
+        </description>
+    </item>
+    
   </channel>
 </rss>
