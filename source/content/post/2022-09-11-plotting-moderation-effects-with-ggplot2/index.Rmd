@@ -24,7 +24,8 @@ for a long time. It is simple to use and supports
 both base R graphics and `ggplot2`.
 [stdmod](https://sfcheung.github.io/stdmod/index.html),
 which I maintained, also has the function
-[plotmod](https://sfcheung.github.io/stdmod/articles/plotmod.html) for plotting simple effects in moderated regression.
+[plotmod](https://sfcheung.github.io/stdmod/articles/plotmod.html)
+for plotting simple effects in moderated regression.
 For structural equation modelling, [semTools](https://github.com/simsem/semTools/wiki)
 can be used to plot interaction for latent
 variables using [plotProbe()](https://rdrr.io/cran/semTools/man/plotProbe.html).

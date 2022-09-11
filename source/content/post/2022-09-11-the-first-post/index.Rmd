@@ -12,5 +12,4 @@ This is a "revival" of an old blog of mine on psychological research and methodo
 that are useful to me, and maybe also useful to others.
 
 I tried `distill`. I liked it. However, there are some problems
-with the RSS and so I decided to try `blogdown` and `hugo`,
-again.
+with the RSS and so I decided to try `blogdown` and `hugo`, again.
