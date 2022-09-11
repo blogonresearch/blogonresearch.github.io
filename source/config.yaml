@@ -1,5 +1,4 @@
 publishDir: "../docs"
-# baseurl: https://blogonresearch.github.io/
 baseurl: https://blogonresearch.github.io/
 ignoreFiles:
 - \\.Rmd$
@@ -11,7 +10,7 @@ paginate: 5
 params:
   rssFullText: true
   contentTypeName: post
-  defaultTheme: dark
+  defaultTheme: light
   showMenuItems: 2
   showReadingTime: no
 languages:
@@ -43,3 +42,22 @@ languages:
     subtitle: A blog on ... research
     title: Blogonresearch
     writtenBy:
+
+markup:
+  highlight:
+    codeFences: true
+    anchorLineNos: false
+    guessSyntax: false
+    hl_Lines: ""
+    hl_inline: false
+    lineAnchors: ""
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: true
+    noClasses: true
+    noHl: false
+    style: monokai
+    tabWidth: 2
+  goldmark:
+    renderer:
+      unsafe: true
