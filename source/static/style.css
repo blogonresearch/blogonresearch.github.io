@@ -3,7 +3,7 @@ body.light-theme, :root {
   --background: #fff;
   --background-secondary: #eaeaea;
   --header: #538a55;
-  --color: #222;
+  --color: #f6f6ff;
   --color-secondary: #999;
   --border-color: #dcdcdc;
 
@@ -28,7 +28,7 @@ body.dark-theme {
     --background: #fff;
     --background-secondary: #eaeaea;
     --header: #538a55;
-    --color: #222;
+    --color: #f6f6ff;
     --color-secondary: #999;
     --border-color: #dcdcdc;
   }
@@ -69,8 +69,8 @@ body.dark-theme {
 
 pre {
   font-feature-settings: normal;
-  background: #ffffff;
-  color: rgb(12, 0, 244);
+  background: #b8b8b8;
+  color: darkblue;
   padding: 20px;
   border-radius: 8px;
   font-size: .9rem;
