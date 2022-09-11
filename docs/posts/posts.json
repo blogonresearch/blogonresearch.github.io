@@ -1,5 +1,28 @@
 [
   {
+    "path": "posts/2022-09-11-plot-moderation-effects/",
+    "title": "Plotting Moderation Effects with ggplot2 Only",
+    "description": "Plotting Moderation Effects with ggplot2 Only.",
+    "author": [
+      {
+        "name": "Shu Fai Cheung",
+        "url": {}
+      }
+    ],
+    "date": "2022-09-11",
+    "categories": [
+      "R",
+      "ggplot2",
+      "moderation"
+    ],
+    "contents": "\r\nThere are some R packages that help researchers to plot moderation (interaction) effects: The linear relations between x (independent variable / predictor) and y (dependent variable / outcome variable) for two or more levels of w (moderator). For example, I have been using visreg for multiple regression models fitted by lm() for a long time. It is simple to use and supports both base R graphics and ggplot2. stdmod, which I maintained, also has the function plotmod for plotting simple effects in moderated regression. For structural equation modelling, semTools can be used to plot interaction for latent variables using plotProbe(). plotProbe() can also be used to on observed variables using this workaround.\r\nHowever, there may be case in which all we need is just two or more lines, and all we have are the simple effects: Two or more sets of intercepts of slopes.\r\nThis is how to plot the simple effect:\r\nSuppose we want to plot the simple effects of x on y conditional on w (the moderator). From the output of some functions, we have the slopes and intercepts when w is “Low” or “High”:\r\nw is “Low”: slope = 1, intercept = 2\r\nw is “High”: slope = 2, intercept = 3\r\nWrite a simple function to compute the points\r\n\r\n\r\n# Simple regression model\r\nxyline <- function(x, a, b) {a + b * x}\r\n\r\n\r\nSet the range for x:\r\n\r\n\r\n# Range of x\r\nx <- c(0, 10)\r\n\r\n\r\nCompute the predicted values of y at the lower and upper limit of the range of x, for each level of w, when all other predictors of y in the model, if any, are equal to zero:\r\n\r\n\r\n# Generate the two points when moderator = \"Low\"\r\ndat0 <- data.frame(Moderator = \"Low\",\r\n                   x = x,\r\n                   y = xyline(x, a = 0, b = 0.5))\r\n# Generate the two points when moderator = \"High\"\r\ndat1 <- data.frame(Moderator = \"High\",\r\n                   x = x,\r\n                   y = xyline(x, a = 2, b = 1.0))\r\n\r\n\r\nCombine the datasets:\r\n\r\n\r\ndat <- rbind(dat0, dat1)\r\ndat\r\n\r\n  Moderator  x  y\r\n1       Low  0  0\r\n2       Low 10  5\r\n3      High  0  2\r\n4      High 10 12\r\n\r\nDraw the lines using ggplot2:\r\n\r\n\r\nlibrary(ggplot2)\r\np <- ggplot(dat, aes(x = x, y = y, color = Moderator)) +\r\n            geom_line() +\r\n            scale_color_manual(values = c(\"Low\" = \"blue\", \"High\" = \"red\"))\r\np\r\n\r\n\r\n\r\nThis plot can then be modified as necessary:\r\n\r\n\r\np + xlab(\"Independent Variable\") +\r\n    ylab(\"Dependent Variable\")\r\n\r\n\r\n\r\nThis solution can be used for multiple regression or structural equation modelling.\r\nThough not as elegant as using packages devoted to plotting moderation effects, this solution may be good enough for some simple scenarios. I believe it can be further improved. However, if we want more, maybe it is better to use packages like semTools and visreg.\r\nP.S.: This post is based on a suggestion I posted to the Google Group for lavaan.\r\n\r\n\r\n\r\n",
+    "preview": "posts/2022-09-11-plot-moderation-effects/plot-moderation-effects_files/figure-html5/unnamed-chunk-5-1.png",
+    "last_modified": "2022-09-11T09:41:34+08:00",
+    "input_file": {},
+    "preview_width": 1248,
+    "preview_height": 768
+  },
+  {
     "path": "posts/welcome/",
     "title": "Welcome to Blogonresearch",
     "description": "This is a \"revival\" of an old blog of mine on psychological research and methodology.",
@@ -13,6 +36,7 @@
     "categories": [],
     "contents": "\r\nThis is a “revival” of an old blog of mine on psychological research and methodology (hence the name Blogonreseach). Just anything on research and methodology that are useful to me, and maybe also useful to others.\r\nI am still learning how to use Distill, which may be more suitable than blogdown because this blog is for academic and technical stuff and I do not want to spend time on aesthetic stuff.\r\nAs of 2022-08-01, this should be the only “post.” Once I know enough about Distill, I will start adding posts here.\r\n\r\n\r\n\r\n",
     "preview": {},
+    "last_modified": "2022-09-11T09:21:06+08:00",
     "last_modified": "2022-08-01T00:53:23+08:00",
     "input_file": {}
   }

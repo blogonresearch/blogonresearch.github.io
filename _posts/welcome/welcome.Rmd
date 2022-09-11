@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 This is a "revival" of an old blog of mine on psychological research and methodology
- (hence the name *Blogonreseach*). Just anything on research and methodology
+ (hence the name *Blogonresearch*). Just anything on research and methodology
  that are useful to me, and maybe also useful to others.
 
 I am still learning how to use [Distill](https://rstudio.github.io/distill/),
