@@ -5,21 +5,21 @@
     
     
     
-    <link>https://blogonresearch.github.io/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://blogonresearch.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>blog</title>
-      <link>https://blogonresearch.github.io/tags/blog/</link>
+      <link>/tags/blog/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/blog/</guid>
+      <guid>/tags/blog/</guid>
       <description>
         
           
@@ -34,10 +34,10 @@
     
     <item>
       <title>ggplot2</title>
-      <link>https://blogonresearch.github.io/tags/ggplot2/</link>
+      <link>/tags/ggplot2/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/ggplot2/</guid>
+      <guid>/tags/ggplot2/</guid>
       <description>
         
           
@@ -52,10 +52,10 @@
     
     <item>
       <title>moderation</title>
-      <link>https://blogonresearch.github.io/tags/moderation/</link>
+      <link>/tags/moderation/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/moderation/</guid>
+      <guid>/tags/moderation/</guid>
       <description>
         
           
@@ -70,10 +70,10 @@
     
     <item>
       <title>plot</title>
-      <link>https://blogonresearch.github.io/tags/plot/</link>
+      <link>/tags/plot/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/plot/</guid>
+      <guid>/tags/plot/</guid>
       <description>
         
           
@@ -88,10 +88,10 @@
     
     <item>
       <title>R</title>
-      <link>https://blogonresearch.github.io/tags/r/</link>
+      <link>/tags/r/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/r/</guid>
+      <guid>/tags/r/</guid>
       <description>
         
           

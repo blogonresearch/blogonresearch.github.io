@@ -5,21 +5,21 @@
     
     
     
-    <link>https://blogonresearch.github.io/tags/blog/</link>
+    <link>/tags/blog/</link>
     <description>Recent content in blog on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://blogonresearch.github.io/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Reviving an Old Blog</title>
-      <link>https://blogonresearch.github.io/post/2022-09-11-the-first-post/</link>
+      <link>/post/2022-09-11-the-first-post/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/post/2022-09-11-the-first-post/</guid>
+      <guid>/post/2022-09-11-the-first-post/</guid>
       <description>
         
           

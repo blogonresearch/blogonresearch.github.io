@@ -5,21 +5,21 @@
     
     
     
-    <link>https://blogonresearch.github.io/categories/r/</link>
+    <link>/categories/r/</link>
     <description>Recent content in R on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://blogonresearch.github.io/categories/r/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Plotting Moderation Effects With ggplot2</title>
-      <link>https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</link>
+      <link>/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</guid>
+      <guid>/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</guid>
       <description>
         
           
@@ -95,12 +95,12 @@ p &amp;lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
             geom_line() +
             scale_color_manual(values = c(&amp;quot;Low&amp;quot; = &amp;quot;blue&amp;quot;, &amp;quot;High&amp;quot; = &amp;quot;red&amp;quot;))
 p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot can then be modified as necessary:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- p + xlab(&amp;quot;Independent Variable&amp;quot;) +
           ylab(&amp;quot;Dependent Variable&amp;quot;)
 p2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This solution can be used for multiple
 regression or structural equation modelling.&lt;/p&gt;
 &lt;p&gt;Though not as elegant as using
