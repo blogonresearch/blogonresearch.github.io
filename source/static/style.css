@@ -28,7 +28,7 @@ body.dark-theme {
     --background: #fff;
     --background-secondary: #eaeaea;
     --header: #538a55;
-    --color: #f6f6ff;
+    --color: #000000;
     --color-secondary: #999;
     --border-color: #dcdcdc;
   }
@@ -67,7 +67,7 @@ body.dark-theme {
   /*margin-top: 0;*/
 /*}*/
 
-pre {
+/* pre {
   font-feature-settings: normal;
   background: #363636;
   color: darkblue;
@@ -89,7 +89,7 @@ pre {
     padding: 0;
     font-size: inherit;
   }
-}
+} */
 
 .logo {
   display: flex;
