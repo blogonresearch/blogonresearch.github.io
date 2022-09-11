@@ -5,104 +5,13 @@
     
     
     
-    <link>/tags/</link>
+    <link>https://blogonresearch.github.io/tags/</link>
     <description>Recent content in Tags on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blogonresearch.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>blog</title>
-      <link>/tags/blog/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/blog/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>ggplot2</title>
-      <link>/tags/ggplot2/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/ggplot2/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>moderation</title>
-      <link>/tags/moderation/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/moderation/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>plot</title>
-      <link>/tags/plot/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/plot/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>R</title>
-      <link>/tags/r/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/r/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
     
   </channel>
 </rss>

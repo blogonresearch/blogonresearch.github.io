@@ -5,50 +5,13 @@
     
     
     
-    <link>/categories/</link>
+    <link>https://blogonresearch.github.io/categories/</link>
     <description>Recent content in Categories on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blogonresearch.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>moderation</title>
-      <link>/categories/moderation/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/categories/moderation/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>R</title>
-      <link>/categories/r/</link>
-      <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/categories/r/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-        
-        </description>
-    </item>
     
   </channel>
 </rss>
