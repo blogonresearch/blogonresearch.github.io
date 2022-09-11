@@ -31,7 +31,7 @@ languages:
       logo:
         logoHomeLink: /
         logoText: Blogonresearch
-        path: "resources/_gen/images/blongonresearch_logo.png"
+        path: "img/blongonresearch_logo.png"
         alt: "Blogonresearch"
     readMore: Read more
     readOtherPosts: Read other posts
