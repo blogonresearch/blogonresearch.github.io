@@ -1,0 +1,94 @@
+---
+title: Plotting Moderation Effects With ggplot2
+author: "Shu Fai Cheung"
+date: '2022-09-11'
+slug: []
+categories: ["R", "moderation"]
+tags: ["R", "plot", "moderation", "ggplot2"]
+---
+
+
+
+<p>There are some R packages that help
+researchers to plot moderation (interaction)
+effects: The linear relations between
+<code>x</code> (independent variable /
+predictor) and <code>y</code> (dependent variable /
+outcome variable) for
+two or more levels of <code>w</code> (moderator). For example, I
+have been using <a href="https://pbreheny.github.io/visreg/">visreg</a>
+for multiple regression models fitted by <code>lm()</code>
+for a long time. It is simple to use and supports
+both base R graphics and <code>ggplot2</code>.
+<a href="https://sfcheung.github.io/stdmod/index.html">stdmod</a>,
+which I maintained, also has the function
+<a href="https://sfcheung.github.io/stdmod/articles/plotmod.html">plotmod</a> for plotting simple effects in moderated regression.
+For structural equation modelling, <a href="https://github.com/simsem/semTools/wiki">semTools</a>
+can be used to plot interaction for latent
+variables using <a href="https://rdrr.io/cran/semTools/man/plotProbe.html">plotProbe()</a>.
+<code>plotProbe()</code> can also be used to on observed
+variables using this <a href="https://groups.google.com/g/lavaan/c/h_LHQUFbx0k/m/jmQwRJEqBAAJ">workaround</a>.</p>
+<p>However, there may be case in which all
+we need is just two or more lines, and
+all we have are the simple effects: Two
+or more sets of intercepts of slopes.</p>
+<p>This is how to plot the simple effect:</p>
+<p>Suppose we want to plot the simple
+effects of <code>x</code> on <code>y</code> conditional on <code>w</code>
+(the moderator).
+From the output of some functions, we
+have the slopes and intercepts
+when <code>w</code> is “Low” or “High”:</p>
+<p><code>w</code> is “Low”: slope = 1, intercept = 2</p>
+<p><code>w</code> is “High”: slope = 2, intercept = 3</p>
+<p>Write a simple function to compute the points</p>
+<pre class="r"><code># Simple regression model
+xyline &lt;- function(x, a, b) {a + b * x}</code></pre>
+<p>Set the range for <code>x</code>:</p>
+<pre class="r"><code># Range of x
+x &lt;- c(0, 10)</code></pre>
+<p>Compute the predicted values of <code>y</code> at
+the lower and upper limit of the range
+of <code>x</code>, for each level of <code>w</code>, when
+all other predictors of <code>y</code> in the model,
+if any, are equal to zero:</p>
+<pre class="r"><code># Generate the two points when moderator = &quot;Low&quot;
+dat0 &lt;- data.frame(Moderator = &quot;Low&quot;,
+                   x = x,
+                   y = xyline(x, a = 0, b = 0.5))
+# Generate the two points when moderator = &quot;High&quot;
+dat1 &lt;- data.frame(Moderator = &quot;High&quot;,
+                   x = x,
+                   y = xyline(x, a = 2, b = 1.0))</code></pre>
+<p>Combine the datasets:</p>
+<pre class="r"><code>dat &lt;- rbind(dat0, dat1)
+dat</code></pre>
+<pre><code>##   Moderator  x  y
+## 1       Low  0  0
+## 2       Low 10  5
+## 3      High  0  2
+## 4      High 10 12</code></pre>
+<p>Draw the lines using <code>ggplot2</code>:</p>
+<pre class="r"><code>library(ggplot2)
+p &lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
+            geom_line() +
+            scale_color_manual(values = c(&quot;Low&quot; = &quot;blue&quot;, &quot;High&quot; = &quot;red&quot;))
+p</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot_original-1.png" width="672" /></p>
+<p>This plot can then be modified as necessary:</p>
+<pre class="r"><code>p2 &lt;- p + xlab(&quot;Independent Variable&quot;) +
+          ylab(&quot;Dependent Variable&quot;)
+p2</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot_edited-1.png" width="672" /></p>
+<p>This solution can be used for multiple
+regression or structural equation modelling.</p>
+<p>Though not as elegant as using
+packages devoted to plotting moderation
+effects, this solution may be good
+enough for some simple scenarios. I
+believe it can be further improved. However,
+if we want more, maybe it is better to
+use packages like <code>semTools</code> and
+<code>visreg</code>.</p>
+<p>P.S.: This post is based on a suggestion I
+posted to the Google Group for <code>lavaan</code>.</p>
