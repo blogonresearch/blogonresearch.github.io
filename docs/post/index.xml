@@ -5,21 +5,21 @@
     
     
     
-    <link>/post/</link>
+    <link>https://blogonresearch.github.io/post/</link>
     <description>Recent content in Posts on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 11 Sep 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blogonresearch.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Plotting Moderation Effects With ggplot2</title>
-      <link>/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</link>
+      <link>https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</guid>
+      <guid>https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/</guid>
       <description>
         
           
@@ -43,7 +43,8 @@ for a long time. It is simple to use and supports
 both base R graphics and &lt;code&gt;ggplot2&lt;/code&gt;.
 &lt;a href=&#34;https://sfcheung.github.io/stdmod/index.html&#34;&gt;stdmod&lt;/a&gt;,
 which I maintained, also has the function
-&lt;a href=&#34;https://sfcheung.github.io/stdmod/articles/plotmod.html&#34;&gt;plotmod&lt;/a&gt; for plotting simple effects in moderated regression.
+&lt;a href=&#34;https://sfcheung.github.io/stdmod/articles/plotmod.html&#34;&gt;plotmod&lt;/a&gt;
+for plotting simple effects in moderated regression.
 For structural equation modelling, &lt;a href=&#34;https://github.com/simsem/semTools/wiki&#34;&gt;semTools&lt;/a&gt;
 can be used to plot interaction for latent
 variables using &lt;a href=&#34;https://rdrr.io/cran/semTools/man/plotProbe.html&#34;&gt;plotProbe()&lt;/a&gt;.
@@ -95,12 +96,12 @@ p &amp;lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
             geom_line() +
             scale_color_manual(values = c(&amp;quot;Low&amp;quot; = &amp;quot;blue&amp;quot;, &amp;quot;High&amp;quot; = &amp;quot;red&amp;quot;))
 p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot can then be modified as necessary:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- p + xlab(&amp;quot;Independent Variable&amp;quot;) +
           ylab(&amp;quot;Dependent Variable&amp;quot;)
 p2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This solution can be used for multiple
 regression or structural equation modelling.&lt;/p&gt;
 &lt;p&gt;Though not as elegant as using
@@ -120,10 +121,10 @@ posted to the Google Group for &lt;code&gt;lavaan&lt;/code&gt;.&lt;/p&gt;
     
     <item>
       <title>Reviving an Old Blog</title>
-      <link>/post/2022-09-11-the-first-post/</link>
+      <link>https://blogonresearch.github.io/post/2022-09-11-the-first-post/</link>
       <pubDate>Sun, 11 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>/post/2022-09-11-the-first-post/</guid>
+      <guid>https://blogonresearch.github.io/post/2022-09-11-the-first-post/</guid>
       <description>
         
           
@@ -138,8 +139,7 @@ posted to the Google Group for &lt;code&gt;lavaan&lt;/code&gt;.&lt;/p&gt;
 (hence the name &lt;em&gt;Blogonresearch&lt;/em&gt;). Just anything on research and methodology
 that are useful to me, and maybe also useful to others.&lt;/p&gt;
 &lt;p&gt;I tried &lt;code&gt;distill&lt;/code&gt;. I liked it. However, there are some problems
-with the RSS and so I decided to try &lt;code&gt;blogdown&lt;/code&gt; and &lt;code&gt;hugo&lt;/code&gt;,
-again.&lt;/p&gt;
+with the RSS and so I decided to try &lt;code&gt;blogdown&lt;/code&gt; and &lt;code&gt;hugo&lt;/code&gt;, again.&lt;/p&gt;
 
         
         </description>
