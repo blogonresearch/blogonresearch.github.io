@@ -27,10 +27,7 @@
           
         
         
-        
-
-
-&lt;p&gt;There are some R packages that help
+        &lt;p&gt;There are some R packages that help
 researchers to plot moderation (interaction)
 effects: The linear relations between
 &lt;code&gt;x&lt;/code&gt; (independent variable /
@@ -56,52 +53,52 @@ all we have are the simple effects: Two
 or more sets of intercepts of slopes.&lt;/p&gt;
 &lt;p&gt;This is how to plot the simple effect:&lt;/p&gt;
 &lt;p&gt;Suppose we want to plot the simple
-effects of &lt;code&gt;x&lt;/code&gt; on &lt;code&gt;y&lt;/code&gt; conditional on &lt;code&gt;w&lt;/code&gt;
+effects of &lt;code&gt;x&lt;/code&gt;  on &lt;code&gt;y&lt;/code&gt; conditional on &lt;code&gt;w&lt;/code&gt;
 (the moderator).
 From the output of some functions, we
 have the slopes and intercepts
-when &lt;code&gt;w&lt;/code&gt; is “Low” or “High”:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “Low”: intercept = 2, slope = 1&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is “High”: intercept = 3, slope = 2&lt;/p&gt;
+when &lt;code&gt;w&lt;/code&gt; is &amp;ldquo;Low&amp;rdquo; or &amp;ldquo;High&amp;rdquo;:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is &amp;ldquo;Low&amp;rdquo;: intercept = 2,  slope = 1&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;w&lt;/code&gt; is &amp;ldquo;High&amp;rdquo;: intercept = 3, slope = 2&lt;/p&gt;
 &lt;p&gt;Write a simple function to compute the points&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Simple regression model
-xyline &amp;lt;- function(x, a, b) {a + b * x}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Set the range for &lt;code&gt;x&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Range of x
-x &amp;lt;- c(0, 10)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Compute the predicted values of &lt;code&gt;y&lt;/code&gt; at
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Simple regression model&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;xyline &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;function&lt;/span&gt;(x, a, b) {a &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; b &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; x}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Set the range for &lt;code&gt;x&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Range of x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;x &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compute the predicted values of &lt;code&gt;y&lt;/code&gt; at
 the lower and upper limit of the range
 of &lt;code&gt;x&lt;/code&gt;, for each level of &lt;code&gt;w&lt;/code&gt;, when
 all other predictors of &lt;code&gt;y&lt;/code&gt; in the model,
 if any, are equal to zero:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Generate the two points when moderator = &amp;quot;Low&amp;quot;
-dat0 &amp;lt;- data.frame(Moderator = &amp;quot;Low&amp;quot;,
-                   x = x,
-                   y = xyline(x, a = 2, b = 1))
-# Generate the two points when moderator = &amp;quot;High&amp;quot;
-dat1 &amp;lt;- data.frame(Moderator = &amp;quot;High&amp;quot;,
-                   x = x,
-                   y = xyline(x, a = 3, b = 2))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Combine the datasets:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat &amp;lt;- rbind(dat0, dat1)
-dat&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##   Moderator  x  y
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Generate the two points when moderator = &amp;#34;Low&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dat0 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data.frame&lt;/span&gt;(Moderator &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Low&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; x,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;xyline&lt;/span&gt;(x, a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Generate the two points when moderator = &amp;#34;High&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dat1 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data.frame&lt;/span&gt;(Moderator &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;High&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; x,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;xyline&lt;/span&gt;(x, a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Combine the datasets:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dat &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;rbind&lt;/span&gt;(dat0, dat1)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dat
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;##   Moderator  x  y
 ## 1       Low  0  2
 ## 2       Low 10 12
 ## 3      High  0  3
-## 4      High 10 23&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Draw the lines using &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
-p &amp;lt;- ggplot(dat, aes(x = x, y = y, color = Moderator)) +
-            geom_line() +
-            scale_color_manual(values = c(&amp;quot;Low&amp;quot; = &amp;quot;blue&amp;quot;, &amp;quot;High&amp;quot; = &amp;quot;red&amp;quot;))
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+## 4      High 10 23
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Draw the lines using &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(ggplot2)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;p &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ggplot&lt;/span&gt;(dat, &lt;span style=&#34;color:#a6e22e&#34;&gt;aes&lt;/span&gt;(x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; x, y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; y, color &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Moderator)) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;geom_line&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;scale_color_manual&lt;/span&gt;(values &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Low&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;blue&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;High&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;red&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;p
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_original-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
 &lt;p&gt;This plot can then be modified as necessary:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- p + xlab(&amp;quot;Independent Variable&amp;quot;) +
-          ylab(&amp;quot;Dependent Variable&amp;quot;)
-p2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;p2 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;xlab&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Independent Variable&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          &lt;span style=&#34;color:#a6e22e&#34;&gt;ylab&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Dependent Variable&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;p2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-11-plotting-moderation-effects-with-ggplot2/index_files/figure-html/plot_edited-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
 &lt;p&gt;This solution can be used for multiple
 regression or structural equation modelling.&lt;/p&gt;
 &lt;p&gt;Though not as elegant as using
