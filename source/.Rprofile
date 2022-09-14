@@ -18,7 +18,7 @@ options(
   # build .Rmd to .html (via Pandoc); to build to Markdown, set this option to 'markdown'
   blogdown.method = 'markdown',
   blogdown.author = "Shu Fai Cheung",
-  blogdown.ext = "Rmarkdown"
+  blogdown.ext = ".Rmarkdown"
 )
 
 # fix Hugo version
