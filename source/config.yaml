@@ -11,7 +11,7 @@ params:
   rssFullText: true
   contentTypeName: post
   defaultTheme: light
-  showMenuItems: 2
+  showMenuItems: 3
   showReadingTime: no
 languages:
   en:
@@ -27,6 +27,12 @@ languages:
         # - identifier: showcase
         #   name: Showcase
         #   url: /showcase
+        - identifier: attwitter
+          name: On Twitter
+          url: https://twitter.com/blogonresearch
+        - identifier: rbloggers
+          name: R-Bloggers
+          url: https://www.r-bloggers.com/
     menuMore: Show more
     minuteReadingTime: min read
     newerPosts: Newer posts
