@@ -43,7 +43,7 @@ Windows a lot. It is light-weight,
 came with base installation, and
 is customizable. Simple but good enough
 for some tasks.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;rgui_startup.png&#34; alt=&#34;R Default GUI&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/rgui_startup.png&#34; alt=&#34;R Default GUI&#34;&gt;&lt;/p&gt;
 &lt;p&gt;The console above is not the default
 one. I like dark theme and
 single-document interface (SDI). I keep only
@@ -53,7 +53,7 @@ taskbar. SDI is much more efficient for
 me to locate the window I need.&lt;/p&gt;
 &lt;p&gt;The configuration can be set in
 Edit-&amp;gt;Preferences:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;rgui_configuration_annotated.png&#34; alt=&#34;Rgui configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/rgui_configuration_annotated.png&#34; alt=&#34;Rgui configuration&#34;&gt;&lt;/p&gt;
 &lt;p&gt;The configuration is saved in the
 &lt;code&gt;Rconsole&lt;/code&gt; file in the folder &lt;code&gt;etc&lt;/code&gt;
 in R&amp;rsquo;s installation folder. Whenever
@@ -71,7 +71,7 @@ pulldown menu &amp;hellip; well, not really.
 I rarely use the mouse to access the
 pulldown menu. I use the keyboard
 most of the time.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;rgui_devtools_menu.png&#34; alt=&#34;R GUI pulldown menu&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/rgui_devtools_menu.png&#34; alt=&#34;R GUI pulldown menu&#34;&gt;&lt;/p&gt;
 &lt;p&gt;To add a menu, we can use a script and two functions.&lt;/p&gt;
 &lt;p&gt;The following function add a menu called &lt;code&gt;devtools&lt;/code&gt;:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;utils&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;winMenuAdd&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;devtools&amp;#34;&lt;/span&gt;)
@@ -106,7 +106,7 @@ confirm the change.&lt;/p&gt;
 &lt;p&gt;I sometimes open several instances of
 R GUI. To differentiate them, I use
 different color schemes:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;rgui_four_instances.png&#34; alt=&#34;Four instances of R GUI&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/rgui_four_instances.png&#34; alt=&#34;Four instances of R GUI&#34;&gt;&lt;/p&gt;
 &lt;p&gt;This can be done inside R GUI too:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;utils&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;winMenuAddItem&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Style&amp;#34;&lt;/span&gt;,
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Lime Green and Light Golden&amp;#34;&lt;/span&gt;,

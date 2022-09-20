@@ -24,7 +24,7 @@ came with base installation, and
 is customizable. Simple but good enough
 for some tasks.
 
-![R Default GUI](rgui_startup.png)
+![R Default GUI]({{< blogdown/postref >}}rgui_startup.png)
 
 The console above is not the default
 one. I like dark theme and
@@ -37,7 +37,7 @@ me to locate the window I need.
 The configuration can be set in
 Edit->Preferences:
 
-![Rgui configuration](rgui_configuration_annotated.png)
+![Rgui configuration]({{< blogdown/postref >}}rgui_configuration_annotated.png)
 
 The configuration is saved in the
 `Rconsole` file in the folder `etc`
@@ -58,7 +58,7 @@ I rarely use the mouse to access the
 pulldown menu. I use the keyboard
 most of the time.
 
-![R GUI pulldown menu](rgui_devtools_menu.png)
+![R GUI pulldown menu]({{< blogdown/postref >}}rgui_devtools_menu.png)
 
 To add a menu, we can use a script and two functions.
 
@@ -110,7 +110,7 @@ I sometimes open several instances of
 R GUI. To differentiate them, I use
 different color schemes:
 
-![Four instances of R GUI](rgui_four_instances.png)
+![Four instances of R GUI]({{< blogdown/postref >}}rgui_four_instances.png)
 
 This can be done inside R GUI too:
 
