@@ -1,5 +1,5 @@
 ---
-title: Customizes R GUI For Windows
+title: Customize R GUI For Windows
 author: Shu Fai Cheung
 date: '2022-09-20'
 slug: []
