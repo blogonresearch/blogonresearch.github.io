@@ -9,10 +9,153 @@
     <description>Recent content in R on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Sep 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 20 Sep 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://blogonresearch.github.io/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Customizes R GUI For Windows</title>
+      <link>https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/</link>
+      <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        &lt;p&gt;Many people use RStudio, and some even
+mistaken RStudio as R. I mainly work
+on Windows machines and I did try
+RStudio for a while a few years ago.
+However, I switched back to default R
+GUI for Windows that
+comes with R for Windows and used
+it along with light-weight code editors,
+for personal reasons. RStudio is good,
+but has many features that I don&amp;rsquo;t need.
+Although I now use VS Code as my main IDE
+for R, I still use R GUI for
+Windows a lot. It is light-weight,
+came with base installation, and
+is customizable. Simple but good enough
+for some tasks.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;rgui_startup.png&#34; alt=&#34;R Default GUI&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The console above is not the default
+one. I like dark theme and
+single-document interface (SDI). I keep only
+a limited numbers of windows on my
+desktop and I never group windows in the
+taskbar. SDI is much more efficient for
+me to locate the window I need.&lt;/p&gt;
+&lt;p&gt;The configuration can be set in
+Edit-&amp;gt;Preferences:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;rgui_configuration_annotated.png&#34; alt=&#34;Rgui configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The configuration is saved in the
+&lt;code&gt;Rconsole&lt;/code&gt; file in the folder &lt;code&gt;etc&lt;/code&gt;
+in R&amp;rsquo;s installation folder. Whenever
+I upgrade to a new version of R, I simply
+copy this file to the same folder in the
+new installation of R to have my
+preferred configuration. No need to set
+the configuration again. (I&amp;rsquo;ve just
+found that I haven&amp;rsquo;t changes this
+configuration for over five years!)&lt;/p&gt;
+&lt;p&gt;Another feature I like is customizing
+the menu bar. I use &lt;code&gt;devtools&lt;/code&gt; a lot,
+and would love to call them from the
+pulldown menu &amp;hellip; well, not really.
+I rarely use the mouse to access the
+pulldown menu. I use the keyboard
+most of the time.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;rgui_devtools_menu.png&#34; alt=&#34;R GUI pulldown menu&#34;&gt;&lt;/p&gt;
+&lt;p&gt;To add a menu, we can use a script and two functions.&lt;/p&gt;
+&lt;p&gt;The following function add a menu called &lt;code&gt;devtools&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;utils&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;winMenuAdd&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;devtools&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;After a menu is added, items can be added by
+&lt;code&gt;utils::winMenuAddItem()&lt;/code&gt;. For example, the following
+call add &lt;code&gt;check&lt;/code&gt; to the menu &lt;code&gt;devtools&lt;/code&gt;. If selected,
+the call &lt;code&gt;devtools::check()&lt;/code&gt; will be executed:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;utils&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;winMenuAddItem&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;devtools&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;check&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;devtools::check()&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;As the screenshot above showed, most of
+the items I added to &lt;code&gt;devtools&lt;/code&gt; are those
+functions (menu items) in RStudio
+(as far as I recalled &amp;hellip; as I haven&amp;rsquo;t used
+RStudio to develop package for a long
+time).&lt;/p&gt;
+&lt;p&gt;Most common tasks that can be done through
+R code can be converted to a menu item.
+For example, I don&amp;rsquo;t like using the pulldown
+menu to change working directory. I can
+quickly copy the path to a folder using keyboard
+only (alt-D and then control-C in
+Explorer). Therefore, I have the following
+menu item added to the R GUI:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;utils&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;winMenuAddItem&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Utils&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;setwd from clipboard&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;setwd(readClipboard());getwd()&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;setwd(readClipboard())&lt;/code&gt; changes the working
+directory to the folder I copied to
+clipboard. &lt;code&gt;getwd()&lt;/code&gt; is added just to
+confirm the change.&lt;/p&gt;
+&lt;p&gt;I sometimes open several instances of
+R GUI. To differentiate them, I use
+different color schemes:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;rgui_four_instances.png&#34; alt=&#34;Four instances of R GUI&#34;&gt;&lt;/p&gt;
+&lt;p&gt;This can be done inside R GUI too:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;utils&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;winMenuAddItem&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Style&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Lime Green and Light Golden&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;utils::loadRconsole(&amp;#39;D:/My_Settings/Rconsole_lime_green_and_light_golden&amp;#39;)&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;utils::loadRconsole()&lt;/code&gt; is used to load
+the R GUI configuration stored in a
+file. This file can be created by
+saving the
+settings in the R GUI configuration
+dialog above to a file. In the above
+example, the settings are stored in
+the file &lt;code&gt;Rconsole_lime_green_and_light_golden&lt;/code&gt;.
+I have four such files, storing distinct
+color schemes.&lt;/p&gt;
+&lt;p&gt;Like &lt;code&gt;Rconsole&lt;/code&gt; for the color scheme
+and SDI, I would like to have custom
+menus when I start R GUI. This can be done
+by adding code like the following to
+the &lt;code&gt;Rprofile.site&lt;/code&gt; file in the &lt;code&gt;etc&lt;/code&gt;
+folder:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;if &lt;/span&gt;((&lt;span style=&#34;color:#a6e22e&#34;&gt;Sys.getenv&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;RS_LOCAL_PEER&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; (.Platform&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;GUI &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Rgui&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;tryCatch&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;source&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;D:/My_Settings/add_style_menu.R&amp;#34;&lt;/span&gt;), error &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;function&lt;/span&gt;(e) e)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I wrote this a long long time ago and I
+cannot recall their purposes. I believe
+&lt;code&gt;Sys.getenv(&amp;quot;RS_LOCAL_PEER&amp;quot;) == &amp;quot;&amp;quot;&lt;/code&gt; is
+used to check whether a session is
+launched in RStudio. &lt;code&gt;.Platform$GUI == &amp;quot;Rgui&amp;quot;&lt;/code&gt;
+is used to check whether an R session
+is launched by the default R GUI. I still
+occasionally use RStudio and the menus
+I created should not be added if an R
+session is launched inside RStudio.
+I used &lt;code&gt;tryCatch()&lt;/code&gt; just in case there
+are issues that I overlooked.&lt;/p&gt;
+&lt;p&gt;So, whenever I install a new copy or version
+of R, I just copy and paste the customized
+&lt;code&gt;Rconsole&lt;/code&gt; and &lt;code&gt;Rprofile.site&lt;/code&gt; files
+to &lt;code&gt;etc&lt;/code&gt;. I can then happily have my
+preferred environment. Having the
+code for menu groups stored in other
+files allow me to update them without
+editing &lt;code&gt;Rprofile.site&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Hope you find these tips useful &amp;hellip;
+if you are R GUI users like me. :)&lt;/p&gt;
+
+        
+        </description>
+    </item>
     
     <item>
       <title>One Function or Many Functions</title>

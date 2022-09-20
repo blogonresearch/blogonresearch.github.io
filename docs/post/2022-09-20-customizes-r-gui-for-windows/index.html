@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Customizes R GUI For Windows ::
+        Blogonresearch — A blog on ... research
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Many people use RStudio, and some even mistaken RStudio as R. I mainly work on Windows machines and I did try RStudio for a while a few years ago. However, I switched back to default R GUI for Windows that comes with R for Windows and used it along with light-weight code editors, for personal reasons. RStudio is good, but has many features that I don&amp;rsquo;t need. Although I now use VS Code as my main IDE for R, I still use R GUI for Windows a lot."
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://blogonresearch.github.io/assets/style.css" />
+
+<link rel="stylesheet" href="https://blogonresearch.github.io/style.css" />
+
+
+<link
+  rel="apple-touch-icon-precomposed"
+  sizes="144x144"
+  href="https://blogonresearch.github.io/img/apple-touch-icon-144-precomposed.png"
+/>
+<link rel="shortcut icon" href="https://blogonresearch.github.io/img/favicon.png" />
+
+
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Customizes R GUI For Windows"/>
+<meta name="twitter:description" content="Many people use RStudio, and some even mistaken RStudio as R. I mainly work on Windows machines and I did try RStudio for a while a few years ago. However, I switched back to default R GUI for Windows that comes with R for Windows and used it along with light-weight code editors, for personal reasons. RStudio is good, but has many features that I don&rsquo;t need. Although I now use VS Code as my main IDE for R, I still use R GUI for Windows a lot."/>
+
+
+
+<meta property="og:title" content="Customizes R GUI For Windows" />
+<meta property="og:description" content="Many people use RStudio, and some even mistaken RStudio as R. I mainly work on Windows machines and I did try RStudio for a while a few years ago. However, I switched back to default R GUI for Windows that comes with R for Windows and used it along with light-weight code editors, for personal reasons. RStudio is good, but has many features that I don&rsquo;t need. Although I now use VS Code as my main IDE for R, I still use R GUI for Windows a lot." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blogonresearch.github.io/post/2022-09-20-customizes-r-gui-for-windows/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-09-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-09-20T00:00:00+00:00" /><meta property="og:site_name" content="Blogonresearch" />
+
+
+
+
+
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Blogonresearch</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title">Customizes R GUI For Windows</h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-09-20
+        </span>
+
+        
+          
+        
+      
+
+      
+        <span class="post-author"
+          >— Written by Shu Fai Cheung</span
+        >
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://blogonresearch.github.io/tags/r/">#R</a>&nbsp;
+        
+          <a href="https://blogonresearch.github.io/tags/gui/">#gui</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p>Many people use RStudio, and some even
+mistaken RStudio as R. I mainly work
+on Windows machines and I did try
+RStudio for a while a few years ago.
+However, I switched back to default R
+GUI for Windows that
+comes with R for Windows and used
+it along with light-weight code editors,
+for personal reasons. RStudio is good,
+but has many features that I don&rsquo;t need.
+Although I now use VS Code as my main IDE
+for R, I still use R GUI for
+Windows a lot. It is light-weight,
+came with base installation, and
+is customizable. Simple but good enough
+for some tasks.</p>
+<p><img src="rgui_startup.png" alt="R Default GUI"></p>
+<p>The console above is not the default
+one. I like dark theme and
+single-document interface (SDI). I keep only
+a limited numbers of windows on my
+desktop and I never group windows in the
+taskbar. SDI is much more efficient for
+me to locate the window I need.</p>
+<p>The configuration can be set in
+Edit-&gt;Preferences:</p>
+<p><img src="rgui_configuration_annotated.png" alt="Rgui configuration"></p>
+<p>The configuration is saved in the
+<code>Rconsole</code> file in the folder <code>etc</code>
+in R&rsquo;s installation folder. Whenever
+I upgrade to a new version of R, I simply
+copy this file to the same folder in the
+new installation of R to have my
+preferred configuration. No need to set
+the configuration again. (I&rsquo;ve just
+found that I haven&rsquo;t changes this
+configuration for over five years!)</p>
+<p>Another feature I like is customizing
+the menu bar. I use <code>devtools</code> a lot,
+and would love to call them from the
+pulldown menu &hellip; well, not really.
+I rarely use the mouse to access the
+pulldown menu. I use the keyboard
+most of the time.</p>
+<p><img src="rgui_devtools_menu.png" alt="R GUI pulldown menu"></p>
+<p>To add a menu, we can use a script and two functions.</p>
+<p>The following function add a menu called <code>devtools</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>utils<span style="color:#f92672">::</span><span style="color:#a6e22e">winMenuAdd</span>(<span style="color:#e6db74">&#34;devtools&#34;</span>)
+</span></span></code></pre></div><p>After a menu is added, items can be added by
+<code>utils::winMenuAddItem()</code>. For example, the following
+call add <code>check</code> to the menu <code>devtools</code>. If selected,
+the call <code>devtools::check()</code> will be executed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>utils<span style="color:#f92672">::</span><span style="color:#a6e22e">winMenuAddItem</span>(<span style="color:#e6db74">&#34;devtools&#34;</span>,
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#34;check&#34;</span>,
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">&#34;devtools::check()&#34;</span>)
+</span></span></code></pre></div><p>As the screenshot above showed, most of
+the items I added to <code>devtools</code> are those
+functions (menu items) in RStudio
+(as far as I recalled &hellip; as I haven&rsquo;t used
+RStudio to develop package for a long
+time).</p>
+<p>Most common tasks that can be done through
+R code can be converted to a menu item.
+For example, I don&rsquo;t like using the pulldown
+menu to change working directory. I can
+quickly copy the path to a folder using keyboard
+only (alt-D and then control-C in
+Explorer). Therefore, I have the following
+menu item added to the R GUI:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>utils<span style="color:#f92672">::</span><span style="color:#a6e22e">winMenuAddItem</span>(<span style="color:#e6db74">&#34;Utils&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;setwd from clipboard&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;setwd(readClipboard());getwd()&#34;</span>)
+</span></span></code></pre></div><p><code>setwd(readClipboard())</code> changes the working
+directory to the folder I copied to
+clipboard. <code>getwd()</code> is added just to
+confirm the change.</p>
+<p>I sometimes open several instances of
+R GUI. To differentiate them, I use
+different color schemes:</p>
+<p><img src="rgui_four_instances.png" alt="Four instances of R GUI"></p>
+<p>This can be done inside R GUI too:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>utils<span style="color:#f92672">::</span><span style="color:#a6e22e">winMenuAddItem</span>(<span style="color:#e6db74">&#34;Style&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Lime Green and Light Golden&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;utils::loadRconsole(&#39;D:/My_Settings/Rconsole_lime_green_and_light_golden&#39;)&#34;</span>)
+</span></span></code></pre></div><p><code>utils::loadRconsole()</code> is used to load
+the R GUI configuration stored in a
+file. This file can be created by
+saving the
+settings in the R GUI configuration
+dialog above to a file. In the above
+example, the settings are stored in
+the file <code>Rconsole_lime_green_and_light_golden</code>.
+I have four such files, storing distinct
+color schemes.</p>
+<p>Like <code>Rconsole</code> for the color scheme
+and SDI, I would like to have custom
+menus when I start R GUI. This can be done
+by adding code like the following to
+the <code>Rprofile.site</code> file in the <code>etc</code>
+folder:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">if </span>((<span style="color:#a6e22e">Sys.getenv</span>(<span style="color:#e6db74">&#34;RS_LOCAL_PEER&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>) <span style="color:#f92672">&amp;&amp;</span> (.Platform<span style="color:#f92672">$</span>GUI <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Rgui&#34;</span>)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">tryCatch</span>(<span style="color:#a6e22e">source</span>(<span style="color:#e6db74">&#34;D:/My_Settings/add_style_menu.R&#34;</span>), error <span style="color:#f92672">=</span> <span style="color:#a6e22e">function</span>(e) e)
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><p>I wrote this a long long time ago and I
+cannot recall their purposes. I believe
+<code>Sys.getenv(&quot;RS_LOCAL_PEER&quot;) == &quot;&quot;</code> is
+used to check whether a session is
+launched in RStudio. <code>.Platform$GUI == &quot;Rgui&quot;</code>
+is used to check whether an R session
+is launched by the default R GUI. I still
+occasionally use RStudio and the menus
+I created should not be added if an R
+session is launched inside RStudio.
+I used <code>tryCatch()</code> just in case there
+are issues that I overlooked.</p>
+<p>So, whenever I install a new copy or version
+of R, I just copy and paste the customized
+<code>Rconsole</code> and <code>Rprofile.site</code> files
+to <code>etc</code>. I can then happily have my
+preferred environment. Having the
+code for menu groups stored in other
+files allow me to update them without
+editing <code>Rprofile.site</code>.</p>
+<p>Hope you find these tips useful &hellip;
+if you are R GUI users like me. :)</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://blogonresearch.github.io/post/2022-09-14-one-function-or-many-functions/">
+                  <span class="button__text">One Function or Many Functions</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Blogonresearch</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span
+          >© 2022 Powered by
+          <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span
+        >
+        <span
+          >Theme created by
+          <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span
+        >
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://blogonresearch.github.io/assets/main.js"></script>
+<script src="https://blogonresearch.github.io/assets/prism.js"></script>
+ <p xmlns:cc="http://creativecommons.org/ns#" >This work by <span property="cc:attributionName">Shu Fai Cheung</span> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0<span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"></span><span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"></span><span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></span><span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></span></a></p>
+
+      
+    </div>
+
+    
+  </body>
+</html>
