@@ -11,8 +11,18 @@ params:
   rssFullText: true
   contentTypeName: post
   defaultTheme: light
-  showMenuItems: 3
+  showMenuItems: 4
   showReadingTime: no
+  shareButtons:
+    size: small
+    icon: solid
+    networks:
+      - facebook
+      - twitter
+      - linkedin
+      - whatsapp
+      - telegram
+      - email
 languages:
   en:
     copyright: ''
