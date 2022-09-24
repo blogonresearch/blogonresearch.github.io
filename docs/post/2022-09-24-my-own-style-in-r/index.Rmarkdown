@@ -1,0 +1,160 @@
+---
+title: My Own Style in R
+author: Shu Fai Cheung
+date: '2022-09-24'
+slug: []
+categories: ["R", "code-style"]
+tags: ["R", "code-style"]
+---
+
+
+Although I have written programs
+since I were a high school student,
+when computer monitor could only display
+one color, I have no formal training in
+programming, and I rarely worked with
+others in developing a solution until
+recently. The problem: I
+did not write with a consistent
+and professional style. I am pretty sure
+that my code will look "ugly" to
+professional programmers.
+
+That said, I do have a loose style, one
+that suits my own situation:
+
+- I work on small screen frequently, sometimes
+even on my mobile phone. I wrote the
+documentation of some packages on my mobile
+phone, and even this post was largely drafted
+on my phone.
+
+- My main tasks are research and teaching,
+among other tasks. I can easily forget
+some style rules I set for coding. I need
+something simple and easy to remember.
+
+- Ideally, code should be easy, or at least
+not too difficult, to comprehend by future
+me with minimal
+comments. What looks *nature*
+to me myself is of the top priority.
+
+So, this is my style, with me as the main user
+and reader:
+
+- For code, I use a
+line width of 60 to 70. For documentation,
+I am more aggressive and use a line width of
+40.
+
+- For the same reason, I use two spaces for
+indentation. A four-space indentation is too
+"expensive" to me.
+
+```r
+tmpfct <- function(x) {
+    x^2
+  }
+```
+
+- I like using double-click to select a
+name. This does not work if periods are
+used inside a name. Therefore, I no longer
+use periods in a name, except for S3 methods.
+If necessary, I use underscores.
+
+```r
+this_is_long_name <- 1
+```
+
+- I found it difficult to remember the case
+I used for a name. So, I stick to lowercase
+letters
+unless I am *very* certain that I can remember
+that I used uppercase letters.
+
+I don't like camel case. It is OK for
+language that is not case sensitive, like
+Visual Basic and SPSS syntax commands, but is
+inconvenient for case sensitive languages like
+R.
+
+```r
+# I don't like camel case.
+thisIsNotWhatIDo <- 1
+# I prefer this:
+this_is_what_i_do <- 1
+```
+
+- Long function names are acceptable with
+me. With autocompletion in many IDEs, it
+is not important to use short names.
+Being easy to remember *part* of a name is
+important. An abbreviation is not easy to
+remember unless it is commonly used (e.g.,
+SD).
+
+```r
+# This is easy to remember
+factor_loadings()
+# These variants are not
+fload()
+facload()
+facload()
+fl()
+```
+
+- I wrote stuff in Python occasionally. I like
+the Python style indentation, which is
+easy to read. So I use that
+style for my R code too.
+
+```r
+for (j in 1:10) {
+    # Do something
+  }
+if (x == 1) {
+    # Do something
+  } else {
+    # Do something else
+  }
+```
+
+- I never, ever, use any automatic stylers to
+reformat code. They make changes that are
+tracked by Git but have nothing to do with the
+content. I *may* use them, but only when
+finalizing the code.
+
+- This is also why I care little about
+word wrap. Irregular line widths are
+acceptable for me.
+
+- Extra whitespace are OK with me. Readability
+is the main goal.
+
+```r
+# I may do this:
+x  <-   1
+y0 <- 100
+```
+
+- I use double quotes for string literals. I
+have to use two keys ... but the habit is too
+difficult to break that I don't bother changing
+it.
+
+- The last "rule": I can break any of the rules,
+ as long as the code is readable without the
+need to know any rules. {{< emoji ":smile:" >}}
+
+I also have a GitHub repo for my personal
+style, in case I forgot the rules:
+
+https://github.com/sfcheung/rstylesf
+
+So, please pardon me if you find my code for
+packages at odd with professional style. I
+myself is the main reader and maintainer of
+the packages. What work for me matters.

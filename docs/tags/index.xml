@@ -9,17 +9,17 @@
     <description>Recent content in Tags on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 20 Sep 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 24 Sep 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://blogonresearch.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>gui</title>
-      <link>https://blogonresearch.github.io/tags/gui/</link>
-      <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
+      <title>code-style</title>
+      <link>https://blogonresearch.github.io/tags/code-style/</link>
+      <pubDate>Sat, 24 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/gui/</guid>
+      <guid>https://blogonresearch.github.io/tags/code-style/</guid>
       <description>
         
           
@@ -35,9 +35,27 @@
     <item>
       <title>R</title>
       <link>https://blogonresearch.github.io/tags/r/</link>
-      <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 24 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>https://blogonresearch.github.io/tags/r/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>gui</title>
+      <link>https://blogonresearch.github.io/tags/gui/</link>
+      <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/gui/</guid>
       <description>
         
           
