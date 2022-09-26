@@ -6,12 +6,12 @@ ignoreFiles:
 - _cache$
 languageCode: en-us
 theme: hugo-theme-hello-friend
-paginate: 5
+paginate: 10
 params:
   rssFullText: true
   contentTypeName: post
   defaultTheme: light
-  showMenuItems: 4
+  showMenuItems: 2
   showReadingTime: no
   shareButtons:
     size: small
@@ -31,19 +31,34 @@ languages:
     keywords: ''
     menu:
       main:
-        - identifier: about
+        - identifier: 1about
           name: About
           url: /about
         # - identifier: showcase
         #   name: Showcase
         #   url: /showcase
-        - identifier: attwitter
-          name: On Twitter
+        - identifier: 2attwitter
+          name: At Twitter
           url: https://twitter.com/blogonresearch
-        - identifier: rbloggers
-          name: R-Bloggers
-          url: https://www.r-bloggers.com/
-    menuMore: Show more
+        # - identifier: 3rbloggers
+        #   name: R-Bloggers
+        #   url: https://www.r-bloggers.com/
+        - identifier: 4semptools
+          name: semptools
+          url: https://sfcheung.github.io/semptools/
+        - identifier: 5semhelpinghands
+          name: semhelpinghands
+          url: https://sfcheung.github.io/semhelpinghands/
+        - identifier: 6semhelpinghands
+          name: manymome
+          url: https://sfcheung.github.io/manymome/
+        - identifier: 7semhelpinghands
+          name: stdmod
+          url: https://sfcheung.github.io/stdmod/
+        - identifier: 8diybootstat
+          name: DIY Bootstrapping in SPSS
+          url: https://github.com/sfcheung/diybootstat
+    menuMore: R Packages and Other Tools
     minuteReadingTime: min read
     newerPosts: Newer posts
     olderPosts: Older posts
