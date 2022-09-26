@@ -9,10 +9,242 @@
     <description>Recent content in R on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 24 Sep 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 26 Sep 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://blogonresearch.github.io/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Show Options Set by lavaan</title>
+      <link>https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/</link>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        &lt;p&gt;&lt;code&gt;lavaan&lt;/code&gt; is a convenient tool for doing
+structural equation modelling in R
+(Rosseel, 2012). One
+of its strength is having “prepackaged”
+estimators, which are shortcuts to a set
+of options, such as “ML”, “MLR”, “MLMVS”,
+and others (Savalei &amp;amp; Rosseel, 2022).
+It also tries to set
+default values for options based on the
+model and data.&lt;/p&gt;
+&lt;p&gt;However, probably due to my not-so-good
+memory, I sometimes forgot what the settings
+are for a model. Therefore, in the
+package &lt;a href=&#34;https://sfcheung.github.io/semhelpinghands/&#34;&gt;&lt;code&gt;semhelpinghands&lt;/code&gt;&lt;/a&gt;,
+I wrote the function &lt;a href=&#34;https://sfcheung.github.io/semhelpinghands/reference/show_more_options.html&#34;&gt;&lt;code&gt;show_more_options()&lt;/code&gt;&lt;/a&gt;
+to show some of the settings of the output of
+&lt;code&gt;lavaan()&lt;/code&gt; and its wrappers, such as
+&lt;code&gt;sem()&lt;/code&gt; and &lt;code&gt;cfa()&lt;/code&gt;.[1]&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;show_more_options()&lt;/code&gt; is
+very easy to use … because it accepts
+only one argument, the output of &lt;code&gt;lavaan()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This is an example based on the example of
+&lt;code&gt;lavaan::cfa()&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(lavaan)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;## This is lavaan 0.6-12
+## lavaan is FREE software! Please report any bugs.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;HSmodel &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;visual  =~ x1 + x2 + x3
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;textual =~ x4 + x5 + x6
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;speed   =~ x7 + x8 + x9
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fit &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cfa&lt;/span&gt;(HSmodel,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; HolzingerSwineford1939)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To show the major options, just pass the output
+to &lt;code&gt;show_more_options()&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;library&lt;/span&gt;(semhelpinghands)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;show_more_options&lt;/span&gt;(fit)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;##  Options                             Call    Actual  
+##  Estimator(s)                        default ML      
+##  Standard Error (SE)                 default standard
+##  Model Test Statistic(s)             default standard
+##  How Missing Data is Handled         default listwise
+##  Information Matrix (for SE)         default expected
+##  Information Matrix (for Model Test) default expected
+##  Mean Structure                      default No      
+##  &#39;x&#39; Fixed                           default FALSE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The column &lt;code&gt;Call&lt;/code&gt; shows whether the
+default setting is used for each row,
+based of the call used when fitting the
+model. However, it is not always clear
+to me what the default values are.&lt;/p&gt;
+&lt;p&gt;The column &lt;code&gt;Actual&lt;/code&gt; shows the values
+extracted by &lt;code&gt;lavaan::lavInspect()&lt;/code&gt; or
+from the &lt;code&gt;Options&lt;/code&gt; slot. These are what
+the default values stand for in the
+fitted model.&lt;/p&gt;
+&lt;p&gt;Many of the entries are either
+(a) already available in the output of
+&lt;code&gt;summary()&lt;/code&gt;, or (b) can be deduced from
+the output. However, I would like to have
+a table for quick reference, hence I
+wrote this function.&lt;/p&gt;
+&lt;p&gt;Suppose &lt;code&gt;&amp;quot;MLR&amp;quot;&lt;/code&gt; is used as the estimator:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fit_MLR &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;cfa&lt;/span&gt;(HSmodel,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;               data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; HolzingerSwineford1939,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;               estimator &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;MLR&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;show_more_options&lt;/span&gt;(fit_MLR)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;##  Options                             Call    Actual            
+##  Estimator(s)                        MLR     ML                
+##  Standard Error (SE)                 default robust.huber.white
+##  Model Test Statistic(s)             default yuan.bentler.mplus
+##  How Missing Data is Handled         default listwise          
+##  Information Matrix (for SE)         default observed          
+##  Information Matrix (for Model Test) default observed          
+##  Mean Structure                      default No                
+##  &#39;x&#39; Fixed                           default FALSE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The output shows the exact names of the
+options (e.g., &lt;code&gt;&amp;quot;robust.huber.white&amp;quot;&lt;/code&gt;
+and &lt;code&gt;&amp;quot;yuan.bentler.mplus&amp;quot;&lt;/code&gt;). They can
+complement the more readable output
+of &lt;code&gt;summary()&lt;/code&gt; if we need to manually
+set these options, or want to know
+which values these options refer to when
+consulting the help page.&lt;/p&gt;
+&lt;p&gt;For example, &lt;code&gt;summary()&lt;/code&gt; reports that
+&lt;code&gt;&amp;quot;Sandwich&amp;quot;&lt;/code&gt; is the method used for
+standard errors, and &lt;code&gt;show_more_options()&lt;/code&gt;
+shows that the exact name in the option
+is &lt;code&gt;&amp;quot;robust.huber.white&amp;quot;&lt;/code&gt;. This is useful
+because the word &lt;code&gt;&amp;quot;sandwich&amp;quot;&lt;/code&gt; does not
+appear in the help page of &lt;code&gt;lavOptions()&lt;/code&gt;,
+while the word &lt;code&gt;&amp;quot;robust.huber.white&amp;quot;&lt;/code&gt; does.
+Some users may not know what &lt;code&gt;&amp;quot;Sandwich&amp;quot;&lt;/code&gt;
+stands for.&lt;/p&gt;
+&lt;p&gt;This is a dataset for a path model,
+with missing data:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;set.seed&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;8745315&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;n &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;x &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;rnorm&lt;/span&gt;(n)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;m &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;.2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;rnorm&lt;/span&gt;(n, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;.8&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;y &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;.3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; m &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;rnorm&lt;/span&gt;(n, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;.8&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;path_data &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data.frame&lt;/span&gt;(x, m, y)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;path_data&lt;span style=&#34;color:#a6e22e&#34;&gt;[c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;m&amp;#34;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;NA&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;path_data&lt;span style=&#34;color:#a6e22e&#34;&gt;[c&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;), &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;y&amp;#34;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;NA&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Suppose we use only the default options
+to fit a path model:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;path_model &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;m ~ a * x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;y ~ b * m
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ab := a * b
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fit_path &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sem&lt;/span&gt;(path_model,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; path_data)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;show_more_options&lt;/span&gt;(fit_path)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;##  Options                             Call    Actual  
+##  Estimator(s)                        default ML      
+##  Standard Error (SE)                 default standard
+##  Model Test Statistic(s)             default standard
+##  How Missing Data is Handled         default listwise
+##  Information Matrix (for SE)         default expected
+##  Information Matrix (for Model Test) default expected
+##  Mean Structure                      default No      
+##  &#39;x&#39; Fixed                           default TRUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The output shows that, by default,
+the mean structure is not modelled,
+listwise selection is used to handle
+missing data, and
+&lt;code&gt;x&lt;/code&gt; variables (exogenous covariates,
+&lt;code&gt;x&lt;/code&gt; in this example)
+are treated as fixed. This can be verified
+by the parameter estimates, in which
+the variance of &lt;code&gt;x&lt;/code&gt; is a fixed
+parameter and hence has no standard
+error and no &lt;em&gt;p&lt;/em&gt;-value:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;parameterEstimates&lt;/span&gt;(fit_path)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;##   lhs op rhs label   est    se     z pvalue ci.lower ci.upper
+## 1   m  ~   x     a 0.075 0.078 0.966  0.334   -0.077    0.228
+## 2   y  ~   m     b 0.248 0.119 2.081  0.037    0.014    0.482
+## 3   m ~~   m       0.550 0.080 6.856  0.000    0.393    0.708
+## 4   y ~~   y       0.745 0.109 6.856  0.000    0.532    0.958
+## 5   x ~~   x       0.967 0.000    NA     NA    0.967    0.967
+## 6  ab := a*b    ab 0.019 0.021 0.876  0.381   -0.023    0.060
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Suppose we set missing to &lt;code&gt;&amp;quot;FIML&amp;quot;&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fit_path_fiml &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sem&lt;/span&gt;(path_model,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                     data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; path_data,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                     missing &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;FIML&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;show_more_options&lt;/span&gt;(fit_path_fiml)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre&gt;&lt;code&gt;##  Options                             Call    Actual  
+##  Estimator(s)                        default ML      
+##  Standard Error (SE)                 default standard
+##  Model Test Statistic(s)             default standard
+##  How Missing Data is Handled         FIML    ml      
+##  Information Matrix (for SE)         default observed
+##  Information Matrix (for Model Test) default observed
+##  Mean Structure                      default Yes     
+##  &#39;x&#39; Fixed                           default TRUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;x&lt;/code&gt; variables are still treated as fixed,
+but now mean structure is modelled
+(required for FIML, full information
+maximum likelihood), even though I did
+not explicitly ask for it.&lt;/p&gt;
+&lt;p&gt;Only options I think are likely needed
+(by me) are included
+in the output.[2]
+More may be added in
+the future. In any case, if other options
+are needed, they can be
+retrieved by &lt;code&gt;lavaan::lavInspect()&lt;/code&gt; or
+from the &lt;code&gt;Options&lt;/code&gt; slot of the output.
+In most cases I
+myself encountered, all I want is a simple
+function that is easy to remember and no
+need to set any arguments other than
+the &lt;code&gt;lavaan&lt;/code&gt; output. If I need something
+else, I will just extract the information
+myself.&lt;/p&gt;
+&lt;p&gt;This function was inspired by a script
+I wrote to enumerate the options set by
+the prepackaged shortcuts. Interested
+readers can read &lt;a href=&#34;https://groups.google.com/g/lavaan/c/6oLwoboi-vQ/m/IQLAXChPAwAJ&#34;&gt;this thread&lt;/a&gt;
+at the &lt;a href=&#34;https://groups.google.com/g/lavaan&#34;&gt;Google Group for &lt;code&gt;lavaan&lt;/code&gt;&lt;/a&gt;
+and &lt;a href=&#34;https://gist.github.com/sfcheung/baa5e43c32d4763b859f5338a1738d79&#34;&gt;this gist&lt;/a&gt;,
+to check how options will be set for
+different
+combinations of estimator, data, and
+some other options.&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;
+  References
+  &lt;a href=&#34;#references&#34; class=&#34;h-anchor&#34; aria-hidden=&#34;true&#34;&gt;#&lt;/a&gt;
+&lt;/h2&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-lavaan_2012&#34;&gt;
+&lt;p&gt;Rosseel, Y. (2012). lavaan: An R package for structural equation modeling. &lt;em&gt;Journal of Statistical Software&lt;/em&gt;, &lt;em&gt;48&lt;/em&gt;(2), 1–36. &lt;a href=&#34;https://doi.org/10.18637/jss.v048.i02&#34;&gt;https://doi.org/10.18637/jss.v048.i02&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-savalei_computational_2022&#34;&gt;
+&lt;p&gt;Savalei, V., &amp;amp; Rosseel, Y. (2022). Computational options for standard errors and test statistics with incomplete normal and nonnormal data in SEM. &lt;em&gt;Structural Equation Modeling: A Multidisciplinary Journal&lt;/em&gt;, &lt;em&gt;29&lt;/em&gt;(2), 163–181. &lt;a href=&#34;https://doi.org/10.1080/10705511.2021.1877548&#34;&gt;https://doi.org/10.1080/10705511.2021.1877548&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;To be precise, any object of the class &lt;code&gt;lavaan&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The information matrices are technical but I occasionally need them.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+        
+        </description>
+    </item>
     
     <item>
       <title>My Own Style in R</title>

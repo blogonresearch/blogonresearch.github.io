@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Show Options Set by lavaan ::
+        Blogonresearch — A blog on ... research
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="lavaan is a convenient tool for doing structural equation modelling in R (Rosseel, 2012). One of its strength is having “prepackaged” estimators, which are shortcuts to a set of options, such as “ML”, “MLR”, “MLMVS”, and others (Savalei &amp;amp; Rosseel, 2022). It also tries to set default values for options based on the model and data.
+However, probably due to my not-so-good memory, I sometimes forgot what the settings are for a model."
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://blogonresearch.github.io/assets/style.css" />
+
+<link rel="stylesheet" href="https://blogonresearch.github.io/style.css" />
+
+
+<link
+  rel="apple-touch-icon-precomposed"
+  sizes="144x144"
+  href="https://blogonresearch.github.io/img/apple-touch-icon-144-precomposed.png"
+/>
+<link rel="shortcut icon" href="https://blogonresearch.github.io/img/favicon.png" />
+
+
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="https://blogonresearch.github.io/assets/fonts/Inter-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Show Options Set by lavaan"/>
+<meta name="twitter:description" content="lavaan is a convenient tool for doing structural equation modelling in R (Rosseel, 2012). One of its strength is having “prepackaged” estimators, which are shortcuts to a set of options, such as “ML”, “MLR”, “MLMVS”, and others (Savalei &amp; Rosseel, 2022). It also tries to set default values for options based on the model and data.
+However, probably due to my not-so-good memory, I sometimes forgot what the settings are for a model."/>
+
+
+
+<meta property="og:title" content="Show Options Set by lavaan" />
+<meta property="og:description" content="lavaan is a convenient tool for doing structural equation modelling in R (Rosseel, 2012). One of its strength is having “prepackaged” estimators, which are shortcuts to a set of options, such as “ML”, “MLR”, “MLMVS”, and others (Savalei &amp; Rosseel, 2022). It also tries to set default values for options based on the model and data.
+However, probably due to my not-so-good memory, I sometimes forgot what the settings are for a model." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-09-26T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-09-26T00:00:00+00:00" /><meta property="og:site_name" content="Blogonresearch" />
+
+
+
+
+
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+
+  </head>
+  <body class="light-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Blogonresearch</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="https://twitter.com/blogonresearch">On Twitter</a></li>
+        
+      
+        
+          <li><a href="https://www.r-bloggers.com/">R-Bloggers</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="https://twitter.com/blogonresearch">On Twitter</a></li>
+      
+    
+      
+        <li><a href="https://www.r-bloggers.com/">R-Bloggers</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title">Show Options Set by lavaan</h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-09-26
+        </span>
+
+        
+          
+        
+      
+
+      
+        <span class="post-author"
+          >— Written by Shu Fai Cheung</span
+        >
+
+
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+          <a href="https://blogonresearch.github.io/tags/r/">#R</a>&nbsp;
+        
+          <a href="https://blogonresearch.github.io/tags/lavaan/">#lavaan</a>&nbsp;
+        
+          <a href="https://blogonresearch.github.io/tags/semhelpinghands/">#semhelpinghands</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p><code>lavaan</code> is a convenient tool for doing
+structural equation modelling in R
+(Rosseel, 2012). One
+of its strength is having “prepackaged”
+estimators, which are shortcuts to a set
+of options, such as “ML”, “MLR”, “MLMVS”,
+and others (Savalei &amp; Rosseel, 2022).
+It also tries to set
+default values for options based on the
+model and data.</p>
+<p>However, probably due to my not-so-good
+memory, I sometimes forgot what the settings
+are for a model. Therefore, in the
+package <a href="https://sfcheung.github.io/semhelpinghands/"><code>semhelpinghands</code></a>,
+I wrote the function <a href="https://sfcheung.github.io/semhelpinghands/reference/show_more_options.html"><code>show_more_options()</code></a>
+to show some of the settings of the output of
+<code>lavaan()</code> and its wrappers, such as
+<code>sem()</code> and <code>cfa()</code>.[1]</p>
+<p>The function <code>show_more_options()</code> is
+very easy to use … because it accepts
+only one argument, the output of <code>lavaan()</code>.</p>
+<p>This is an example based on the example of
+<code>lavaan::cfa()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(lavaan)
+</span></span></code></pre></div><pre><code>## This is lavaan 0.6-12
+## lavaan is FREE software! Please report any bugs.
+</code></pre>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>HSmodel <span style="color:#f92672">&lt;-</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">visual  =~ x1 + x2 + x3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">textual =~ x4 + x5 + x6
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">speed   =~ x7 + x8 + x9
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>fit <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cfa</span>(HSmodel,
+</span></span><span style="display:flex;"><span>           data <span style="color:#f92672">=</span> HolzingerSwineford1939)
+</span></span></code></pre></div><p>To show the major options, just pass the output
+to <code>show_more_options()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(semhelpinghands)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">show_more_options</span>(fit)
+</span></span></code></pre></div><pre><code>##  Options                             Call    Actual  
+##  Estimator(s)                        default ML      
+##  Standard Error (SE)                 default standard
+##  Model Test Statistic(s)             default standard
+##  How Missing Data is Handled         default listwise
+##  Information Matrix (for SE)         default expected
+##  Information Matrix (for Model Test) default expected
+##  Mean Structure                      default No      
+##  'x' Fixed                           default FALSE
+</code></pre>
+<p>The column <code>Call</code> shows whether the
+default setting is used for each row,
+based of the call used when fitting the
+model. However, it is not always clear
+to me what the default values are.</p>
+<p>The column <code>Actual</code> shows the values
+extracted by <code>lavaan::lavInspect()</code> or
+from the <code>Options</code> slot. These are what
+the default values stand for in the
+fitted model.</p>
+<p>Many of the entries are either
+(a) already available in the output of
+<code>summary()</code>, or (b) can be deduced from
+the output. However, I would like to have
+a table for quick reference, hence I
+wrote this function.</p>
+<p>Suppose <code>&quot;MLR&quot;</code> is used as the estimator:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>fit_MLR <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cfa</span>(HSmodel,
+</span></span><span style="display:flex;"><span>               data <span style="color:#f92672">=</span> HolzingerSwineford1939,
+</span></span><span style="display:flex;"><span>               estimator <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MLR&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">show_more_options</span>(fit_MLR)
+</span></span></code></pre></div><pre><code>##  Options                             Call    Actual            
+##  Estimator(s)                        MLR     ML                
+##  Standard Error (SE)                 default robust.huber.white
+##  Model Test Statistic(s)             default yuan.bentler.mplus
+##  How Missing Data is Handled         default listwise          
+##  Information Matrix (for SE)         default observed          
+##  Information Matrix (for Model Test) default observed          
+##  Mean Structure                      default No                
+##  'x' Fixed                           default FALSE
+</code></pre>
+<p>The output shows the exact names of the
+options (e.g., <code>&quot;robust.huber.white&quot;</code>
+and <code>&quot;yuan.bentler.mplus&quot;</code>). They can
+complement the more readable output
+of <code>summary()</code> if we need to manually
+set these options, or want to know
+which values these options refer to when
+consulting the help page.</p>
+<p>For example, <code>summary()</code> reports that
+<code>&quot;Sandwich&quot;</code> is the method used for
+standard errors, and <code>show_more_options()</code>
+shows that the exact name in the option
+is <code>&quot;robust.huber.white&quot;</code>. This is useful
+because the word <code>&quot;sandwich&quot;</code> does not
+appear in the help page of <code>lavOptions()</code>,
+while the word <code>&quot;robust.huber.white&quot;</code> does.
+Some users may not know what <code>&quot;Sandwich&quot;</code>
+stands for.</p>
+<p>This is a dataset for a path model,
+with missing data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">8745315</span>)
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rnorm</span>(n)
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">.2</span> <span style="color:#f92672">*</span> x <span style="color:#f92672">+</span> <span style="color:#a6e22e">rnorm</span>(n, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">.8</span>)
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">.3</span> <span style="color:#f92672">*</span> m <span style="color:#f92672">+</span> <span style="color:#a6e22e">rnorm</span>(n, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">.8</span>)
+</span></span><span style="display:flex;"><span>path_data <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">data.frame</span>(x, m, y)
+</span></span><span style="display:flex;"><span>path_data<span style="color:#a6e22e">[c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">7</span>), <span style="color:#e6db74">&#34;m&#34;</span>] <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NA</span>
+</span></span><span style="display:flex;"><span>path_data<span style="color:#a6e22e">[c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">8</span>), <span style="color:#e6db74">&#34;y&#34;</span>] <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NA</span>
+</span></span></code></pre></div><p>Suppose we use only the default options
+to fit a path model:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>path_model <span style="color:#f92672">&lt;-</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">m ~ a * x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">y ~ b * m
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ab := a * b
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>fit_path <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sem</span>(path_model,
+</span></span><span style="display:flex;"><span>                data <span style="color:#f92672">=</span> path_data)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">show_more_options</span>(fit_path)
+</span></span></code></pre></div><pre><code>##  Options                             Call    Actual  
+##  Estimator(s)                        default ML      
+##  Standard Error (SE)                 default standard
+##  Model Test Statistic(s)             default standard
+##  How Missing Data is Handled         default listwise
+##  Information Matrix (for SE)         default expected
+##  Information Matrix (for Model Test) default expected
+##  Mean Structure                      default No      
+##  'x' Fixed                           default TRUE
+</code></pre>
+<p>The output shows that, by default,
+the mean structure is not modelled,
+listwise selection is used to handle
+missing data, and
+<code>x</code> variables (exogenous covariates,
+<code>x</code> in this example)
+are treated as fixed. This can be verified
+by the parameter estimates, in which
+the variance of <code>x</code> is a fixed
+parameter and hence has no standard
+error and no <em>p</em>-value:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#a6e22e">parameterEstimates</span>(fit_path)
+</span></span></code></pre></div><pre><code>##   lhs op rhs label   est    se     z pvalue ci.lower ci.upper
+## 1   m  ~   x     a 0.075 0.078 0.966  0.334   -0.077    0.228
+## 2   y  ~   m     b 0.248 0.119 2.081  0.037    0.014    0.482
+## 3   m ~~   m       0.550 0.080 6.856  0.000    0.393    0.708
+## 4   y ~~   y       0.745 0.109 6.856  0.000    0.532    0.958
+## 5   x ~~   x       0.967 0.000    NA     NA    0.967    0.967
+## 6  ab := a*b    ab 0.019 0.021 0.876  0.381   -0.023    0.060
+</code></pre>
+<p>Suppose we set missing to <code>&quot;FIML&quot;</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>fit_path_fiml <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sem</span>(path_model,
+</span></span><span style="display:flex;"><span>                     data <span style="color:#f92672">=</span> path_data,
+</span></span><span style="display:flex;"><span>                     missing <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;FIML&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">show_more_options</span>(fit_path_fiml)
+</span></span></code></pre></div><pre><code>##  Options                             Call    Actual  
+##  Estimator(s)                        default ML      
+##  Standard Error (SE)                 default standard
+##  Model Test Statistic(s)             default standard
+##  How Missing Data is Handled         FIML    ml      
+##  Information Matrix (for SE)         default observed
+##  Information Matrix (for Model Test) default observed
+##  Mean Structure                      default Yes     
+##  'x' Fixed                           default TRUE
+</code></pre>
+<p><code>x</code> variables are still treated as fixed,
+but now mean structure is modelled
+(required for FIML, full information
+maximum likelihood), even though I did
+not explicitly ask for it.</p>
+<p>Only options I think are likely needed
+(by me) are included
+in the output.[2]
+More may be added in
+the future. In any case, if other options
+are needed, they can be
+retrieved by <code>lavaan::lavInspect()</code> or
+from the <code>Options</code> slot of the output.
+In most cases I
+myself encountered, all I want is a simple
+function that is easy to remember and no
+need to set any arguments other than
+the <code>lavaan</code> output. If I need something
+else, I will just extract the information
+myself.</p>
+<p>This function was inspired by a script
+I wrote to enumerate the options set by
+the prepackaged shortcuts. Interested
+readers can read <a href="https://groups.google.com/g/lavaan/c/6oLwoboi-vQ/m/IQLAXChPAwAJ">this thread</a>
+at the <a href="https://groups.google.com/g/lavaan">Google Group for <code>lavaan</code></a>
+and <a href="https://gist.github.com/sfcheung/baa5e43c32d4763b859f5338a1738d79">this gist</a>,
+to check how options will be set for
+different
+combinations of estimator, data, and
+some other options.</p>
+<h2 id="references">
+  References
+  <a href="#references" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<div id="refs" class="references hanging-indent">
+<div id="ref-lavaan_2012">
+<p>Rosseel, Y. (2012). lavaan: An R package for structural equation modeling. <em>Journal of Statistical Software</em>, <em>48</em>(2), 1–36. <a href="https://doi.org/10.18637/jss.v048.i02">https://doi.org/10.18637/jss.v048.i02</a></p>
+</div>
+<div id="ref-savalei_computational_2022">
+<p>Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors and test statistics with incomplete normal and nonnormal data in SEM. <em>Structural Equation Modeling: A Multidisciplinary Journal</em>, <em>29</em>(2), 163–181. <a href="https://doi.org/10.1080/10705511.2021.1877548">https://doi.org/10.1080/10705511.2021.1877548</a></p>
+</div>
+</div>
+<ol>
+<li>
+<p>To be precise, any object of the class <code>lavaan</code>.</p>
+</li>
+<li>
+<p>The information matrices are technical but I occasionally need them.</p>
+</li>
+</ol>
+
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+ 
+
+
+
+
+
+
+<style>
+.resp-sharing-button__link,
+.resp-sharing-button__icon {
+  display: inline-block
+}
+
+.resp-sharing-button__link {
+  text-decoration: none;
+  color: #fff !important;
+  margin: 0.5em
+}
+
+.resp-sharing-button {
+  border-radius: 5px;
+  transition: 25ms ease-out;
+  padding: 0.5em 0.75em;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  
+}
+
+.resp-sharing-button__icon svg {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.4em;
+  vertical-align: middle
+}
+
+.resp-sharing-button--small svg {
+  margin: 0;
+  vertical-align: middle
+}
+
+ 
+.resp-sharing-button__icon {
+  stroke: #fff;
+  fill: none
+}
+
+ 
+.resp-sharing-button__icon--solid,
+.resp-sharing-button__icon--solidcircle {
+  fill: #fff;
+  stroke: none
+}
+
+.resp-sharing-button--twitter {
+  background-color: #55acee
+}
+
+.resp-sharing-button--twitter:hover {
+  background-color: #2795e9
+}
+
+.resp-sharing-button--pinterest {
+  background-color: #bd081c
+}
+
+.resp-sharing-button--pinterest:hover {
+  background-color: #8c0615
+}
+
+.resp-sharing-button--facebook {
+  background-color: #3b5998
+}
+
+.resp-sharing-button--facebook:hover {
+  background-color: #2d4373
+}
+
+.resp-sharing-button--tumblr {
+  background-color: #35465C
+}
+
+.resp-sharing-button--tumblr:hover {
+  background-color: #222d3c
+}
+
+.resp-sharing-button--reddit {
+  background-color: #ff4500
+}
+
+.resp-sharing-button--reddit:hover {
+  background-color: #3a80c1
+}
+
+.resp-sharing-button--google {
+  background-color: #dd4b39
+}
+
+.resp-sharing-button--google:hover {
+  background-color: #c23321
+}
+
+.resp-sharing-button--linkedin {
+  background-color: #0077b5
+}
+
+.resp-sharing-button--linkedin:hover {
+  background-color: #046293
+}
+
+.resp-sharing-button--email {
+  background-color: #777
+}
+
+.resp-sharing-button--email:hover {
+  background-color: #5e5e5e
+}
+
+.resp-sharing-button--xing {
+  background-color: #1a7576
+}
+
+.resp-sharing-button--xing:hover {
+  background-color: #114c4c
+}
+
+.resp-sharing-button--whatsapp {
+  background-color: #25D366
+}
+
+.resp-sharing-button--whatsapp:hover {
+  background-color: #1da851
+}
+
+.resp-sharing-button--hackernews {
+background-color: #FF6600
+}
+.resp-sharing-button--hackernews:hover, .resp-sharing-button--hackernews:focus {   background-color: #FB6200 }
+
+.resp-sharing-button--vk {
+  background-color: #507299
+}
+
+.resp-sharing-button--vk:hover {
+  background-color: #43648c
+}
+
+.resp-sharing-button--facebook {
+  background-color: #3b5998;
+  border-color: #3b5998;
+}
+
+.resp-sharing-button--facebook:hover,
+.resp-sharing-button--facebook:active {
+  background-color: #2d4373;
+  border-color: #2d4373;
+}
+
+.resp-sharing-button--twitter {
+  background-color: #55acee;
+  border-color: #55acee;
+}
+
+.resp-sharing-button--twitter:hover,
+.resp-sharing-button--twitter:active {
+  background-color: #2795e9;
+  border-color: #2795e9;
+}
+
+.resp-sharing-button--tumblr {
+  background-color: #35465C;
+  border-color: #35465C;
+}
+
+.resp-sharing-button--tumblr:hover,
+.resp-sharing-button--tumblr:active {
+  background-color: #222d3c;
+  border-color: #222d3c;
+}
+
+.resp-sharing-button--email {
+  background-color: #777777;
+  border-color: #777777;
+}
+
+.resp-sharing-button--email:hover,
+.resp-sharing-button--email:active {
+  background-color: #5e5e5e;
+  border-color: #5e5e5e;
+}
+
+.resp-sharing-button--pinterest {
+  background-color: #bd081c;
+  border-color: #bd081c;
+}
+
+.resp-sharing-button--pinterest:hover,
+.resp-sharing-button--pinterest:active {
+  background-color: #8c0615;
+  border-color: #8c0615;
+}
+
+.resp-sharing-button--linkedin {
+  background-color: #0077b5;
+  border-color: #0077b5;
+}
+
+.resp-sharing-button--linkedin:hover,
+.resp-sharing-button--linkedin:active {
+  background-color: #046293;
+  border-color: #046293;
+}
+
+.resp-sharing-button--reddit {
+  background-color: #ff4500;
+  border-color: #ff4500;
+}
+
+.resp-sharing-button--reddit:hover,
+.resp-sharing-button--reddit:active {
+  background-color: #ff5700;
+  border-color: #ff5700;
+}
+
+.resp-sharing-button--xing {
+  background-color: #1a7576;
+  border-color: #1a7576;
+}
+
+.resp-sharing-button--xing:hover
+.resp-sharing-button--xing:active {
+  background-color: #114C4C;
+  border-color: #114C4C;
+}
+
+.resp-sharing-button--whatsapp {
+  background-color: #25D366;
+  border-color: #25D366;
+}
+
+.resp-sharing-button--whatsapp:hover,
+.resp-sharing-button--whatsapp:active {
+  background-color: #1DA851;
+  border-color: #1DA851;
+}
+
+.resp-sharing-button--hackernews {
+  background-color: #FF6600;
+  border-color: #FF6600;
+}
+
+.resp-sharing-button--hackernews:hover
+.resp-sharing-button--hackernews:active {
+  background-color: #FB6200;
+  border-color: #FB6200;
+}
+
+.resp-sharing-button--vk {
+  background-color: #507299;
+  border-color: #507299;
+}
+
+.resp-sharing-button--vk:hover
+.resp-sharing-button--vk:active {
+  background-color: #43648c;
+  border-color: #43648c;
+}
+
+.resp-sharing-button--telegram {
+  background-color: #54A9EB;
+}
+
+.resp-sharing-button--telegram:hover {
+  background-color: #4B97D1;
+}
+</style>
+
+
+
+
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" target="_blank" rel="noopener" aria-label="" title="Facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+
+
+    </div>
+  </div>
+</a>
+
+
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=Show%20Options%20Set%20by%20lavaan&amp;url=https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" target="_blank" rel="noopener" aria-label="" title="Twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+
+    
+    </div>
+  </div>
+</a>
+
+
+
+
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=Show%20Options%20Set%20by%20lavaan&amp;body=https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" target="_self" rel="noopener" aria-label="" title="E-Mail">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 4H2C.9 4 0 4.9 0 6v12c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM7.25 14.43l-3.5 2c-.08.05-.17.07-.25.07-.17 0-.34-.1-.43-.25-.14-.24-.06-.55.18-.68l3.5-2c.24-.14.55-.06.68.18.14.24.06.55-.18.68zm4.75.07c-.1 0-.2-.03-.27-.08l-8.5-5.5c-.23-.15-.3-.46-.15-.7.15-.22.46-.3.7-.14L12 13.4l8.23-5.32c.23-.15.54-.08.7.15.14.23.07.54-.16.7l-8.5 5.5c-.08.04-.17.07-.27.07zm8.93 1.75c-.1.16-.26.25-.43.25-.08 0-.17-.02-.25-.07l-3.5-2c-.24-.13-.32-.44-.18-.68s.44-.32.68-.18l3.5 2c.24.13.32.44.18.68z"/></svg>
+
+    
+    </div>
+  </div>
+</a>
+
+
+
+
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/&amp;title=Show%20Options%20Set%20by%20lavaan&amp;summary=Show%20Options%20Set%20by%20lavaan&amp;https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z"/></svg>
+
+    
+    </div>
+  </div>
+</a>
+
+
+
+
+
+
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=Show%20Options%20Set%20by%20lavaan%20https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.1 3.9C17.9 1.7 15 .5 12 .5 5.8.5.7 5.6.7 11.9c0 2 .5 3.9 1.5 5.6L.6 23.4l6-1.6c1.6.9 3.5 1.3 5.4 1.3 6.3 0 11.4-5.1 11.4-11.4-.1-2.8-1.2-5.7-3.3-7.8zM12 21.4c-1.7 0-3.3-.5-4.8-1.3l-.4-.2-3.5 1 1-3.4L4 17c-1-1.5-1.4-3.2-1.4-5.1 0-5.2 4.2-9.4 9.4-9.4 2.5 0 4.9 1 6.7 2.8 1.8 1.8 2.8 4.2 2.8 6.7-.1 5.2-4.3 9.4-9.5 9.4zm5.1-7.1c-.3-.1-1.7-.9-1.9-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1s-1.2-.5-2.3-1.4c-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6s.3-.3.4-.5c.2-.1.3-.3.4-.5.1-.2 0-.4 0-.5C10 9 9.3 7.6 9 7c-.1-.4-.4-.3-.5-.3h-.6s-.4.1-.7.3c-.3.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.3-.3-.4-.6-.5z"/></svg>
+
+    
+    </div>
+  </div>
+</a>
+
+
+
+
+
+
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=Show%20Options%20Set%20by%20lavaan&amp;url=https://blogonresearch.github.io/post/2022-09-26-show-options-set-by-lavaan/" target="_blank" rel="noopener" aria-label="">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.707 8.475C.275 8.64 0 9.508 0 9.508s.284.867.718 1.03l5.09 1.897 1.986 6.38a1.102 1.102 0 0 0 1.75.527l2.96-2.41a.405.405 0 0 1 .494-.013l5.34 3.87a1.1 1.1 0 0 0 1.046.135 1.1 1.1 0 0 0 .682-.803l3.91-18.795A1.102 1.102 0 0 0 22.5.075L.706 8.475z"/></svg>
+
+      
+    </div>
+  </div>
+</a>
+
+
+
+
+
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://blogonresearch.github.io/post/2022-09-24-my-own-style-in-r/">
+                  <span class="button__text">My Own Style in R</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Blogonresearch</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span
+          >© 2022 Powered by
+          <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span
+        >
+        <span
+          >Theme created by
+          <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span
+        >
+      </div>
+    
+  </div>
+</footer>
+
+<script src="https://blogonresearch.github.io/assets/main.js"></script>
+<script src="https://blogonresearch.github.io/assets/prism.js"></script>
+ <p xmlns:cc="http://creativecommons.org/ns#" >This work by <span property="cc:attributionName">Shu Fai Cheung</span> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0<span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"></span><span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"></span><span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></span><span  style="display:inline-block"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></span></a></p>
+
+      
+    </div>
+
+    
+  </body>
+</html>

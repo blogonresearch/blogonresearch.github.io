@@ -9,17 +9,17 @@
     <description>Recent content in Tags on Blogonresearch</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 24 Sep 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 26 Sep 2022 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://blogonresearch.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>code-style</title>
-      <link>https://blogonresearch.github.io/tags/code-style/</link>
-      <pubDate>Sat, 24 Sep 2022 00:00:00 +0000</pubDate>
+      <title>lavaan</title>
+      <link>https://blogonresearch.github.io/tags/lavaan/</link>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://blogonresearch.github.io/tags/code-style/</guid>
+      <guid>https://blogonresearch.github.io/tags/lavaan/</guid>
       <description>
         
           
@@ -35,9 +35,45 @@
     <item>
       <title>R</title>
       <link>https://blogonresearch.github.io/tags/r/</link>
-      <pubDate>Sat, 24 Sep 2022 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>https://blogonresearch.github.io/tags/r/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>semhelpinghands</title>
+      <link>https://blogonresearch.github.io/tags/semhelpinghands/</link>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/semhelpinghands/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>code-style</title>
+      <link>https://blogonresearch.github.io/tags/code-style/</link>
+      <pubDate>Sat, 24 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blogonresearch.github.io/tags/code-style/</guid>
       <description>
         
           
