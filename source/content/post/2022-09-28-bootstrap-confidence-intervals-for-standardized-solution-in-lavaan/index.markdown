@@ -1,7 +1,7 @@
 ---
 title: Bootstrap Confidence Intervals for Standardized Solution in lavaan
 author: Shu Fai Cheung
-date: '2022-09-29'
+date: '2022-09-28'
 slug: []
 categories: ["R"]
 tags: ["R", "lavaan", "bootstrapping", "confidence-intervals", "semhelpinghands", "standardized"]
