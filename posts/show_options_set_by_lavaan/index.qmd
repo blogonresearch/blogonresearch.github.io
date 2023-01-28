@@ -1,0 +1,194 @@
+---
+title: Show Options Set by lavaan
+author: "Shu Fai Cheung"
+date: '2022-09-26'
+categories: ["R", "lavaan", "semhelpinghands"]
+bibliography: references.bib
+csl: apa.csl
+aliases:
+  - post/2022-09-26-show-options-set-by-lavaan/index.html
+---
+
+`lavaan` is a convenient tool for doing
+structural equation modelling in R
+[@lavaan_2012]. One
+of its strength is having "prepackaged"
+estimators, which are shortcuts to a set
+of options, such as "ML", "MLR", "MLMVS",
+and others [@savalei_computational_2022].
+It also tries to set
+default values for options based on the
+model and data.
+
+However, probably due to my not-so-good
+memory, I sometimes forgot what the settings
+are for a model. Therefore, in the
+package [`semhelpinghands`](https://sfcheung.github.io/semhelpinghands/),
+I wrote the function [`show_more_options()`](https://sfcheung.github.io/semhelpinghands/reference/show_more_options.html)
+to show some of the settings of the output of
+`lavaan()` and its wrappers, such as
+`sem()` and `cfa()`.^[To be precise, any object of the class `lavaan`.]
+
+The function `show_more_options()` is
+very easy to use ... because it accepts
+only one argument, the output of `lavaan()`.
+
+This is an example based on the example of
+`lavaan::cfa()`:
+
+```{r}
+library(lavaan)
+HSmodel <-
+"
+visual  =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed   =~ x7 + x8 + x9
+"
+fit <- cfa(HSmodel,
+           data = HolzingerSwineford1939)
+```
+
+To show the major options, just pass the output
+to `show_more_options()`:
+
+```{r}
+library(semhelpinghands)
+show_more_options(fit)
+```
+
+The column `Call` shows whether the
+default setting is used for each row,
+based of the call used when fitting the
+model. However, it is not always clear
+to me what the default values are.
+
+The column `Actual` shows the values
+extracted by `lavaan::lavInspect()` or
+from the `Options` slot. These are what
+the default values stand for in the
+fitted model.
+
+Many of the entries are either
+(a) already available in the output of
+`summary()`, or (b) can be deduced from
+the output. However, I would like to have
+a table for quick reference, hence I
+wrote this function.
+
+Suppose `"MLR"` is used as the estimator:
+
+```{r}
+fit_MLR <- cfa(HSmodel,
+               data = HolzingerSwineford1939,
+               estimator = "MLR")
+show_more_options(fit_MLR)
+```
+
+The output shows the exact names of the
+options (e.g., `"robust.huber.white"`
+and `"yuan.bentler.mplus"`). They can
+complement the more readable output
+of `summary()` if we need to manually
+set these options, or want to know
+which values these options refer to when
+consulting the help page.
+
+For example, `summary()` reports that
+`"Sandwich"` is the method used for
+standard errors, and `show_more_options()`
+shows that the exact name in the option
+is `"robust.huber.white"`. This is useful
+because the word `"sandwich"` does not
+appear in the help page of `lavOptions()`,
+while the word `"robust.huber.white"` does.
+Some users may not know what `"Sandwich"`
+stands for.
+
+This is a dataset for a path model,
+with missing data:
+
+```{r}
+set.seed(8745315)
+n <- 100
+x <- rnorm(n)
+m <- 5 + .2 * x + rnorm(n, 0, .8)
+y <- 10 + .3 * m + rnorm(n, 0, .8)
+path_data <- data.frame(x, m, y)
+path_data[c(1, 3, 5, 7), "m"] <- NA
+path_data[c(1, 3, 6, 8), "y"] <- NA
+```
+
+Suppose we use only the default options
+to fit a path model:
+
+```{r}
+path_model <-
+"
+m ~ a * x
+y ~ b * m
+ab := a * b
+"
+fit_path <- sem(path_model,
+                data = path_data)
+show_more_options(fit_path)
+```
+
+The output shows that, by default,
+the mean structure is not modelled,
+listwise selection is used to handle
+missing data, and
+`x` variables (exogenous covariates,
+`x` in this example)
+are treated as fixed. This can be verified
+by the parameter estimates, in which
+the variance of `x` is a fixed
+parameter and hence has no standard
+error and no *p*-value:
+
+```{r}
+parameterEstimates(fit_path)
+```
+
+Suppose we set missing to `"FIML"`:
+
+```{r}
+fit_path_fiml <- sem(path_model,
+                     data = path_data,
+                     missing = "FIML")
+show_more_options(fit_path_fiml)
+```
+
+`x` variables are still treated as fixed,
+but now mean structure is modelled
+(required for FIML, full information
+maximum likelihood), even though I did
+not explicitly ask for it.
+
+Only options I think are likely needed
+(by me) are included
+in the output.^[The information matrices are technical but I occasionally need them.]
+More may be added in
+the future. In any case, if other options
+are needed, they can be
+retrieved by `lavaan::lavInspect()` or
+from the `Options` slot of the output.
+In most cases I
+myself encountered, all I want is a simple
+function that is easy to remember and no
+need to set any arguments other than
+the `lavaan` output. If I need something
+else, I will just extract the information
+myself.
+
+This function was inspired by a script
+I wrote to enumerate the options set by
+the prepackaged shortcuts. Interested
+readers can read [this thread](https://groups.google.com/g/lavaan/c/6oLwoboi-vQ/m/IQLAXChPAwAJ)
+at the [Google Group for `lavaan`](https://groups.google.com/g/lavaan)
+and [this gist](https://gist.github.com/sfcheung/baa5e43c32d4763b859f5338a1738d79),
+to check how options will be set for
+different
+combinations of estimator, data, and
+some other options.
+
+## References

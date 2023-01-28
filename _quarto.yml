@@ -1,0 +1,23 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "blogonresearch.github.io"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/blogonresearch
+      - icon: twitter
+        href: https://twitter.com/blogonresearch
+  site-url: "https://blogonresearch.github.io/"
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+
+execute:
+  freeze: auto

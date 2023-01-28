@@ -1,0 +1,15 @@
+---
+title: Reviving an Old Blog
+author: "Shu Fai Cheung"
+date: '2022-09-11'
+categories: ["blog"]
+aliases:
+  - post/2022-09-11-the-first-post/index.html
+---
+
+This is a "revival" of an old blog of mine on psychological research and methodology
+(hence the name *Blogonresearch*). Just anything on research and methodology
+that are useful to me, and maybe also useful to others.
+
+Edit 2023-01-28: This is actually the "second revival" as I switched from Hugo
+to Quarto in early 2023.
