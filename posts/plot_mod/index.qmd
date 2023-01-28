@@ -4,7 +4,8 @@ author: "Shu Fai Cheung"
 date: '2022-09-11'
 categories: ["R", "moderation"]
 aliases:
-  - post/2022-09-11-plotting-moderation-effects-with-ggplot2/index.html
+  - ../../post/2022-09-11-plotting-moderation-effects-with-ggplot2/index.html
+image: index_files/figure-html/cover-1.png
 ---
 
 There are some R packages that help

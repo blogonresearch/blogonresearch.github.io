@@ -5,18 +5,44 @@ project:
 website:
   title: "Blogonresearch"
   navbar:
+    logo: blongonresearch_logo.png
     right:
       - about.qmd
+      - text: R Packages and Other Tools
+        menu:
+          - text: "manymome: Mediation, moderation, and moderated mediation"
+            url:  https://sfcheung.github.io/manymome/
+          - text: "semhelpinghands: Some helpers for doing SEM"
+            url:  https://sfcheung.github.io/semhelpinghands/
+          - text: "semptools: Drawing models from lavaan"
+            url: https://sfcheung.github.io/semptools/
+          - text: "semfindr: Influential cases in SEM"
+            url: https://github.com/sfcheung/semfindr
+          - text: "stdmod: Standardized moderation"
+            url: https://sfcheung.github.io/stdmod/
+          - text: "FINDOUT: Influential cases in AMOS"
+            url: https://osf.io/dbm5c/
+          - text: "DIY Bootstrapping in SPSS"
+            url: https://github.com/sfcheung/diybootstat
       - icon: github
         href: https://github.com/blogonresearch
       - icon: twitter
         href: https://twitter.com/blogonresearch
+      - icon: rss
+        href: index.xml
   site-url: "https://blogonresearch.github.io/"
+  description: "A blog on psychological research and methodology."
+  favicon: favicon.ico
+  page-navigation: true
+  page-footer:
+    center:
+      - text: '<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.'
+
 format:
   html:
     theme:
-      light: flatly
-      dark: darkly
+      light: [flatly, theme-light.scss]
+      dark: [darkly, theme-dark.scss]
     css: styles.css
 
 execute:

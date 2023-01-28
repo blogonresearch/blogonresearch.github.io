@@ -4,7 +4,7 @@ author: "Shu Fai Cheung"
 date: '2022-09-14'
 categories: ["R", "gui"]
 aliases:
-  - post/2022-09-14-one-function-or-many-functions/index.html
+  - ../../post/2022-09-14-one-function-or-many-functions/index.html
 ---
 
 

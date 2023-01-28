@@ -4,7 +4,7 @@ author: "Shu Fai Cheung"
 date: '2022-09-20'
 categories: ["R", "gui"]
 aliases:
-  - post/2022-09-20-customizes-r-gui-for-windows/index.html
+  - ../../post/2022-09-20-customizes-r-gui-for-windows/index.html
 ---
 
 Many people use RStudio, and some even

@@ -8,7 +8,7 @@
 <title>Blogonresearch</title>
 <link>https://blogonresearch.github.io/index.html</link>
 <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
-<description></description>
+<description>A blog on psychological research and methodology.</description>
 <generator>quarto-1.2.280</generator>
 <lastBuildDate>Tue, 27 Sep 2022 16:00:00 GMT</lastBuildDate>
 <item>
@@ -708,6 +708,7 @@ x2            -7.460852  -0.005532551  0.731913160</code></pre>
   <category>moderation</category>
   <guid>https://blogonresearch.github.io/posts/plot_mod/index.html</guid>
   <pubDate>Sat, 10 Sep 2022 16:00:00 GMT</pubDate>
+  <media:content url="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>Reviving an Old Blog</title>

@@ -4,7 +4,7 @@ author: "Shu Fai Cheung"
 date: '2022-09-11'
 categories: ["blog"]
 aliases:
-  - post/2022-09-11-the-first-post/index.html
+  - ../../post/2022-09-11-the-first-post/index.html
 ---
 
 This is a "revival" of an old blog of mine on psychological research and methodology
