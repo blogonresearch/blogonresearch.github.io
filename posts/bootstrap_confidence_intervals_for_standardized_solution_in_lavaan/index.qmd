@@ -1,0 +1,268 @@
+---
+title: Bootstrap Confidence Intervals for Standardized Solution in lavaan
+author: "Shu Fai Cheung"
+date: '2022-09-28'
+categories: ["R", "lavaan", "bootstrapping", "confidence-intervals", "semhelpinghands", "standardized"]
+bibliography: references.bib
+csl: apa.csl
+aliases:
+  - ../../post/2022-09-28-bootstrap-confidence-intervals-for-standardized-solution-in-lavaan/index.html
+---
+
+
+`lavaan` supports bootstrap confidence
+intervals for free and user-defined
+parameters. This is useful especially for
+parameter estimates that may not be
+approximately normally distributed unless
+the sample size is very large.
+
+However, it is known, though not well-known
+enough in my opinion, that, even if bootstrap
+confidence intervals are requested, the
+confidence intervals reported in the
+standardized solution are not bootstrap
+confidence intervals as in tools like
+`PROCESS` for standardized effects like
+standardized indirect effects, but are
+symmetric delta-method
+confidence intervals based on the
+bootstrap
+sampling variance-covariance matrix.
+
+Let's use a sample dataset for illustration:
+
+```{r}
+# Create the data
+set.seed(860541)
+n <- 100
+x <- rnorm(n)
+m <- .4 * x + rnorm(n, 0, sqrt(1 - .3^2))
+y <- .4 * m + rnorm(n, 0, sqrt(1 - .4^2))
+dat <- data.frame(x = 10 * x, m = 2 * m, y = 3 * y)
+```
+
+We specify a simple regression model:
+
+```{r}
+library(lavaan)
+mod <-
+"
+m ~ a * x
+y ~ b * m + cp * x
+ab := a * b
+"
+```
+
+... and fit it with bootstrap confidence
+intervals (2023-01-28: Code and results
+updated for `lavaan` 0.6-13, `iseed` is used
+instead of `set.seed()`):
+
+```{r}
+#| eval: false
+fit <- sem(mod, data = dat, fixed.x = FALSE,
+           se = "boot", bootstrap = 2000,
+           iseed = 8970)
+```
+
+```{r}
+#| echo: false
+fn <- "fit.rds"
+if (file.exists(fn)) {
+    fit <- readRDS(fn)
+  } else {
+    fit <- sem(mod, data = dat, fixed.x = FALSE,
+              se = "boot", bootstrap = 2000,
+              iseed = 8970)
+    saveRDS(fit, fn)
+  }
+```
+
+Let's focus on the confidence intervals of
+the indirect effect:
+
+```{r}
+est <- parameterEstimates(fit)
+std <- standardizedSolution(fit)
+# Unstandardized
+est[7, ]
+# Standardized
+std[7, ]
+```
+
+They lead to different conclusions.
+
+As shown below, the confidence interval
+of the unstandardized indirect effect
+is percentile confidence interval that
+is asymmetric, as expected:
+
+```{r}
+est[7, c("ci.lower", "ci.upper")] - est[7, "est"]
+```
+
+However, the confidence interval of the
+standardized indirect effect is symmetric:
+
+```{r}
+std[7, c("ci.lower", "ci.upper")] - std[7, "est.std"]
+```
+
+```{r}
+#| echo: false
+#| eval: false
+fit_boot <- lavInspect(fit, "boot")
+boot_ab <- fit_boot[, "a"] * fit_boot[, "b"]
+hist(boot_ab)
+qqnorm(boot_ab); qqline(boot_ab)
+```
+
+This behavior has been discussed
+in the [Google group for`lavaan`](https://groups.google.com/g/lavaan) and
+so is known, but not "well-known" because
+I met many users who were not aware of this,
+especially when they use bootstrapping to
+get the confidence intervals for indirect
+effects but found that the confidence
+intervals of unstandardized and
+standardized indirect effect led to different
+conclusions, as in the example above.
+
+A solution already exists in `lavaan`.
+Users can use
+`bootstrapLavaan()` and get the bootstrap
+confidence intervals for many results,
+including
+the output of standardized solution.
+
+We first define a function to extract
+the standardized indirect effect:
+
+```{r}
+fct <- function(fit) {
+    lavaan::standardizedSolution(fit)[7, "est.std"]
+  }
+```
+
+We then update the fit object to disable
+standard error because we only need the
+point estimates and then call
+`bootstrapLavaan()`:
+
+```{r}
+#| eval: false
+fit0 <- update(fit, se = "none")
+fit_boot <- bootstrapLavaan(fit0, R = 2000, FUN = fct, iseed = 8970)
+```
+
+```{r}
+#| echo: false
+fn <- "fit_boot.rds"
+if (file.exists(fn)) {
+    fit_boot <- readRDS(fn)
+  } else {
+    fit0 <- update(fit, se = "none")
+    fit_boot <- bootstrapLavaan(fit0, R = 2000, FUN = fct,
+                                iseed = 8970)
+    saveRDS(fit_boot, fn)
+  }
+```
+
+The percentile confidence interval
+can then be formed by `quantile()`.
+
+(Note that `lavaan()` does not use `quantile()` but
+use the approach by `boot.ci()`. The resulting
+interval can be slightly different from that by `quantile()`.)
+
+```{r}
+quantile(fit_boot[, 1], c(.025, .975))
+```
+
+However, this is inconvenient because
+we need to write
+custom function, and
+bootstrapping was done twice unless
+we store both the unstandardized and
+standardized solutions in the custom
+function used when calling
+`bootstrapLavaan()`.
+
+I wrote the function
+[`standardizedSolution_boot_ci()`](https://sfcheung.github.io/semhelpinghands/reference/standardizedSolution_boot_ci.html), available in
+the package [`semhelpinghands`](https://sfcheung.github.io/semhelpinghands/), for this
+particular
+case that I sometimes encounter:
+
+- A model is already fitted with
+ `se = "boot"` and so bootstrap confidence
+ intervals are already available for the
+ unstandardized estimates.
+
+- I want to get the bootstrap
+confidence intervals for the
+standardized solution *without doing the bootstrapping again*.
+
+This would be useful to
+me because some of my projects involve large
+samples with missing data. and bootstrapping
+takes appreciable time even with
+parallelization.
+
+This is how to use this function:
+
+```{r}
+library(semhelpinghands)
+std_boot <- standardizedSolution_boot_ci(fit)
+# -c(9, 10) is used to remove the delta-method CIs from
+# the printout
+std_boot[, -c(9, 10)]
+```
+
+The `boot.ci` intervals are "true"
+bootstrap confidence intervals, formed
+from the bootstrap estimates. The
+bootstrap confidence interval for
+the standardized indirect effect
+(`r paste0("[", paste(round(std_boot[7, c(11, 12)], 3), collapse = ", "), "]")`)
+and that for the unstandardized
+indirect effect (`r paste0("[", paste(round(est[7, c(9, 10)], 3), collapse = ", "), "]")`)
+now lead to the same conclusion.
+
+`standardizedSolution_boot_ci()` works
+like `standardizedSolution()`,
+but extracts the stored bootstrap estimates,
+get the standardized solution from each
+set of estimates, and use them to form
+the bootstrap confidence intervals for
+the standardized solution.
+
+By default, the bootstrap standardized
+solution is also stored in the attribute
+`boot_est_std`. They can be extracted
+to examine the distribution. For example,
+the bootstrap standardized indirect effects
+can be extracted and plotted:
+
+```{r}
+std_boot_est <- attr(std_boot, "boot_est_std")
+std_indirect_boot_est <- std_boot_est[, 7]
+hist(std_indirect_boot_est)
+qqnorm(std_indirect_boot_est)
+qqline(std_indirect_boot_est)
+```
+
+This function is simple to use, at least for
+me. No need to write custom function,
+and no need to do bootstrapping twice.
+In most cases, I don't even need to
+specify any additional arguments.
+
+More about this function can be found
+in the [vignette](https://sfcheung.github.io/semhelpinghands/articles/standardizedSolution_boot_ci.html) for
+`standardizedSolution_boot_ci()`.
+
+If any bug in `standardizedSolution_boot_ci()`
+was found, I would appreciate submitting
+it as a [GitHub issue](https://github.com/sfcheung/semhelpinghands/issues).  {{< emoji ":smile:" >}}

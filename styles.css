@@ -1,0 +1,7 @@
+/* css styles */
+
+.cell-output-stdout {
+  border-style: solid;
+  border-width: thin;
+  margin-bottom: 1em;
+}
