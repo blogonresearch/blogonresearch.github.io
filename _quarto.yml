@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "blogonresearch.github.io"
+  title: "Blogonresearch"
   navbar:
     right:
       - about.qmd
