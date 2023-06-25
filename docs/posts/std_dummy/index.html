@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Shu Fai Cheung">
+<meta name="dcterms.date" content="2023-06-25">
+
+<title>Blogonresearch - Standardize Variables Except For Dummy Variables, Using std_selected_boot()</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../blongonresearch_logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Blogonresearch</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages-and-other-tools" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">R Packages and Other Tools</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages-and-other-tools">    
+        <li>
+    <a class="dropdown-item" href="https://sfcheung.github.io/manymome/">
+ <span class="dropdown-text">manymome: Mediation, moderation, and moderated mediation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://sfcheung.github.io/semhelpinghands/">
+ <span class="dropdown-text">semhelpinghands: Some helpers for doing SEM</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://sfcheung.github.io/semptools/">
+ <span class="dropdown-text">semptools: Drawing models from lavaan</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/sfcheung/semfindr">
+ <span class="dropdown-text">semfindr: Influential cases in SEM</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://sfcheung.github.io/stdmod/">
+ <span class="dropdown-text">stdmod: Standardized moderation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://osf.io/dbm5c/">
+ <span class="dropdown-text">FINDOUT: Influential cases in AMOS</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/sfcheung/diybootstat">
+ <span class="dropdown-text">DIY Bootstrapping in SPSS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/blogonresearch"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/blogonresearch"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Standardize Variables Except For Dummy Variables, Using std_selected_boot()</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">regression</div>
+                <div class="quarto-category">categorical variables</div>
+                <div class="quarto-category">stdmod</div>
+                <div class="quarto-category">standardized</div>
+                <div class="quarto-category">bootstrapping</div>
+                <div class="quarto-category">confidence-intervals</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Shu Fai Cheung </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 25, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>This post shows one simple way to get meaningful standardized regression coefficients in multiple linear regression with dummy variables, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
+<section id="betas" class="level1">
+<h1>“Betas”</h1>
+<p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”). However, even if it is justifiable to interpret effects of some variables in the standardized metric, dummy variables, if any, should still not be standardized;</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Dummy Variables Standardized Are No Longer Dummy Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The dummy variable can no longer be interpreted as a dummy variable because it no longer takes either 0 or 1.</p>
+</div>
+</div>
+<p>So, the “betas” for dummy variables, though maybe not “wrong”, are <em>not interpretable</em>.</p>
+<p>Unfortunately, standardizing them is quite common (including in my own work).</p>
+<p>The solutions are simple:</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Do Not Standardize Dummy Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Standardize other variables <em>except</em> for the dummy variables.</p>
+</div>
+</div>
+<p>However, common statistical programs standardize <em>all</em> variables. No choice. All or none.</p>
+<p>To do standardization <em>right</em> when dummy variables are present, we need to <em>manually</em> do the standardization. Doable but inconvenient.</p>
+<p>The function <code>std_selected_boot()</code> from the R package <code>stdmod</code>, which I and my collaborators developed <span class="citation" data-cites="cheung_improving_2022">(<a href="#ref-cheung_improving_2022" role="doc-biblioref">Cheung et al., 2022</a>)</span>, can do the standardization right without any major changes to the common workflow.</p>
+</section>
+<section id="how-to-use-std_selected_boot" class="level1">
+<h1>How to Use <code>std_selected_boot()</code></h1>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Workflow
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Fit a regression model by <code>lm()</code> as usual.</p></li>
+<li><p>Pass the output to <code>std_selected()</code> and select variables to be standardized.</p></li>
+</ol>
+</div>
+</div>
+<p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has an additional feature:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What It Won’t Do (Correctly)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It automatically skips factors and string variables in standardization. That is, their dummy variables will never be standardized.</p>
+</div>
+</div>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<section id="do-regression-as-usual" class="level3">
+<h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
+<p>Suppose this is the data set:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="cell">
+<details>
+<summary>Show the code for generating data</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1453243</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Gp1"</span>, <span class="st">"Gp2"</span>, <span class="st">"Gp3"</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span> n,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">30</span>, .<span class="dv">20</span>, .<span class="dv">50</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> (<span class="fu">rchisq</span>(n, <span class="dv">2</span>) <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">4</span> <span class="sc">+</span> <span class="dv">10</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">1</span>, <span class="dv">10</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">+</span> <span class="fl">0.45</span> <span class="sc">/</span> <span class="dv">1</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="dv">4</span> <span class="sc">/</span> <span class="dv">1</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">sapply</span>(group, <span class="cf">switch</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">Gp1 =</span> <span class="dv">1</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">Gp2 =</span> <span class="dv">8</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">Gp3 =</span> <span class="dv">6</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x1 =</span> <span class="fu">round</span>(x1, <span class="dv">2</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">x2 =</span> <span class="fu">round</span>(x2, <span class="dv">2</span>),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                  group,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">y =</span> <span class="fu">round</span>(y, <span class="dv">2</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"dat.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This is the <a href="dat.csv">data file</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    x1   x2 group     y
+1 9.97 7.84   Gp1 44.99
+2 2.45 5.11   Gp1 47.27
+3 8.50 8.87   Gp2 60.00
+4 4.10 5.60   Gp1 37.05
+5 8.16 7.18   Gp3 45.51
+6 2.53 9.19   Gp1 54.71</code></pre>
+</div>
+</div>
+<p>The variables <code>x1</code> and <code>x2</code> are continuous predictors. The variable <code>group</code> is a string variable, with three possible values: <code>Gp1</code>, <code>Gp2</code>, and <code>Gp3</code>. The outcome variable is <code>y</code>.</p>
+<p>This is the regression model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lm_out <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> group, dat)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x1 + x2 + group, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-42.755  -7.165   0.355   6.597  25.317 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   9.8205     2.2545   4.356 2.14e-05 ***
+x1            0.4080     0.1021   3.997 9.10e-05 ***
+x2            4.1642     0.3051  13.649  &lt; 2e-16 ***
+groupGp2      6.9809     2.0704   3.372 0.000901 ***
+groupGp3      6.3161     1.7076   3.699 0.000282 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 10.49 on 195 degrees of freedom
+Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
+F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="do-standardization-right" class="level3">
+<h3 class="anchored" data-anchor-id="do-standardization-right">Do Standardization Right</h3>
+<p>Install <code>stdmod</code> and load it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stdmod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If we want to standardize all variables except for categorical variables, if any, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Beware of the <em>t</em>-based SE and CI
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If a variable is standardized, the usual <em>t</em>-based standard errors and confidence intervals of the coefficients that involve it <em>may</em> be biased.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+</div>
+</div>
+<p>This is because (a) they do not take into account the sampling variation of the standard deviations used in standardization <span class="citation" data-cites="yuan_biases_2011">(<a href="#ref-yuan_biases_2011" role="doc-biblioref">Yuan &amp; Chan, 2011</a>)</span>, and (b) the coefficients with standardization, the “betas”, are not normally distributed (though may be close to). Many statistical programs do not report the confidence intervals for “betas,” for a good reason.</p>
+<p>This is why <code>std_selected_boot()</code> enables nonparametric bootstrapping percentile confidence intervals <em>by default</em>, just in case the bias is large.</p>
+<p>To have stable and reproducible confidence intervals, call <code>set.seed()</code> before calling <code>std_selected_boot()</code> and set <code>nboot</code> to the desired number of bootstrap samples (at least 2000 but 5000 or more is recommended):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">870516</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>lm_out_std <span class="ot">&lt;-</span> <span class="fu">std_selected_boot</span>(lm_out,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">to_standardize =</span> <span class="sc">~</span> .,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">nboot =</span> <span class="dv">5000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can call <code>summary()</code> as usual to print the results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_out_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call to std_selected_boot():
+std_selected_boot(lm_out = lm_out, to_standardize = ~., nboot = 5000)
+
+Selected variable(s) are centered by mean and/or scaled by SD
+- Variable(s) centered: y x1 x2 group
+- Variable(s) scaled: y x1 x2 group
+
+      centered_by scaled_by                            Note
+y        40.36635 15.286176 Standardized (mean = 0, SD = 1)
+x1        9.41020  7.342158 Standardized (mean = 0, SD = 1)
+x2        5.35520  2.454193 Standardized (mean = 0, SD = 1)
+group          NA        NA Nonnumeric                     
+
+Note:
+- Categorical variables will not be centered or scaled even if
+  requested.
+- Nonparametric bootstrapping 95% confidence intervals computed.
+- The number of bootstrap samples is 5000.
+
+Call:
+lm(formula = y ~ x1 + x2 + group, data = dat_mod)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.79695 -0.46875  0.02324  0.43155  1.65619 
+
+Coefficients:
+            Estimate CI Lower CI Upper Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.28825 -0.42260 -0.16397    0.08545  -3.374 0.000895 ***
+x1           0.19598  0.10064  0.28696    0.04903   3.997  9.1e-05 ***
+x2           0.66856  0.58901  0.73888    0.04898  13.649  &lt; 2e-16 ***
+groupGp2     0.45668  0.22507  0.68592    0.13544   3.372 0.000901 ***
+groupGp3     0.41319  0.20033  0.63209    0.11171   3.699 0.000282 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.6863 on 195 degrees of freedom
+Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
+F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16
+
+Note:
+- Estimates and their statistics are based on the data after
+  mean-centering, scaling, or standardization.
+- [CI Lower, CI Upper] are bootstrap percentile confidence intervals.
+- Std. Error are not bootstrap SEs.</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The output has one additional section:</p>
+<ul>
+<li>Variables that are standardized<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, and variables that are not transformed.</li>
+</ul>
+<p>The other sections are similar to those of a usual multiple regression. Note that the column <code>Estimate</code> is intentionally <em>not</em> labelled as <code>Beta</code> because it is possible that only some variables are standardized. Labelling it as <code>Beta</code>, though common, is misleading.</p>
+</section>
+<section id="interpret-the-output" class="level3">
+<h3 class="anchored" data-anchor-id="interpret-the-output">Interpret The Output</h3>
+<p>In the regression output, because <code>y</code>, <code>x1</code>, and <code>x2</code> are standardized, they are the usual “betas.” However, <code>group</code> is not standardized and so <code>groupGp2</code> and <code>groupGp3</code> still take only two possible values, 0 and 1, and so can still be interpreted as usual.</p>
+<p>For example, the coefficient of <code>groupGp2</code> is 0.457. That is, compared to <code>Gp1</code>, the reference group, the predicted value of <code>y</code> is 0.457 SD (of <code>y</code>) higher in <code>Gp2</code>.</p>
+<p>On the other hand, the coefficient of <code>groupGp3</code> is 0.413. That is, compared to <code>Gp1</code>, the predicted value of <code>y</code> is 0.413 SD (of <code>y</code>) higher in <code>Gp3</code>.</p>
+<p>In short, the coefficients of all dummy variables can be interpreted as usual, though the difference in the outcome variable (dependent variable) is in SD of this variable if it is standardized.</p>
+</section>
+</section>
+</section>
+<section id="why-the-common-practice-is-problematic" class="level1">
+<h1>Why The Common Practice Is Problematic</h1>
+<section id="standardize-all-variables" class="level2">
+<h2 class="anchored" data-anchor-id="standardize-all-variables">Standardize All Variables</h2>
+<p>Assume that we standardize <em>all</em> variables, including the dummy variables, as in some statistical program. To simulate this, I manually create the dummy variables, standardize them, and do regression:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp2 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp3 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"Gp2"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp3 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"Gp3"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>dat_std <span class="ot">&lt;-</span> dat[, <span class="fu">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"groupGp2"</span>, <span class="st">"groupGp3"</span>, <span class="st">"y"</span>)]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>dat_std <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(dat_std))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           x1          x2   groupGp2   groupGp3          y
+1  0.07624462  1.01247114 -0.5220306 -0.9206479  0.3024726
+2 -0.94797747 -0.09991063 -0.5220306 -0.9206479  0.4516270
+3 -0.12396901  1.43216096  1.9060186 -0.9206479  1.2844056
+4 -0.72324789  0.09974764 -0.5220306 -0.9206479 -0.2169509
+5 -0.17027692  0.74354368 -0.5220306  1.0807606  0.3364903
+6 -0.93708149  1.56255004 -0.5220306 -0.9206479  0.9383413</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describe</span>(dat_std, <span class="at">range =</span> <span class="cn">FALSE</span>, <span class="at">skew =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         vars   n mean sd   se
+x1          1 200    0  1 0.07
+x2          2 200    0  1 0.07
+groupGp2    3 200    0  1 0.07
+groupGp3    4 200    0  1 0.07
+y           5 200    0  1 0.07</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>lm_out_std_wrong <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> groupGp2 <span class="sc">+</span> groupGp3, dat_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The following results are what found in common statistical programs that standardize all variables, including the dummy variables, to yield the “betas”:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printCoefmat</span>(<span class="fu">summary</span>(lm_out_std_wrong)<span class="sc">$</span>coefficients,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">zap.ind =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">P.values =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 0.000000   0.048525  0.0000  1.00000    
+x1          0.195980   0.049034  3.9968    9e-05 ***
+x2          0.668560   0.048983 13.6488  &lt; 2e-16 ***
+groupGp2    0.188080   0.055783  3.3717  0.00090 ***
+groupGp3    0.206450   0.055817  3.6987  0.00028 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>Let us compare the results.</p>
+<section id="p-values" class="level3">
+<h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
+<p>The <em>p</em>-values are the same, which is expected:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>coef_std <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_out_std)<span class="sc">$</span>coefficients</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>coef_std_wrong <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_out_std_wrong)<span class="sc">$</span>coefficients</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">p-value (Std Selected)</span><span class="st">`</span> <span class="ot">=</span> coef_std[, <span class="st">"Pr(&gt;|t|)"</span>],</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">p-value (Std All)</span><span class="st">`</span> <span class="ot">=</span> coef_std_wrong[, <span class="st">"Pr(&gt;|t|)"</span>]), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            p-value (Std Selected) p-value (Std All)
+(Intercept)                  0.001             1.000
+x1                           0.000             0.000
+x2                           0.000             0.000
+groupGp2                     0.001             0.001
+groupGp3                     0.000             0.000</code></pre>
+</div>
+</div>
+</section>
+<section id="coefficient-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
+<p>However, the coefficients for the dummy variables are different:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">Estimate (Std Selected)</span><span class="st">`</span> <span class="ot">=</span> coef_std[, <span class="st">"Estimate"</span>],</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Estimate (Std All)</span><span class="st">`</span> <span class="ot">=</span> coef_std_wrong[, <span class="st">"Estimate"</span>]), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate (Std Selected) Estimate (Std All)
+(Intercept)                  -0.288              0.000
+x1                            0.196              0.196
+x2                            0.669              0.669
+groupGp2                      0.457              0.188
+groupGp3                      0.413              0.206</code></pre>
+</div>
+</div>
+<p>The coefficients of <code>groupGp2</code> and <code>groupGp3</code>, when they are standardized, are not meaningful. After standardization, they are no longer either 0 or 1.</p>
+<p>For example, the so-called “beta” of <code>groupGp2</code>, 0.188, is <em>not</em> the difference between <code>Gp2</code> and <code>Gp1</code> on standardized <code>y</code>. It is the increase in standardized <code>y</code> when <code>groupGp2</code> “increases by one SD”, which is meaningless.</p>
+<p>What’s worse, the ranking of the coefficients changed. If we interpret the coefficients with dummy variables not standardized, the <code>Gp2 vs. Gp1</code> difference is larger than the <code>Gp3 vs. Gp1</code> difference (0.457 vs 0.413).</p>
+<p>However, if we interpret the coefficients with dummy variables standardized, we would have a different conclusion: the <code>Gp2 vs. Gp1</code> difference is <em>smaller</em> than the <code>Gp3 vs. Gp1</code> difference (0.188 vs 0.206), though only slightly.</p>
+<p>The reason is, there are more cases in <code>Gp3</code> than in <code>Gp2</code>. The differences in the SDs of the dummy variables are large enough to reverse the ranking:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Gp1 Gp2 Gp3 
+ 65  43  92 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(dat<span class="sc">$</span>groupGp2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4118533</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(dat<span class="sc">$</span>groupGp3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4996481</code></pre>
+</div>
+</div>
+<p>I created the data to demonstrate that this reversal in ranking is <em>possible</em>. This may not happen in real data. However, having groups with different numbers of cases is probably the norm rather than the exception in real data.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+</section>
+</section>
+<section id="use-t-statistics-confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="use-t-statistics-confidence-intervals">Use <em>t</em> Statistics Confidence Intervals</h2>
+<p>Some programs gives confidence intervals of “betas” using <em>t</em> statistics. That is, standardize variables, do regression, and form the confidence intervals, as if the standardized variables were the original data.</p>
+<p>Let us compare the bootstrap confidence intervals with the usual OLS confidence intervals based on the <em>t</em>-statistics.</p>
+<p>For the output of <code>std_selected_boot()</code>, we can request the <em>t</em>-based confidence intervals by setting <code>type</code> to <code>"lm"</code> when calling <code>confint()</code>, the function commonly used to form confidence intervals:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OLS confidence intervals</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">confint</span>(lm_out_std, <span class="at">type =</span> <span class="st">"lm"</span>), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.457 -0.120
+x1           0.099  0.293
+x2           0.572  0.765
+groupGp2     0.190  0.724
+groupGp3     0.193  0.634</code></pre>
+</div>
+</div>
+<p>Without setting <code>type</code>, the nonparametric bootstrap confidence intervals are returned (if available):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrap Confidence Intervals</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">confint</span>(lm_out_std), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.423 -0.164
+x1           0.101  0.287
+x2           0.589  0.739
+groupGp2     0.225  0.686
+groupGp3     0.200  0.632</code></pre>
+</div>
+</div>
+<p>As shown above, the confidence intervals of <code>x1</code> by the two methods are close to each other. However, the bootstrap confidence interval of <code>x2</code> is narrower than the <em>t</em>-based confidence interval.</p>
+<p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ci_t <span class="ot">&lt;-</span> <span class="fu">confint</span>(lm_out_std, <span class="at">type =</span> <span class="st">"lm"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>ci_b <span class="ot">&lt;-</span> <span class="fu">confint</span>(lm_out_std)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>width_t <span class="ot">&lt;-</span> ci_t[, <span class="dv">2</span>] <span class="sc">-</span> ci_t[, <span class="dv">1</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>width_b <span class="ot">&lt;-</span> ci_b[, <span class="dv">2</span>] <span class="sc">-</span> ci_b[, <span class="dv">1</span>]</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>ci_compare <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">CI_Width_t =</span> width_t,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_Width_boot =</span> width_b)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ci_compare<span class="sc">$</span>ratio <span class="ot">&lt;-</span> ci_compare[, <span class="dv">1</span>] <span class="sc">/</span> ci_compare[, <span class="dv">2</span>]</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(ci_compare, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            CI_Width_t CI_Width_boot ratio
+(Intercept)      0.337         0.259 1.303
+x1               0.193         0.186 1.038
+x2               0.193         0.150 1.289
+groupGp2         0.534         0.461 1.159
+groupGp3         0.441         0.432 1.021</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The widths of the confidence intervals are nearly identical for <code>x1</code>. However, for <code>x2</code>, the <em>t</em>-based confidence interval is nearly 28.9% wider than the bootstrap confidence interval.</p>
+<p>For <code>groupGp2</code>, even though dummy variable is correctly not standardized, it can still be affected because the outcome variable, <code>y</code>, is standardized. Its <em>t</em>-based confidence interval is also wider than the bootstrap confidence interval by about 15.9%.</p>
+</section>
+</section>
+<section id="final-remarks" class="level1">
+<h1>Final Remarks</h1>
+<p>What <code>std_selected_boot()</code> does can be implemented in R code by researchers using base R packages only. The function was developed to make it easier for researchers to do standardization right, without adopting the all-or-none approach.</p>
+<p>More information on <code>std_selected_boot()</code> can be found from its <a href="https://sfcheung.github.io/stdmod/reference/std_selected.html">help page</a>.</p>
+</section>
+<section id="other-resources" class="level1">
+<h1>Other Resources</h1>
+<p>There are other program or function that also correctly skip categorical variables when doing standardization. For example, the linear regression procedure in <a href="https://www.jamovi.org/">jamovi</a> also do not standardized the dummy variables formed from categorical variables when standardized estimates are requested.</p>
+<p>For confidence intervals, other methods have also been proposed to take into account the sampling variability of the standard deviations. Examples are the methods proposed by <span class="citation" data-cites="dudgeon_improvements_2017">Dudgeon (<a href="#ref-dudgeon_improvements_2017" role="doc-biblioref">2017</a>)</span> and <span class="citation" data-cites="jones_computing_2013">Jones &amp; Waller (<a href="#ref-jones_computing_2013" role="doc-biblioref">2013</a>)</span>, in addition to the one proposed by <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (<a href="#ref-yuan_biases_2011" role="doc-biblioref">2011</a>)</span>.</p>
+</section>
+<section id="references" class="level1">
+
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
+<div id="ref-cheung_improving_2022" class="csl-entry" role="doc-biblioentry">
+Cheung, S. F., Cheung, S.-H., Lau, E. Y. Y., Hui, C. H., &amp; Vong, W. N. (2022). Improving an old way to measure moderation effect in standardized units. <em>Health Psychology</em>, <em>41</em>(7), 502–505. <a href="https://doi.org/10.1037/hea0001188">https://doi.org/10.1037/hea0001188</a>
+</div>
+<div id="ref-dudgeon_improvements_2017" class="csl-entry" role="doc-biblioentry">
+Dudgeon, P. (2017). Some improvements in confidence intervals for standardized regression coefficients. <em>Psychometrika</em>, <em>82</em>(4), 928–951. <a href="https://doi.org/10.1007/s11336-017-9563-z">https://doi.org/10.1007/s11336-017-9563-z</a>
+</div>
+<div id="ref-jones_computing_2013" class="csl-entry" role="doc-biblioentry">
+Jones, J. A., &amp; Waller, N. G. (2013). Computing confidence intervals for standardized regression coefficients. <em>Psychological Methods</em>, <em>18</em>(4), 435–453. <a href="https://doi.org/10.1037/a0033269">https://doi.org/10.1037/a0033269</a>
+</div>
+<div id="ref-yuan_biases_2011" class="csl-entry" role="doc-biblioentry">
+Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized regression coefficients. <em>Psychometrika</em>, <em>76</em>(4), 670–690. <a href="https://doi.org/10.1007/s11336-011-9224-6">https://doi.org/10.1007/s11336-011-9224-6</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><code>x1</code> and <code>x2</code> are intentionally generated from nonnormal distributions, for illustration. Note that OLS (ordinary least squares) regression does <em>not</em> assume that the predictors are multivariate normal. Using nonnormal predictors violate no assumptions of OLS regression.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Suppose we only want to standardize <code>x1</code> and <code>y</code>, because <code>x2</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x1 + y</code>. Order does not matter.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Note that there are indeed cases in which they are still unbiased, and cases in which the biases are negligible. See <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (<a href="#ref-yuan_biases_2011" role="doc-biblioref">2011</a>)</span> for a detailed discussion.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p><code>std_selected()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>It can be argued that size differences should be taken into account. They should be, but probably not by standardizing the dummy variables and making the coefficients not interpretable.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+ <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a><br>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+  </li>  
+</ul>
+      </div>
+  </div>
+</footer>
+
+
+
+</body></html>

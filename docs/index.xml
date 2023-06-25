@@ -9,8 +9,495 @@
 <link>https://blogonresearch.github.io/index.html</link>
 <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog on psychological research and methodology.</description>
-<generator>quarto-1.2.280</generator>
-<lastBuildDate>Tue, 27 Sep 2022 16:00:00 GMT</lastBuildDate>
+<generator>quarto-1.2.335</generator>
+<lastBuildDate>Sat, 24 Jun 2023 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>Standardize Variables Except For Dummy Variables, Using std_selected_boot()</title>
+  <dc:creator>Shu Fai Cheung</dc:creator>
+  <link>https://blogonresearch.github.io/posts/std_dummy/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>This post shows one simple way to get meaningful standardized regression coefficients in multiple linear regression with dummy variables, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
+<section id="betas" class="level1">
+<h1>“Betas”</h1>
+<p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”). However, even if it is justifiable to interpret effects of some variables in the standardized metric, dummy variables, if any, should still not be standardized;</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Dummy Variables Standardized Are No Longer Dummy Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The dummy variable can no longer be interpreted as a dummy variable because it no longer takes either 0 or 1.</p>
+</div>
+</div>
+<p>So, the “betas” for dummy variables, though maybe not “wrong”, are <em>not interpretable</em>.</p>
+<p>Unfortunately, standardizing them is quite common (including in my own work).</p>
+<p>The solutions are simple:</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Do Not Standardize Dummy Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Standardize other variables <em>except</em> for the dummy variables.</p>
+</div>
+</div>
+<p>However, common statistical programs standardize <em>all</em> variables. No choice. All or none.</p>
+<p>To do standardization <em>right</em> when dummy variables are present, we need to <em>manually</em> do the standardization. Doable but inconvenient.</p>
+<p>The function <code>std_selected_boot()</code> from the R package <code>stdmod</code>, which I and my collaborators developed <span class="citation" data-cites="cheung_improving_2022">(Cheung et al., 2022)</span>, can do the standardization right without any major changes to the common workflow.</p>
+</section>
+<section id="how-to-use-std_selected_boot" class="level1">
+<h1>How to Use <code>std_selected_boot()</code></h1>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Workflow
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Fit a regression model by <code>lm()</code> as usual.</p></li>
+<li><p>Pass the output to <code>std_selected()</code> and select variables to be standardized.</p></li>
+</ol>
+</div>
+</div>
+<p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has an additional feature:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What It Won’t Do (Correctly)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It automatically skips factors and string variables in standardization. That is, their dummy variables will never be standardized.</p>
+</div>
+</div>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<section id="do-regression-as-usual" class="level3">
+<h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
+<p>Suppose this is the data set:<sup>1</sup></p>
+<div class="cell">
+<details>
+<summary>Show the code for generating data</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">1453243</span>)</span>
+<span id="cb1-2">n <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">200</span></span>
+<span id="cb1-3">group <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sample</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Gp1"</span>, <span class="st" style="color: #20794D;">"Gp2"</span>, <span class="st" style="color: #20794D;">"Gp3"</span>),</span>
+<span id="cb1-4">                <span class="at" style="color: #657422;">size =</span> n,</span>
+<span id="cb1-5">                <span class="at" style="color: #657422;">prob =</span> <span class="fu" style="color: #4758AB;">c</span>(.<span class="dv" style="color: #AD0000;">30</span>, .<span class="dv" style="color: #AD0000;">20</span>, .<span class="dv" style="color: #AD0000;">50</span>),</span>
+<span id="cb1-6">                <span class="at" style="color: #657422;">replace =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb1-7">x1 <span class="ot" style="color: #003B4F;">&lt;-</span> (<span class="fu" style="color: #4758AB;">rchisq</span>(n, <span class="dv" style="color: #AD0000;">2</span>) <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">2</span>) <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">4</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">10</span></span>
+<span id="cb1-8">x2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">runif</span>(n, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">10</span>)</span>
+<span id="cb1-9">y <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">10</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="fl" style="color: #AD0000;">0.45</span> <span class="sc" style="color: #5E5E5E;">/</span> <span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">*</span> x1 <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">4</span> <span class="sc" style="color: #5E5E5E;">/</span> <span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">*</span> x2 <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">sapply</span>(group, <span class="cf" style="color: #003B4F;">switch</span>,</span>
+<span id="cb1-10">                                   <span class="at" style="color: #657422;">Gp1 =</span> <span class="dv" style="color: #AD0000;">1</span>,</span>
+<span id="cb1-11">                                   <span class="at" style="color: #657422;">Gp2 =</span> <span class="dv" style="color: #AD0000;">8</span>,</span>
+<span id="cb1-12">                                   <span class="at" style="color: #657422;">Gp3 =</span> <span class="dv" style="color: #AD0000;">6</span>) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">10</span>)</span>
+<span id="cb1-13">dat <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">x1 =</span> <span class="fu" style="color: #4758AB;">round</span>(x1, <span class="dv" style="color: #AD0000;">2</span>),</span>
+<span id="cb1-14">                  <span class="at" style="color: #657422;">x2 =</span> <span class="fu" style="color: #4758AB;">round</span>(x2, <span class="dv" style="color: #AD0000;">2</span>),</span>
+<span id="cb1-15">                  group,</span>
+<span id="cb1-16">                  <span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">round</span>(y, <span class="dv" style="color: #AD0000;">2</span>))</span>
+<span id="cb1-17"><span class="fu" style="color: #4758AB;">write.csv</span>(dat, <span class="st" style="color: #20794D;">"dat.csv"</span>)</span></code></pre></div>
+</details>
+</div>
+<p>This is the <a href="dat.csv">data file</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">head</span>(dat)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    x1   x2 group     y
+1 9.97 7.84   Gp1 44.99
+2 2.45 5.11   Gp1 47.27
+3 8.50 8.87   Gp2 60.00
+4 4.10 5.60   Gp1 37.05
+5 8.16 7.18   Gp3 45.51
+6 2.53 9.19   Gp1 54.71</code></pre>
+</div>
+</div>
+<p>The variables <code>x1</code> and <code>x2</code> are continuous predictors. The variable <code>group</code> is a string variable, with three possible values: <code>Gp1</code>, <code>Gp2</code>, and <code>Gp3</code>. The outcome variable is <code>y</code>.</p>
+<p>This is the regression model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">lm_out <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(y <span class="sc" style="color: #5E5E5E;">~</span> x1 <span class="sc" style="color: #5E5E5E;">+</span> x2 <span class="sc" style="color: #5E5E5E;">+</span> group, dat)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;">summary</span>(lm_out)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x1 + x2 + group, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-42.755  -7.165   0.355   6.597  25.317 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   9.8205     2.2545   4.356 2.14e-05 ***
+x1            0.4080     0.1021   3.997 9.10e-05 ***
+x2            4.1642     0.3051  13.649  &lt; 2e-16 ***
+groupGp2      6.9809     2.0704   3.372 0.000901 ***
+groupGp3      6.3161     1.7076   3.699 0.000282 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 10.49 on 195 degrees of freedom
+Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
+F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="do-standardization-right" class="level3">
+<h3 class="anchored" data-anchor-id="do-standardization-right">Do Standardization Right</h3>
+<p>Install <code>stdmod</code> and load it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">library</span>(stdmod)</span></code></pre></div>
+</div>
+<p>If we want to standardize all variables except for categorical variables, if any, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<sup>2</sup></p>
+<p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Beware of the <em>t</em>-based SE and CI
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If a variable is standardized, the usual <em>t</em>-based standard errors and confidence intervals of the coefficients that involve it <em>may</em> be biased.<sup>3</sup></p>
+</div>
+</div>
+<p>This is because (a) they do not take into account the sampling variation of the standard deviations used in standardization <span class="citation" data-cites="yuan_biases_2011">(Yuan &amp; Chan, 2011)</span>, and (b) the coefficients with standardization, the “betas”, are not normally distributed (though may be close to). Many statistical programs do not report the confidence intervals for “betas,” for a good reason.</p>
+<p>This is why <code>std_selected_boot()</code> enables nonparametric bootstrapping percentile confidence intervals <em>by default</em>, just in case the bias is large.</p>
+<p>To have stable and reproducible confidence intervals, call <code>set.seed()</code> before calling <code>std_selected_boot()</code> and set <code>nboot</code> to the desired number of bootstrap samples (at least 2000 but 5000 or more is recommended):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">870516</span>)</span>
+<span id="cb7-2">lm_out_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">std_selected_boot</span>(lm_out,</span>
+<span id="cb7-3">                                <span class="at" style="color: #657422;">to_standardize =</span> <span class="sc" style="color: #5E5E5E;">~</span> .,</span>
+<span id="cb7-4">                                <span class="at" style="color: #657422;">nboot =</span> <span class="dv" style="color: #AD0000;">5000</span>)</span></code></pre></div>
+</div>
+<p>We can call <code>summary()</code> as usual to print the results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">summary</span>(lm_out_std)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call to std_selected_boot():
+std_selected_boot(lm_out = lm_out, to_standardize = ~., nboot = 5000)
+
+Selected variable(s) are centered by mean and/or scaled by SD
+- Variable(s) centered: y x1 x2 group
+- Variable(s) scaled: y x1 x2 group
+
+      centered_by scaled_by                            Note
+y        40.36635 15.286176 Standardized (mean = 0, SD = 1)
+x1        9.41020  7.342158 Standardized (mean = 0, SD = 1)
+x2        5.35520  2.454193 Standardized (mean = 0, SD = 1)
+group          NA        NA Nonnumeric                     
+
+Note:
+- Categorical variables will not be centered or scaled even if
+  requested.
+- Nonparametric bootstrapping 95% confidence intervals computed.
+- The number of bootstrap samples is 5000.
+
+Call:
+lm(formula = y ~ x1 + x2 + group, data = dat_mod)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.79695 -0.46875  0.02324  0.43155  1.65619 
+
+Coefficients:
+            Estimate CI Lower CI Upper Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.28825 -0.42260 -0.16397    0.08545  -3.374 0.000895 ***
+x1           0.19598  0.10064  0.28696    0.04903   3.997  9.1e-05 ***
+x2           0.66856  0.58901  0.73888    0.04898  13.649  &lt; 2e-16 ***
+groupGp2     0.45668  0.22507  0.68592    0.13544   3.372 0.000901 ***
+groupGp3     0.41319  0.20033  0.63209    0.11171   3.699 0.000282 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.6863 on 195 degrees of freedom
+Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
+F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16
+
+Note:
+- Estimates and their statistics are based on the data after
+  mean-centering, scaling, or standardization.
+- [CI Lower, CI Upper] are bootstrap percentile confidence intervals.
+- Std. Error are not bootstrap SEs.</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The output has one additional section:</p>
+<ul>
+<li>Variables that are standardized<sup>4</sup>, and variables that are not transformed.</li>
+</ul>
+<p>The other sections are similar to those of a usual multiple regression. Note that the column <code>Estimate</code> is intentionally <em>not</em> labelled as <code>Beta</code> because it is possible that only some variables are standardized. Labelling it as <code>Beta</code>, though common, is misleading.</p>
+</section>
+<section id="interpret-the-output" class="level3">
+<h3 class="anchored" data-anchor-id="interpret-the-output">Interpret The Output</h3>
+<p>In the regression output, because <code>y</code>, <code>x1</code>, and <code>x2</code> are standardized, they are the usual “betas.” However, <code>group</code> is not standardized and so <code>groupGp2</code> and <code>groupGp3</code> still take only two possible values, 0 and 1, and so can still be interpreted as usual.</p>
+<p>For example, the coefficient of <code>groupGp2</code> is 0.457. That is, compared to <code>Gp1</code>, the reference group, the predicted value of <code>y</code> is 0.457 SD (of <code>y</code>) higher in <code>Gp2</code>.</p>
+<p>On the other hand, the coefficient of <code>groupGp3</code> is 0.413. That is, compared to <code>Gp1</code>, the predicted value of <code>y</code> is 0.413 SD (of <code>y</code>) higher in <code>Gp3</code>.</p>
+<p>In short, the coefficients of all dummy variables can be interpreted as usual, though the difference in the outcome variable (dependent variable) is in SD of this variable if it is standardized.</p>
+</section>
+</section>
+</section>
+<section id="why-the-common-practice-is-problematic" class="level1">
+<h1>Why The Common Practice Is Problematic</h1>
+<section id="standardize-all-variables" class="level2">
+<h2 class="anchored" data-anchor-id="standardize-all-variables">Standardize All Variables</h2>
+<p>Assume that we standardize <em>all</em> variables, including the dummy variables, as in some statistical program. To simulate this, I manually create the dummy variables, standardize them, and do regression:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">dat<span class="sc" style="color: #5E5E5E;">$</span>groupGp2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb10-2">dat<span class="sc" style="color: #5E5E5E;">$</span>groupGp3 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb10-3">dat<span class="sc" style="color: #5E5E5E;">$</span>groupGp2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ifelse</span>(dat<span class="sc" style="color: #5E5E5E;">$</span>group <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Gp2"</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>)</span>
+<span id="cb10-4">dat<span class="sc" style="color: #5E5E5E;">$</span>groupGp3 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ifelse</span>(dat<span class="sc" style="color: #5E5E5E;">$</span>group <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Gp3"</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>)</span>
+<span id="cb10-5">dat_std <span class="ot" style="color: #003B4F;">&lt;-</span> dat[, <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"x1"</span>, <span class="st" style="color: #20794D;">"x2"</span>, <span class="st" style="color: #20794D;">"groupGp2"</span>, <span class="st" style="color: #20794D;">"groupGp3"</span>, <span class="st" style="color: #20794D;">"y"</span>)]</span>
+<span id="cb10-6">dat_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(<span class="fu" style="color: #4758AB;">scale</span>(dat_std))</span>
+<span id="cb10-7"><span class="fu" style="color: #4758AB;">head</span>(dat_std)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           x1          x2   groupGp2   groupGp3          y
+1  0.07624462  1.01247114 -0.5220306 -0.9206479  0.3024726
+2 -0.94797747 -0.09991063 -0.5220306 -0.9206479  0.4516270
+3 -0.12396901  1.43216096  1.9060186 -0.9206479  1.2844056
+4 -0.72324789  0.09974764 -0.5220306 -0.9206479 -0.2169509
+5 -0.17027692  0.74354368 -0.5220306  1.0807606  0.3364903
+6 -0.93708149  1.56255004 -0.5220306 -0.9206479  0.9383413</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">psych<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">describe</span>(dat_std, <span class="at" style="color: #657422;">range =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">skew =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         vars   n mean sd   se
+x1          1 200    0  1 0.07
+x2          2 200    0  1 0.07
+groupGp2    3 200    0  1 0.07
+groupGp3    4 200    0  1 0.07
+y           5 200    0  1 0.07</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">lm_out_std_wrong <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(y <span class="sc" style="color: #5E5E5E;">~</span> x1 <span class="sc" style="color: #5E5E5E;">+</span> x2 <span class="sc" style="color: #5E5E5E;">+</span> groupGp2 <span class="sc" style="color: #5E5E5E;">+</span> groupGp3, dat_std)</span></code></pre></div>
+</details>
+</div>
+<p>The following results are what found in common statistical programs that standardize all variables, including the dummy variables, to yield the “betas”:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;">printCoefmat</span>(<span class="fu" style="color: #4758AB;">summary</span>(lm_out_std_wrong)<span class="sc" style="color: #5E5E5E;">$</span>coefficients,</span>
+<span id="cb15-2">             <span class="at" style="color: #657422;">zap.ind =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb15-3">             <span class="at" style="color: #657422;">P.values =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 0.000000   0.048525  0.0000  1.00000    
+x1          0.195980   0.049034  3.9968    9e-05 ***
+x2          0.668560   0.048983 13.6488  &lt; 2e-16 ***
+groupGp2    0.188080   0.055783  3.3717  0.00090 ***
+groupGp3    0.206450   0.055817  3.6987  0.00028 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>Let us compare the results.</p>
+<section id="p-values" class="level3">
+<h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
+<p>The <em>p</em>-values are the same, which is expected:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">coef_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">summary</span>(lm_out_std)<span class="sc" style="color: #5E5E5E;">$</span>coefficients</span>
+<span id="cb17-2">coef_std_wrong <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">summary</span>(lm_out_std_wrong)<span class="sc" style="color: #5E5E5E;">$</span>coefficients</span>
+<span id="cb17-3"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">cbind</span>(<span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">p-value (Std Selected)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std[, <span class="st" style="color: #20794D;">"Pr(&gt;|t|)"</span>],</span>
+<span id="cb17-4">            <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">p-value (Std All)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std_wrong[, <span class="st" style="color: #20794D;">"Pr(&gt;|t|)"</span>]), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            p-value (Std Selected) p-value (Std All)
+(Intercept)                  0.001             1.000
+x1                           0.000             0.000
+x2                           0.000             0.000
+groupGp2                     0.001             0.001
+groupGp3                     0.000             0.000</code></pre>
+</div>
+</div>
+</section>
+<section id="coefficient-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
+<p>However, the coefficients for the dummy variables are different:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">cbind</span>(<span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">Estimate (Std Selected)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std[, <span class="st" style="color: #20794D;">"Estimate"</span>],</span>
+<span id="cb19-2">            <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">Estimate (Std All)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std_wrong[, <span class="st" style="color: #20794D;">"Estimate"</span>]), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate (Std Selected) Estimate (Std All)
+(Intercept)                  -0.288              0.000
+x1                            0.196              0.196
+x2                            0.669              0.669
+groupGp2                      0.457              0.188
+groupGp3                      0.413              0.206</code></pre>
+</div>
+</div>
+<p>The coefficients of <code>groupGp2</code> and <code>groupGp3</code>, when they are standardized, are not meaningful. After standardization, they are no longer either 0 or 1.</p>
+<p>For example, the so-called “beta” of <code>groupGp2</code>, 0.188, is <em>not</em> the difference between <code>Gp2</code> and <code>Gp1</code> on standardized <code>y</code>. It is the increase in standardized <code>y</code> when <code>groupGp2</code> “increases by one SD”, which is meaningless.</p>
+<p>What’s worse, the ranking of the coefficients changed. If we interpret the coefficients with dummy variables not standardized, the <code>Gp2 vs. Gp1</code> difference is larger than the <code>Gp3 vs. Gp1</code> difference (0.457 vs 0.413).</p>
+<p>However, if we interpret the coefficients with dummy variables standardized, we would have a different conclusion: the <code>Gp2 vs. Gp1</code> difference is <em>smaller</em> than the <code>Gp3 vs. Gp1</code> difference (0.188 vs 0.206), though only slightly.</p>
+<p>The reason is, there are more cases in <code>Gp3</code> than in <code>Gp2</code>. The differences in the SDs of the dummy variables are large enough to reverse the ranking:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;">table</span>(dat<span class="sc" style="color: #5E5E5E;">$</span>group)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Gp1 Gp2 Gp3 
+ 65  43  92 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;">sd</span>(dat<span class="sc" style="color: #5E5E5E;">$</span>groupGp2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4118533</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;">sd</span>(dat<span class="sc" style="color: #5E5E5E;">$</span>groupGp3)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4996481</code></pre>
+</div>
+</div>
+<p>I created the data to demonstrate that this reversal in ranking is <em>possible</em>. This may not happen in real data. However, having groups with different numbers of cases is probably the norm rather than the exception in real data.<sup>5</sup></p>
+</section>
+</section>
+<section id="use-t-statistics-confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="use-t-statistics-confidence-intervals">Use <em>t</em> Statistics Confidence Intervals</h2>
+<p>Some programs gives confidence intervals of “betas” using <em>t</em> statistics. That is, standardize variables, do regression, and form the confidence intervals, as if the standardized variables were the original data.</p>
+<p>Let us compare the bootstrap confidence intervals with the usual OLS confidence intervals based on the <em>t</em>-statistics.</p>
+<p>For the output of <code>std_selected_boot()</code>, we can request the <em>t</em>-based confidence intervals by setting <code>type</code> to <code>"lm"</code> when calling <code>confint()</code>, the function commonly used to form confidence intervals:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;"># OLS confidence intervals</span></span>
+<span id="cb27-2"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">confint</span>(lm_out_std, <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"lm"</span>), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.457 -0.120
+x1           0.099  0.293
+x2           0.572  0.765
+groupGp2     0.190  0.724
+groupGp3     0.193  0.634</code></pre>
+</div>
+</div>
+<p>Without setting <code>type</code>, the nonparametric bootstrap confidence intervals are returned (if available):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="co" style="color: #5E5E5E;"># Bootstrap Confidence Intervals</span></span>
+<span id="cb29-2"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">confint</span>(lm_out_std), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.423 -0.164
+x1           0.101  0.287
+x2           0.589  0.739
+groupGp2     0.225  0.686
+groupGp3     0.200  0.632</code></pre>
+</div>
+</div>
+<p>As shown above, the confidence intervals of <code>x1</code> by the two methods are close to each other. However, the bootstrap confidence interval of <code>x2</code> is narrower than the <em>t</em>-based confidence interval.</p>
+<p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">ci_t <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">confint</span>(lm_out_std, <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"lm"</span>)</span>
+<span id="cb31-2">ci_b <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">confint</span>(lm_out_std)</span>
+<span id="cb31-3">width_t <span class="ot" style="color: #003B4F;">&lt;-</span> ci_t[, <span class="dv" style="color: #AD0000;">2</span>] <span class="sc" style="color: #5E5E5E;">-</span> ci_t[, <span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb31-4">width_b <span class="ot" style="color: #003B4F;">&lt;-</span> ci_b[, <span class="dv" style="color: #AD0000;">2</span>] <span class="sc" style="color: #5E5E5E;">-</span> ci_b[, <span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb31-5">ci_compare <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">CI_Width_t =</span> width_t,</span>
+<span id="cb31-6">                         <span class="at" style="color: #657422;">CI_Width_boot =</span> width_b)</span>
+<span id="cb31-7">ci_compare<span class="sc" style="color: #5E5E5E;">$</span>ratio <span class="ot" style="color: #003B4F;">&lt;-</span> ci_compare[, <span class="dv" style="color: #AD0000;">1</span>] <span class="sc" style="color: #5E5E5E;">/</span> ci_compare[, <span class="dv" style="color: #AD0000;">2</span>]</span>
+<span id="cb31-8"><span class="fu" style="color: #4758AB;">round</span>(ci_compare, <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            CI_Width_t CI_Width_boot ratio
+(Intercept)      0.337         0.259 1.303
+x1               0.193         0.186 1.038
+x2               0.193         0.150 1.289
+groupGp2         0.534         0.461 1.159
+groupGp3         0.441         0.432 1.021</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The widths of the confidence intervals are nearly identical for <code>x1</code>. However, for <code>x2</code>, the <em>t</em>-based confidence interval is nearly 28.9% wider than the bootstrap confidence interval.</p>
+<p>For <code>groupGp2</code>, even though dummy variable is correctly not standardized, it can still be affected because the outcome variable, <code>y</code>, is standardized. Its <em>t</em>-based confidence interval is also wider than the bootstrap confidence interval by about 15.9%.</p>
+</section>
+</section>
+<section id="final-remarks" class="level1">
+<h1>Final Remarks</h1>
+<p>What <code>std_selected_boot()</code> does can be implemented in R code by researchers using base R packages only. The function was developed to make it easier for researchers to do standardization right, without adopting the all-or-none approach.</p>
+<p>More information on <code>std_selected_boot()</code> can be found from its <a href="https://sfcheung.github.io/stdmod/reference/std_selected.html">help page</a>.</p>
+</section>
+<section id="other-resources" class="level1">
+<h1>Other Resources</h1>
+<p>There are other program or function that also correctly skip categorical variables when doing standardization. For example, the linear regression procedure in <a href="https://www.jamovi.org/">jamovi</a> also do not standardized the dummy variables formed from categorical variables when standardized estimates are requested.</p>
+<p>For confidence intervals, other methods have also been proposed to take into account the sampling variability of the standard deviations. Examples are the methods proposed by <span class="citation" data-cites="dudgeon_improvements_2017">Dudgeon (2017)</span> and <span class="citation" data-cites="jones_computing_2013">Jones &amp; Waller (2013)</span>, in addition to the one proposed by <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span>.</p>
+</section>
+<section id="references" class="level1">
+
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2">
+<div id="ref-cheung_improving_2022" class="csl-entry">
+Cheung, S. F., Cheung, S.-H., Lau, E. Y. Y., Hui, C. H., &amp; Vong, W. N. (2022). Improving an old way to measure moderation effect in standardized units. <em>Health Psychology</em>, <em>41</em>(7), 502–505. <a href="https://doi.org/10.1037/hea0001188">https://doi.org/10.1037/hea0001188</a>
+</div>
+<div id="ref-dudgeon_improvements_2017" class="csl-entry">
+Dudgeon, P. (2017). Some improvements in confidence intervals for standardized regression coefficients. <em>Psychometrika</em>, <em>82</em>(4), 928–951. <a href="https://doi.org/10.1007/s11336-017-9563-z">https://doi.org/10.1007/s11336-017-9563-z</a>
+</div>
+<div id="ref-jones_computing_2013" class="csl-entry">
+Jones, J. A., &amp; Waller, N. G. (2013). Computing confidence intervals for standardized regression coefficients. <em>Psychological Methods</em>, <em>18</em>(4), 435–453. <a href="https://doi.org/10.1037/a0033269">https://doi.org/10.1037/a0033269</a>
+</div>
+<div id="ref-yuan_biases_2011" class="csl-entry">
+Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized regression coefficients. <em>Psychometrika</em>, <em>76</em>(4), 670–690. <a href="https://doi.org/10.1007/s11336-011-9224-6">https://doi.org/10.1007/s11336-011-9224-6</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><code>x1</code> and <code>x2</code> are intentionally generated from nonnormal distributions, for illustration. Note that OLS (ordinary least squares) regression does <em>not</em> assume that the predictors are multivariate normal. Using nonnormal predictors violate no assumptions of OLS regression.↩︎</p></li>
+<li id="fn2"><p>Suppose we only want to standardize <code>x1</code> and <code>y</code>, because <code>x2</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x1 + y</code>. Order does not matter.↩︎</p></li>
+<li id="fn3"><p>Note that there are indeed cases in which they are still unbiased, and cases in which the biases are negligible. See <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span> for a detailed discussion.↩︎</p></li>
+<li id="fn4"><p><code>std_selected()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.↩︎</p></li>
+<li id="fn5"><p>It can be argued that size differences should be taken into account. They should be, but probably not by standardizing the dummy variables and making the coefficients not interpretable.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>R</category>
+  <category>regression</category>
+  <category>categorical variables</category>
+  <category>stdmod</category>
+  <category>standardized</category>
+  <category>bootstrapping</category>
+  <category>confidence-intervals</category>
+  <guid>https://blogonresearch.github.io/posts/std_dummy/index.html</guid>
+  <pubDate>Sat, 24 Jun 2023 16:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Bootstrap Confidence Intervals for Standardized Solution in lavaan</title>
   <dc:creator>Shu Fai Cheung</dc:creator>

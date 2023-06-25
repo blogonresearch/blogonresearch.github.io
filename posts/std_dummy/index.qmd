@@ -1,0 +1,549 @@
+---
+title: "Standardize Variables Except For Dummy Variables, Using std_selected_boot()"
+author: "Shu Fai Cheung"
+date: '2023-06-25'
+categories: ["R", "regression", "categorical variables", "stdmod", "standardized", "bootstrapping", "confidence-intervals"]
+bibliography: references.bib
+csl: apa.csl
+---
+
+This post shows one simple way
+to get meaningful standardized
+regression coefficients in
+multiple linear regression
+with dummy variables,
+with
+appropriate confidence
+intervals, using `std_selected_boot()` from
+the [`stdmod`](https://sfcheung.github.io/stdmod/) package.
+
+# "Betas"
+
+It is common in my area, psychology, to
+report standardized coefficients, the
+so-called "betas," when reporting the
+results of multiple
+regression or related methods. It is so
+common that some programs have the "betas"
+reported by default, alongside the
+unstandardized coefficients (the "Bs").
+However, even if it is justifiable to
+interpret
+effects of some variables
+in the standardized metric,
+dummy variables, if any, should still
+not be standardized;
+
+::: {.callout-warning}
+## Dummy Variables Standardized Are No Longer Dummy Variables
+The dummy variable can
+no longer be interpreted as a dummy variable
+because it no longer takes either 0 or 1.
+:::
+
+So, the "betas" for dummy variables,
+though maybe not "wrong", are
+*not interpretable*.
+
+Unfortunately, standardizing
+them is
+quite common (including in my
+own work).
+
+The solutions are simple:
+
+::: {.callout-tip}
+## Do Not Standardize Dummy Variables
+Standardize
+other variables *except* for the dummy
+variables.
+:::
+
+However, common statistical programs
+standardize *all* variables. No
+choice. All or none.
+
+To do
+standardization *right* when
+dummy variables are present,
+we need to *manually*
+do the standardization. Doable
+but inconvenient.
+
+The function `std_selected_boot()` from the
+R package `stdmod`, which I and my
+collaborators developed
+[@cheung_improving_2022],
+can do the standardization right
+without any major changes
+to the common workflow.
+
+# How to Use `std_selected_boot()`
+
+::: {.callout-tip}
+## Workflow
+1. Fit a regression model by `lm()` as
+  usual.
+
+2. Pass the output to `std_selected()`
+and select variables to be standardized.
+:::
+
+It was designed to let
+users have full control on which variables
+to standardize (see this
+[article](https://sfcheung.github.io/stdmod/articles/std_selected.html) on how).
+It has an additional feature:
+
+::: {.callout-note}
+## What It Won't Do (Correctly)
+It automatically skips factors and string variables
+  in standardization. That is,
+  their dummy variables will never be standardized.
+:::
+
+## Example
+
+### Do Regression As Usual
+
+Suppose this is the data set:[^nonnormal]
+
+[^nonnormal]: `x1` and `x2` are intentionally
+generated from nonnormal distributions, for
+illustration. Note that OLS
+(ordinary least squares) regression
+does *not* assume that the predictors
+are multivariate normal. Using nonnormal
+predictors violate no assumptions of
+OLS regression.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code for generating data"
+set.seed(1453243)
+n <- 200
+group <- sample(c("Gp1", "Gp2", "Gp3"),
+                size = n,
+                prob = c(.30, .20, .50),
+                replace = TRUE)
+x1 <- (rchisq(n, 2) - 2) * 4 + 10
+x2 <- runif(n, 1, 10)
+y <- 10 + 0.45 / 1 * x1 + 4 / 1 * x2 + sapply(group, switch,
+                                   Gp1 = 1,
+                                   Gp2 = 8,
+                                   Gp3 = 6) + rnorm(n, 0, 10)
+dat <- data.frame(x1 = round(x1, 2),
+                  x2 = round(x2, 2),
+                  group,
+                  y = round(y, 2))
+write.csv(dat, "dat.csv")
+```
+
+This is the [data file](dat.csv).
+
+```{r}
+head(dat)
+```
+
+The variables `x1` and `x2` are continuous
+predictors. The variable `group` is
+a string variable, with three possible
+values: `Gp1`, `Gp2`, and `Gp3`.
+The outcome variable is `y`.
+
+This is the regression model:
+
+```{r}
+lm_out <- lm(y ~ x1 + x2 + group, dat)
+summary(lm_out)
+```
+
+### Do Standardization Right
+
+Install `stdmod` and load it:
+
+```{r}
+library(stdmod)
+```
+
+If we want to standardize all variables
+except for categorical variables, if any,
+we just pass the output to `std_selected_boot()`,
+and set `to_standardize` to `~ .`. The
+right-hand side of `~` denotes the variables
+to be standardized. If set to `.`, then
+all numeric variables, including the
+outcome variable (`y`),
+will be standardized.[^selectsome]
+
+[^selectsome]: Suppose we only want to
+standardize `x1` and `y`, because `x2`
+is on a meaningful unit, we can
+set `to_standardize` to `~ x1 + y`.
+Order does not matter.
+
+But this is not just about the coefficient.
+There is one issue with standardization:
+**confidence intervals**.
+
+::: {.callout-warning}
+## Beware of the *t*-based SE and CI
+If a variable is standardized, the
+usual *t*-based standard errors and
+confidence intervals of the
+coefficients that involve it *may* be
+biased.[^biased]
+:::
+
+[^biased]: Note that there are indeed
+cases in which they are still unbiased,
+and cases in which the biases are
+negligible. See @yuan_biases_2011
+for a detailed discussion.
+
+This is because
+(a) they do not take into account the
+sampling variation of the standard deviations
+used in standardization [@yuan_biases_2011],
+and (b) the coefficients with standardization,
+the "betas", are not normally distributed
+(though may be close to). Many statistical
+programs do not report the confidence
+intervals for "betas," for a good reason.
+
+This is why `std_selected_boot()` enables
+nonparametric bootstrapping percentile
+confidence
+intervals *by default*, just in case
+the bias is large.
+
+To have stable
+and reproducible confidence intervals,
+call `set.seed()` before calling
+`std_selected_boot()` and set `nboot`
+to the desired number of bootstrap
+samples (at least 2000 but 5000
+or more is recommended):
+
+```{r}
+set.seed(870516)
+lm_out_std <- std_selected_boot(lm_out,
+                                to_standardize = ~ .,
+                                nboot = 5000)
+```
+
+We can call `summary()` as usual to
+print the results:
+
+```{r}
+summary(lm_out_std)
+```
+
+```{r}
+#| echo: false
+lm_out_std_coef <- coef(lm_out_std)
+b_std_Gp2 <- lm_out_std_coef["groupGp2"]
+b_std_Gp2_text <- formatC(b_std_Gp2, digits = 3, format = "f")
+b_std_Gp2_abs_text <- formatC(abs(b_std_Gp2), digits = 3, format = "f")
+b_std_Gp3 <- lm_out_std_coef["groupGp3"]
+b_std_Gp3_text <- formatC(b_std_Gp3, digits = 3, format = "f")
+b_std_Gp3_abs_text <- formatC(abs(b_std_Gp3), digits = 3, format = "f")
+```
+
+The output has one additional section:
+
+- Variables that are standardized[^std], and variables that are not transformed.
+
+[^std]: `std_selected()` allows users to
+do only mean-centering or scaling by
+standard deviation. Meaning-centering
+and than scaling by standard deviation
+is equivalent to standardization.
+
+The other sections are similar to those
+of a usual multiple regression.
+Note that the column `Estimate` is
+intentionally *not* labelled as `Beta`
+because it is possible that only some
+variables are standardized. Labelling
+it as `Beta`, though common, is
+misleading.
+
+### Interpret The Output
+
+In the regression output, because `y`,
+`x1`, and `x2` are standardized, they
+are the usual "betas." However, `group`
+is not standardized and so `groupGp2` and
+`groupGp3` still take only two possible
+values, 0 and 1, and so can still be
+interpreted as usual.
+
+For example, the coefficient of
+`groupGp2` is `r b_std_Gp2_text`. That
+is, compared to `Gp1`, the reference
+group, the predicted value of `y` is
+`r b_std_Gp2_abs_text` SD (of `y`)
+higher in `Gp2`.
+
+On the other hand, the coefficient of
+`groupGp3` is `r b_std_Gp3_text`. That
+is, compared to `Gp1`, the predicted
+value of `y` is `r b_std_Gp3_abs_text`
+SD (of `y`) higher in `Gp3`.
+
+In short, the coefficients of all dummy
+variables can be interpreted as usual,
+though the difference in the outcome
+variable (dependent variable) is in SD
+of this variable if it is standardized.
+
+# Why The Common Practice Is Problematic
+
+## Standardize All Variables
+
+Assume that we standardize *all*
+variables, including the dummy
+variables, as in some statistical
+program. To simulate this, I
+manually create the dummy variables,
+standardize them, and do regression:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+dat$groupGp2 <- 0
+dat$groupGp3 <- 0
+dat$groupGp2 <- ifelse(dat$group == "Gp2", 1, 0)
+dat$groupGp3 <- ifelse(dat$group == "Gp3", 1, 0)
+dat_std <- dat[, c("x1", "x2", "groupGp2", "groupGp3", "y")]
+dat_std <- as.data.frame(scale(dat_std))
+head(dat_std)
+psych::describe(dat_std, range = FALSE, skew = FALSE)
+lm_out_std_wrong <- lm(y ~ x1 + x2 + groupGp2 + groupGp3, dat_std)
+```
+
+The following results are what found
+in common statistical programs that
+standardize all variables, including
+the dummy variables, to yield the "betas":
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+printCoefmat(summary(lm_out_std_wrong)$coefficients,
+             zap.ind = 1:4,
+             P.values = TRUE)
+```
+
+```{r}
+#| echo: false
+lm_out_std_wrong_coef <- coef(lm_out_std_wrong)
+b_std_wrong_Gp2 <- lm_out_std_wrong_coef["groupGp2"]
+b_std_wrong_Gp2_text <- formatC(b_std_wrong_Gp2, digits = 3, format = "f")
+b_std_wrong_Gp2_abs_text <- formatC(abs(b_std_wrong_Gp2), digits = 3, format = "f")
+b_std_wrong_Gp3 <- lm_out_std_wrong_coef["groupGp3"]
+b_std_wrong_Gp3_text <- formatC(b_std_wrong_Gp3, digits = 3, format = "f")
+b_std_wrong_Gp3_abs_text <- formatC(abs(b_std_wrong_Gp3), digits = 3, format = "f")
+```
+
+Let us compare the results.
+
+### *p*-values
+
+The *p*-values are the same, which is expected:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+coef_std <- summary(lm_out_std)$coefficients
+coef_std_wrong <- summary(lm_out_std_wrong)$coefficients
+round(cbind(`p-value (Std Selected)` = coef_std[, "Pr(>|t|)"],
+            `p-value (Std All)` = coef_std_wrong[, "Pr(>|t|)"]), 3)
+```
+
+### Coefficient Estimates
+
+However, the coefficients for the dummy
+variables are
+different:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+round(cbind(`Estimate (Std Selected)` = coef_std[, "Estimate"],
+            `Estimate (Std All)` = coef_std_wrong[, "Estimate"]), 3)
+```
+
+The coefficients of `groupGp2`
+and `groupGp3`, when they are standardized,
+are not meaningful.
+After standardization,
+they are no longer either 0 or 1.
+
+For example, the so-called "beta"
+of `groupGp2`, `r b_std_wrong_Gp2_text`,
+is *not* the difference between
+`Gp2` and `Gp1` on standardized `y`.
+It is the increase in standardized `y`
+when `groupGp2` "increases by one SD",
+which is meaningless.
+
+What's worse, the ranking of the
+coefficients changed. If we interpret
+the coefficients with dummy variables not
+standardized, the `Gp2 vs. Gp1`
+difference is larger than the
+`Gp3 vs. Gp1` difference
+(`r b_std_Gp2_text` vs `r b_std_Gp3_text`).
+
+However, if we interpret the coefficients
+with dummy variables standardized,
+we would have a different conclusion:
+the `Gp2 vs. Gp1`
+difference is *smaller* than the
+`Gp3 vs. Gp1` difference
+(`r b_std_wrong_Gp2_text` vs `r b_std_wrong_Gp3_text`),
+though only slightly.
+
+The reason is, there are more cases in
+`Gp3` than in `Gp2`. The differences
+in the SDs of the dummy variables are
+large enough to reverse the ranking:
+
+```{r}
+table(dat$group)
+sd(dat$groupGp2)
+sd(dat$groupGp3)
+```
+
+I created the data to
+demonstrate that this reversal in ranking
+is *possible*.
+This may not happen in real data. However,
+having groups with different numbers of
+cases is probably the norm rather than
+the exception in real data.[^stdok]
+
+[^stdok]: It can be argued that size
+differences
+should be taken into account. They
+should be, but probably not by
+standardizing the dummy variables and
+making the coefficients not interpretable.
+
+## Use *t* Statistics Confidence Intervals
+
+Some programs gives confidence intervals
+of "betas" using *t* statistics. That is,
+standardize variables, do regression,
+and form the confidence intervals,
+as if the standardized variables
+were the original data.
+
+Let us compare the bootstrap confidence
+intervals with the usual OLS confidence
+intervals based on the *t*-statistics.
+
+For the output of `std_selected_boot()`,
+we can request the *t*-based confidence
+intervals by setting `type` to
+`"lm"` when calling `confint()`, the
+function commonly used to form
+confidence intervals:
+
+```{r}
+# OLS confidence intervals
+round(confint(lm_out_std, type = "lm"), 3)
+```
+
+Without setting `type`, the
+nonparametric bootstrap confidence
+intervals are returned (if available):
+
+```{r}
+# Bootstrap Confidence Intervals
+round(confint(lm_out_std), 3)
+```
+
+As shown above, the confidence
+intervals of `x1` by the two methods
+are close to each other. However,
+the bootstrap confidence interval
+of `x2` is narrower than the
+*t*-based confidence interval.
+
+We can compare the widths of the
+confidence intervals by examining
+their ratios (`ratio` = `CI_Width_t` / `CI_Width_boot`):
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ci_t <- confint(lm_out_std, type = "lm")
+ci_b <- confint(lm_out_std)
+width_t <- ci_t[, 2] - ci_t[, 1]
+width_b <- ci_b[, 2] - ci_b[, 1]
+ci_compare <- data.frame(CI_Width_t = width_t,
+                         CI_Width_boot = width_b)
+ci_compare$ratio <- ci_compare[, 1] / ci_compare[, 2]
+round(ci_compare, 3)
+```
+
+```{r}
+#| echo: false
+ratio_x2 <- paste0(formatC(ci_compare["x2", "ratio"] * 100 - 100, digits = 1, format = "f"), "%")
+ratio_gp2 <- paste0(formatC(ci_compare["groupGp2", "ratio"] * 100 - 100, digits = 1, format = "f"), "%")
+```
+
+The widths of the
+confidence intervals are nearly identical
+for `x1`. However, for `x2`, the *t*-based
+confidence interval is nearly `r ratio_x2` wider
+than the bootstrap confidence interval.
+
+For `groupGp2`, even though dummy variable
+is correctly not standardized, it can
+still be affected because the outcome
+variable, `y`, is standardized. Its
+*t*-based confidence interval is also wider
+than the bootstrap confidence interval
+by about `r ratio_gp2`.
+
+# Final Remarks
+
+What `std_selected_boot()` does can be
+implemented in R code by researchers using
+base R packages only.
+The function was developed to make
+it easier for researchers to do
+standardization right, without adopting
+the all-or-none approach.
+
+More information on `std_selected_boot()`
+can be found from its
+[help page](https://sfcheung.github.io/stdmod/reference/std_selected.html).
+
+# Other Resources
+
+There are other program or function
+that also correctly skip categorical
+variables when doing standardization.
+For example, the linear regression
+procedure in [jamovi](https://www.jamovi.org/)
+also do not standardized the dummy
+variables formed from categorical
+variables when standardized estimates
+are requested.
+
+For confidence intervals, other methods
+have also been proposed to take into
+account the sampling variability of
+the standard deviations. Examples
+are the methods proposed by @dudgeon_improvements_2017
+and @jones_computing_2013, in addition
+to the one proposed by @yuan_biases_2011.
+
+# References
+
+

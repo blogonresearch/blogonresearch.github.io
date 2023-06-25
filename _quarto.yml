@@ -20,6 +20,8 @@ website:
             url: https://github.com/sfcheung/semfindr
           - text: "stdmod: Standardized moderation"
             url: https://sfcheung.github.io/stdmod/
+          - text: "semlbci: Likelihood-Based Confidence Interval in SEM"
+            url: https://sfcheung.github.io/semlbci/
           - text: "FINDOUT: Influential cases in AMOS"
             url: https://osf.io/dbm5c/
           - text: "DIY Bootstrapping in SPSS"
