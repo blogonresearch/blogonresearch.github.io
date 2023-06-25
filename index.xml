@@ -71,7 +71,7 @@ Workflow
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>Fit a regression model by <code>lm()</code> as usual.</p></li>
-<li><p>Pass the output to <code>std_selected()</code> and select variables to be standardized.</p></li>
+<li><p>Pass the output to <code>std_selected_boot()</code> and select variables to be standardized.</p></li>
 </ol>
 </div>
 </div>
@@ -901,7 +901,7 @@ Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized r
 <li id="fn1"><p><code>x1</code> and <code>x2</code> are intentionally generated from nonnormal distributions, for illustration. Note that OLS (ordinary least squares) regression does <em>not</em> assume that the predictors are multivariate normal. Using nonnormal predictors violate no assumptions of OLS regression.↩︎</p></li>
 <li id="fn2"><p>Suppose we only want to standardize <code>x1</code> and <code>y</code>, because <code>x2</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x1 + y</code>. Order does not matter.↩︎</p></li>
 <li id="fn3"><p>Note that there are indeed cases in which they are still unbiased, and cases in which the biases are negligible. See <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span> for a detailed discussion.↩︎</p></li>
-<li id="fn4"><p><code>std_selected()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.↩︎</p></li>
+<li id="fn4"><p><code>std_selected_boot()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.↩︎</p></li>
 <li id="fn5"><p>It can be argued that size differences should be taken into account. They should be, but probably not by standardizing the dummy variables and making the coefficients not interpretable.↩︎</p></li>
 </ol>
 </section></div> ]]></description>
