@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/std_dummy/index.html",
       "/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html",
       "/posts/show_options_set_by_lavaan/index.html",
       "/posts/my_own_style_in_r/index.html",

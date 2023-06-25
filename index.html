@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.313">
+<meta name="generator" content="quarto-1.3.427">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -60,7 +60,8 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script>
@@ -93,6 +94,7 @@ ul.task-list li input[type="checkbox"] {
   })
   </script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
@@ -112,70 +114,74 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Blogonresearch</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html">
+    <a class="nav-link" href="./about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages-and-other-tools" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages-and-other-tools" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">R Packages and Other Tools</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages-and-other-tools">    
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/manymome/">
+    <a class="dropdown-item" href="https://sfcheung.github.io/manymome/" rel="" target="">
  <span class="dropdown-text">manymome: Mediation, moderation, and moderated mediation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/semhelpinghands/">
+    <a class="dropdown-item" href="https://sfcheung.github.io/semhelpinghands/" rel="" target="">
  <span class="dropdown-text">semhelpinghands: Some helpers for doing SEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/semptools/">
+    <a class="dropdown-item" href="https://sfcheung.github.io/semptools/" rel="" target="">
  <span class="dropdown-text">semptools: Drawing models from lavaan</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/sfcheung/semfindr">
+    <a class="dropdown-item" href="https://github.com/sfcheung/semfindr" rel="" target="">
  <span class="dropdown-text">semfindr: Influential cases in SEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/stdmod/">
+    <a class="dropdown-item" href="https://sfcheung.github.io/stdmod/" rel="" target="">
  <span class="dropdown-text">stdmod: Standardized moderation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://osf.io/dbm5c/">
+    <a class="dropdown-item" href="https://sfcheung.github.io/semlbci/" rel="" target="">
+ <span class="dropdown-text">semlbci: Likelihood-Based Confidence Interval in SEM</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://osf.io/dbm5c/" rel="" target="">
  <span class="dropdown-text">FINDOUT: Influential cases in AMOS</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/sfcheung/diybootstat">
+    <a class="dropdown-item" href="https://github.com/sfcheung/diybootstat" rel="" target="">
  <span class="dropdown-text">DIY Bootstrapping in SPSS</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/blogonresearch"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/blogonresearch" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/blogonresearch"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/blogonresearch" rel="" target=""><i class="bi bi-twitter" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./index.xml"><i class="bi bi-rss" role="img">
+    <a class="nav-link" href="./index.xml" rel="" target=""><i class="bi bi-rss" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
@@ -202,7 +208,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(6)</span></div><div class="category" data-category="blog">blog <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bootstrapping">bootstrapping <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code-style">code-style <span class="quarto-category-count">(1)</span></div><div class="category" data-category="confidence-intervals">confidence-intervals <span class="quarto-category-count">(1)</span></div><div class="category" data-category="gui">gui <span class="quarto-category-count">(2)</span></div><div class="category" data-category="lavaan">lavaan <span class="quarto-category-count">(2)</span></div><div class="category" data-category="moderation">moderation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="semhelpinghands">semhelpinghands <span class="quarto-category-count">(2)</span></div><div class="category" data-category="standardized">standardized <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(7)</span></div><div class="category" data-category="blog">blog <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bootstrapping">bootstrapping <span class="quarto-category-count">(2)</span></div><div class="category" data-category="categorical variables">categorical variables <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code-style">code-style <span class="quarto-category-count">(1)</span></div><div class="category" data-category="confidence-intervals">confidence-intervals <span class="quarto-category-count">(2)</span></div><div class="category" data-category="gui">gui <span class="quarto-category-count">(2)</span></div><div class="category" data-category="lavaan">lavaan <span class="quarto-category-count">(2)</span></div><div class="category" data-category="moderation">moderation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="semhelpinghands">semhelpinghands <span class="quarto-category-count">(2)</span></div><div class="category" data-category="standardized">standardized <span class="quarto-category-count">(2)</span></div><div class="category" data-category="stdmod">stdmod <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
@@ -215,13 +221,62 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,lavaan,bootstrapping,confidence-intervals,semhelpinghands,standardized" data-listing-date-sort="1664323200000" data-listing-file-modified-sort="1674923081902" data-listing-reading-time-sort="4.245">
+<div class="quarto-post image-right" data-index="0" data-categories="R,regression,categorical variables,stdmod,standardized,bootstrapping,confidence-intervals" data-listing-date-sort="1687651200000" data-listing-file-modified-sort="1687669669714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
 <div class="thumbnail">
-<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html">
-<div class="thumbnail-image">
+<p><a href="./posts/std_dummy/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./posts/std_dummy/index.html">
+<h3 class="no-anchor listing-title">
+Standardize Variables Except For Dummy Variables, Using std_selected_boot()
+</h3>
+<div class="listing-subtitle">
 
 </div>
-</a><p><a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html"></a></p>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('regression'); return false;">
+regression
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('categorical variables'); return false;">
+categorical variables
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('stdmod'); return false;">
+stdmod
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('standardized'); return false;">
+standardized
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('bootstrapping'); return false;">
+bootstrapping
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('confidence-intervals'); return false;">
+confidence-intervals
+</div>
+</div>
+<a href="./posts/std_dummy/index.html">
+<div class="listing-description">
+This…<code></code><code></code>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/std_dummy/index.html">
+<div class="listing-date">
+Sunday, June 25, 2023
+</div>
+<div class="listing-author">
+Shu Fai Cheung
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="R,lavaan,bootstrapping,confidence-intervals,semhelpinghands,standardized" data-listing-date-sort="1664323200000" data-listing-file-modified-sort="1687669669698" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="thumbnail">
+<p><a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html"> <p class="card-img-top"><img src="posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-1.png"  class="thumbnail-image card-img"/></p> </a></p>
 </div>
 <div class="body">
 <a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html">
@@ -269,13 +324,9 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,lavaan,semhelpinghands" data-listing-date-sort="1664150400000" data-listing-file-modified-sort="1674923081918" data-listing-reading-time-sort="3.515">
+<div class="quarto-post image-right" data-index="2" data-categories="R,lavaan,semhelpinghands" data-listing-date-sort="1664150400000" data-listing-file-modified-sort="1687669669714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
 <div class="thumbnail">
-<a href="./posts/show_options_set_by_lavaan/index.html">
-<div class="thumbnail-image">
-
-</div>
-</a><p><a href="./posts/show_options_set_by_lavaan/index.html"></a></p>
+<p><a href="./posts/show_options_set_by_lavaan/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
 </div>
 <div class="body">
 <a href="./posts/show_options_set_by_lavaan/index.html">
@@ -314,13 +365,9 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="R,code-style" data-listing-date-sort="1663977600000" data-listing-file-modified-sort="1674923081918" data-listing-reading-time-sort="2.905">
+<div class="quarto-post image-right" data-index="3" data-categories="R,code-style" data-listing-date-sort="1663977600000" data-listing-file-modified-sort="1687669669714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
 <div class="thumbnail">
-<a href="./posts/my_own_style_in_r/index.html">
-<div class="thumbnail-image">
-
-</div>
-</a><p><a href="./posts/my_own_style_in_r/index.html"></a></p>
+<p><a href="./posts/my_own_style_in_r/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
 </div>
 <div class="body">
 <a href="./posts/my_own_style_in_r/index.html">
@@ -356,9 +403,9 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,gui" data-listing-date-sort="1663632000000" data-listing-file-modified-sort="1674923081902" data-listing-reading-time-sort="3.445">
+<div class="quarto-post image-right" data-index="4" data-categories="R,gui" data-listing-date-sort="1663632000000" data-listing-file-modified-sort="1687669669698" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
 <div class="thumbnail">
-<p><a href="./posts/customizes_r_gui_for_windows/index.html"> <img src="./posts/customizes_r_gui_for_windows/rgui_startup.png" class="thumnail-image"> </a></p>
+<p><a href="./posts/customizes_r_gui_for_windows/index.html"> <p class="card-img-top"><img src="posts/customizes_r_gui_for_windows/rgui_startup.png"  class="thumbnail-image card-img"/></p> </a></p>
 </div>
 <div class="body">
 <a href="./posts/customizes_r_gui_for_windows/index.html">
@@ -394,13 +441,9 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="R,gui" data-listing-date-sort="1663113600000" data-listing-file-modified-sort="1674923081918" data-listing-reading-time-sort="3.875">
+<div class="quarto-post image-right" data-index="5" data-categories="R,gui" data-listing-date-sort="1663113600000" data-listing-file-modified-sort="1687669669714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
 <div class="thumbnail">
-<a href="./posts/one_function_or_many_functions/index.html">
-<div class="thumbnail-image">
-
-</div>
-</a><p><a href="./posts/one_function_or_many_functions/index.html"></a></p>
+<p><a href="./posts/one_function_or_many_functions/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
 </div>
 <div class="body">
 <a href="./posts/one_function_or_many_functions/index.html">
@@ -436,9 +479,9 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="R,moderation" data-listing-date-sort="1662854400000" data-listing-file-modified-sort="1674923081918" data-listing-reading-time-sort="2.515">
+<div class="quarto-post image-right" data-index="6" data-categories="R,moderation" data-listing-date-sort="1662854400000" data-listing-file-modified-sort="1687669669714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
 <div class="thumbnail">
-<p><a href="./posts/plot_mod/index.html"> <img src="./posts/plot_mod/index_files/figure-html/cover-1.png" class="thumnail-image"> </a></p>
+<p><a href="./posts/plot_mod/index.html"> <img src="./posts/plot_mod/index_files/figure-html/cover-1.png" class="thumbnail-image"> </a></p>
 </div>
 <div class="body">
 <a href="./posts/plot_mod/index.html">
@@ -474,13 +517,9 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="blog" data-listing-date-sort="1662854400000" data-listing-file-modified-sort="1674923081918" data-listing-reading-time-sort="0.25">
+<div class="quarto-post image-right" data-index="7" data-categories="blog" data-listing-date-sort="1662854400000" data-listing-file-modified-sort="1687669669714" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <div class="thumbnail">
-<a href="./posts/the_first_post/index.html">
-<div class="thumbnail-image">
-
-</div>
-</a><p><a href="./posts/the_first_post/index.html"></a></p>
+<p><a href="./posts/the_first_post/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
 </div>
 <div class="body">
 <a href="./posts/the_first_post/index.html">
@@ -660,9 +699,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -727,6 +780,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -769,13 +908,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center">
-        <ul class="footer-items list-unstyled">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
     <li class="nav-item">
  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a><br>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
   </li>  
 </ul>
-      </div>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 

@@ -9,8 +9,912 @@
 <link>https://blogonresearch.github.io/index.html</link>
 <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog on psychological research and methodology.</description>
-<generator>quarto-1.2.313</generator>
-<lastBuildDate>Wed, 28 Sep 2022 00:00:00 GMT</lastBuildDate>
+<generator>quarto-1.3.427</generator>
+<lastBuildDate>Sun, 25 Jun 2023 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Standardize Variables Except For Dummy Variables, Using std_selected_boot()</title>
+  <dc:creator>Shu Fai Cheung</dc:creator>
+  <link>https://blogonresearch.github.io/posts/std_dummy/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>This post shows one simple way to get meaningful standardized regression coefficients in multiple linear regression with dummy variables, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
+<section id="betas" class="level1">
+<h1>“Betas”</h1>
+<p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”). However, even if it is justifiable to interpret effects of some variables in the standardized metric, dummy variables, if any, should still not be standardized;</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dummy Variables Standardized Are No Longer Dummy Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The dummy variable can no longer be interpreted as a dummy variable because it no longer takes either 0 or 1.</p>
+</div>
+</div>
+<p>So, the “betas” for dummy variables, though maybe not “wrong”, are <em>not interpretable</em>.</p>
+<p>Unfortunately, standardizing them is quite common (including in my own work).</p>
+<p>The solutions are simple:</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Do Not Standardize Dummy Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Standardize other variables <em>except</em> for the dummy variables.</p>
+</div>
+</div>
+<p>However, common statistical programs standardize <em>all</em> variables. No choice. All or none.</p>
+<p>To do standardization <em>right</em> when dummy variables are present, we need to <em>manually</em> do the standardization. Doable but inconvenient.</p>
+<p>The function <code>std_selected_boot()</code> from the R package <code>stdmod</code>, which I and my collaborators developed <span class="citation" data-cites="cheung_improving_2022">(Cheung et al., 2022)</span>, can do the standardization right without any major changes to the common workflow.</p>
+</section>
+<section id="how-to-use-std_selected_boot" class="level1">
+<h1>How to Use <code>std_selected_boot()</code></h1>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Workflow
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Fit a regression model by <code>lm()</code> as usual.</p></li>
+<li><p>Pass the output to <code>std_selected()</code> and select variables to be standardized.</p></li>
+</ol>
+</div>
+</div>
+<p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has an additional feature:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What It Won’t Do (Correctly)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It automatically skips factors and string variables in standardization. That is, their dummy variables will never be standardized.</p>
+</div>
+</div>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<section id="do-regression-as-usual" class="level3">
+<h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
+<p>Suppose this is the data set:<sup>1</sup></p>
+<div class="cell">
+<details>
+<summary>Show the code for generating data</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1453243</span>)</span>
+<span id="cb1-2">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span></span>
+<span id="cb1-3">group <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gp1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gp2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gp3"</span>),</span>
+<span id="cb1-4">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> n,</span>
+<span id="cb1-5">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(.<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>),</span>
+<span id="cb1-6">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb1-7">x1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rchisq</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span></span>
+<span id="cb1-8">x2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runif</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span>
+<span id="cb1-9">y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.45</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sapply</span>(group, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">switch</span>,</span>
+<span id="cb1-10">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Gp1 =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,</span>
+<span id="cb1-11">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Gp2 =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>,</span>
+<span id="cb1-12">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Gp3 =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span>
+<span id="cb1-13">dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x1 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(x1, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb1-14">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x2 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(x2, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb1-15">                  group,</span>
+<span id="cb1-16">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(y, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb1-17"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">write.csv</span>(dat, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dat.csv"</span>)</span></code></pre></div>
+</details>
+</div>
+<p>This is the <a href="dat.csv">data file</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(dat)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    x1   x2 group     y
+1 9.97 7.84   Gp1 44.99
+2 2.45 5.11   Gp1 47.27
+3 8.50 8.87   Gp2 60.00
+4 4.10 5.60   Gp1 37.05
+5 8.16 7.18   Gp3 45.51
+6 2.53 9.19   Gp1 54.71</code></pre>
+</div>
+</div>
+<p>The variables <code>x1</code> and <code>x2</code> are continuous predictors. The variable <code>group</code> is a string variable, with three possible values: <code>Gp1</code>, <code>Gp2</code>, and <code>Gp3</code>. The outcome variable is <code>y</code>.</p>
+<p>This is the regression model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">lm_out <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> group, dat)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(lm_out)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x1 + x2 + group, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-42.755  -7.165   0.355   6.597  25.317 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   9.8205     2.2545   4.356 2.14e-05 ***
+x1            0.4080     0.1021   3.997 9.10e-05 ***
+x2            4.1642     0.3051  13.649  &lt; 2e-16 ***
+groupGp2      6.9809     2.0704   3.372 0.000901 ***
+groupGp3      6.3161     1.7076   3.699 0.000282 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 10.49 on 195 degrees of freedom
+Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
+F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="do-standardization-right" class="level3">
+<h3 class="anchored" data-anchor-id="do-standardization-right">Do Standardization Right</h3>
+<p>Install <code>stdmod</code> and load it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(stdmod)</span></code></pre></div>
+</div>
+<p>If we want to standardize all variables except for categorical variables, if any, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<sup>2</sup></p>
+<p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Beware of the <em>t</em>-based SE and CI
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If a variable is standardized, the usual <em>t</em>-based standard errors and confidence intervals of the coefficients that involve it <em>may</em> be biased.<sup>3</sup></p>
+</div>
+</div>
+<p>This is because (a) they do not take into account the sampling variation of the standard deviations used in standardization <span class="citation" data-cites="yuan_biases_2011">(Yuan &amp; Chan, 2011)</span>, and (b) the coefficients with standardization, the “betas”, are not normally distributed (though may be close to). Many statistical programs do not report the confidence intervals for “betas,” for a good reason.</p>
+<p>This is why <code>std_selected_boot()</code> enables nonparametric bootstrapping percentile confidence intervals <em>by default</em>, just in case the bias is large.</p>
+<p>To have stable and reproducible confidence intervals, call <code>set.seed()</code> before calling <code>std_selected_boot()</code> and set <code>nboot</code> to the desired number of bootstrap samples (at least 2000 but 5000 or more is recommended):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">870516</span>)</span>
+<span id="cb7-2">lm_out_std <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">std_selected_boot</span>(lm_out,</span>
+<span id="cb7-3">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">to_standardize =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> .,</span>
+<span id="cb7-4">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nboot =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5000</span>)</span></code></pre></div>
+</div>
+<p>We can call <code>summary()</code> as usual to print the results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(lm_out_std)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call to std_selected_boot():
+std_selected_boot(lm_out = lm_out, to_standardize = ~., nboot = 5000)
+
+Selected variable(s) are centered by mean and/or scaled by SD
+- Variable(s) centered: y x1 x2 group
+- Variable(s) scaled: y x1 x2 group
+
+      centered_by scaled_by                            Note
+y        40.36635 15.286176 Standardized (mean = 0, SD = 1)
+x1        9.41020  7.342158 Standardized (mean = 0, SD = 1)
+x2        5.35520  2.454193 Standardized (mean = 0, SD = 1)
+group          NA        NA Nonnumeric                     
+
+Note:
+- Categorical variables will not be centered or scaled even if
+  requested.
+- Nonparametric bootstrapping 95% confidence intervals computed.
+- The number of bootstrap samples is 5000.
+
+Call:
+lm(formula = y ~ x1 + x2 + group, data = dat_mod)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.79695 -0.46875  0.02324  0.43155  1.65619 
+
+Coefficients:
+            Estimate CI Lower CI Upper Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.28825 -0.42260 -0.16397    0.08545  -3.374 0.000895 ***
+x1           0.19598  0.10064  0.28696    0.04903   3.997  9.1e-05 ***
+x2           0.66856  0.58901  0.73888    0.04898  13.649  &lt; 2e-16 ***
+groupGp2     0.45668  0.22507  0.68592    0.13544   3.372 0.000901 ***
+groupGp3     0.41319  0.20033  0.63209    0.11171   3.699 0.000282 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.6863 on 195 degrees of freedom
+Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
+F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16
+
+Note:
+- Estimates and their statistics are based on the data after
+  mean-centering, scaling, or standardization.
+- [CI Lower, CI Upper] are bootstrap percentile confidence intervals.
+- Std. Error are not bootstrap SEs.</code></pre>
+</div>
+</div>
+<p>The output has one additional section:</p>
+<ul>
+<li>Variables that are standardized<sup>4</sup>, and variables that are not transformed.</li>
+</ul>
+<p>The other sections are similar to those of a usual multiple regression. Note that the column <code>Estimate</code> is intentionally <em>not</em> labelled as <code>Beta</code> because it is possible that only some variables are standardized. Labelling it as <code>Beta</code>, though common, is misleading.</p>
+</section>
+<section id="interpret-the-output" class="level3">
+<h3 class="anchored" data-anchor-id="interpret-the-output">Interpret The Output</h3>
+<p>In the regression output, because <code>y</code>, <code>x1</code>, and <code>x2</code> are standardized, they are the usual “betas.” However, <code>group</code> is not standardized and so <code>groupGp2</code> and <code>groupGp3</code> still take only two possible values, 0 and 1, and so can still be interpreted as usual.</p>
+<p>For example, the coefficient of <code>groupGp2</code> is 0.457. That is, compared to <code>Gp1</code>, the reference group, the predicted value of <code>y</code> is 0.457 SD (of <code>y</code>) higher in <code>Gp2</code>.</p>
+<p>On the other hand, the coefficient of <code>groupGp3</code> is 0.413. That is, compared to <code>Gp1</code>, the predicted value of <code>y</code> is 0.413 SD (of <code>y</code>) higher in <code>Gp3</code>.</p>
+<p>In short, the coefficients of all dummy variables can be interpreted as usual, though the difference in the outcome variable (dependent variable) is in SD of this variable if it is standardized.</p>
+</section>
+</section>
+</section>
+<section id="why-the-common-practice-is-problematic" class="level1">
+<h1>Why The Common Practice Is Problematic</h1>
+<section id="standardize-all-variables" class="level2">
+<h2 class="anchored" data-anchor-id="standardize-all-variables">Standardize All Variables</h2>
+<p>Assume that we standardize <em>all</em> variables, including the dummy variables, as in some statistical program. To simulate this, I manually create the dummy variables, standardize them, and do regression:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>groupGp2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb10-2">dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>groupGp3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb10-3">dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>groupGp2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ifelse</span>(dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gp2"</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb10-4">dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>groupGp3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ifelse</span>(dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gp3"</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb10-5">dat_std <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> dat[, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"groupGp2"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"groupGp3"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>)]</span>
+<span id="cb10-6">dat_std <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale</span>(dat_std))</span>
+<span id="cb10-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(dat_std)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           x1          x2   groupGp2   groupGp3          y
+1  0.07624462  1.01247114 -0.5220306 -0.9206479  0.3024726
+2 -0.94797747 -0.09991063 -0.5220306 -0.9206479  0.4516270
+3 -0.12396901  1.43216096  1.9060186 -0.9206479  1.2844056
+4 -0.72324789  0.09974764 -0.5220306 -0.9206479 -0.2169509
+5 -0.17027692  0.74354368 -0.5220306  1.0807606  0.3364903
+6 -0.93708149  1.56255004 -0.5220306 -0.9206479  0.9383413</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">psych<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">describe</span>(dat_std, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">range =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">skew =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         vars   n mean sd   se
+x1          1 200    0  1 0.07
+x2          2 200    0  1 0.07
+groupGp2    3 200    0  1 0.07
+groupGp3    4 200    0  1 0.07
+y           5 200    0  1 0.07</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">lm_out_std_wrong <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> groupGp2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> groupGp3, dat_std)</span></code></pre></div>
+</details>
+</div>
+<p>The following results are what found in common statistical programs that standardize all variables, including the dummy variables, to yield the “betas”:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">printCoefmat</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(lm_out_std_wrong)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients,</span>
+<span id="cb15-2">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">zap.ind =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>,</span>
+<span id="cb15-3">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">P.values =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 0.000000   0.048525  0.0000  1.00000    
+x1          0.195980   0.049034  3.9968    9e-05 ***
+x2          0.668560   0.048983 13.6488  &lt; 2e-16 ***
+groupGp2    0.188080   0.055783  3.3717  0.00090 ***
+groupGp3    0.206450   0.055817  3.6987  0.00028 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Let us compare the results.</p>
+<section id="p-values" class="level3">
+<h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
+<p>The <em>p</em>-values are the same, which is expected:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">coef_std <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(lm_out_std)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients</span>
+<span id="cb17-2">coef_std_wrong <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(lm_out_std_wrong)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>coefficients</span>
+<span id="cb17-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cbind</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p-value (Std Selected)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> coef_std[, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Pr(&gt;|t|)"</span>],</span>
+<span id="cb17-4">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p-value (Std All)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> coef_std_wrong[, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Pr(&gt;|t|)"</span>]), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            p-value (Std Selected) p-value (Std All)
+(Intercept)                  0.001             1.000
+x1                           0.000             0.000
+x2                           0.000             0.000
+groupGp2                     0.001             0.001
+groupGp3                     0.000             0.000</code></pre>
+</div>
+</div>
+</section>
+<section id="coefficient-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
+<p>However, the coefficients for the dummy variables are different:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cbind</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Estimate (Std Selected)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> coef_std[, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Estimate"</span>],</span>
+<span id="cb19-2">            <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Estimate (Std All)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> coef_std_wrong[, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Estimate"</span>]), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate (Std Selected) Estimate (Std All)
+(Intercept)                  -0.288              0.000
+x1                            0.196              0.196
+x2                            0.669              0.669
+groupGp2                      0.457              0.188
+groupGp3                      0.413              0.206</code></pre>
+</div>
+</div>
+<p>The coefficients of <code>groupGp2</code> and <code>groupGp3</code>, when they are standardized, are not meaningful. After standardization, they are no longer either 0 or 1.</p>
+<p>For example, the so-called “beta” of <code>groupGp2</code>, 0.188, is <em>not</em> the difference between <code>Gp2</code> and <code>Gp1</code> on standardized <code>y</code>. It is the increase in standardized <code>y</code> when <code>groupGp2</code> “increases by one SD”, which is meaningless.</p>
+<p>What’s worse, the ranking of the coefficients changed. If we interpret the coefficients with dummy variables not standardized, the <code>Gp2 vs. Gp1</code> difference is larger than the <code>Gp3 vs. Gp1</code> difference (0.457 vs 0.413).</p>
+<p>However, if we interpret the coefficients with dummy variables standardized, we would have a different conclusion: the <code>Gp2 vs. Gp1</code> difference is <em>smaller</em> than the <code>Gp3 vs. Gp1</code> difference (0.188 vs 0.206), though only slightly.</p>
+<p>The reason is, there are more cases in <code>Gp3</code> than in <code>Gp2</code>. The differences in the SDs of the dummy variables are large enough to reverse the ranking:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">table</span>(dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>group)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Gp1 Gp2 Gp3 
+ 65  43  92 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>groupGp2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4118533</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sd</span>(dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>groupGp3)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4996481</code></pre>
+</div>
+</div>
+<p>I created the data to demonstrate that this reversal in ranking is <em>possible</em>. This may not happen in real data. However, having groups with different numbers of cases is probably the norm rather than the exception in real data.<sup>5</sup></p>
+</section>
+</section>
+<section id="use-t-statistics-confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="use-t-statistics-confidence-intervals">Use <em>t</em> Statistics Confidence Intervals</h2>
+<p>Some programs gives confidence intervals of “betas” using <em>t</em> statistics. That is, standardize variables, do regression, and form the confidence intervals, as if the standardized variables were the original data.</p>
+<p>Let us compare the bootstrap confidence intervals with the usual OLS confidence intervals based on the <em>t</em>-statistics.</p>
+<p>For the output of <code>std_selected_boot()</code>, we can request the <em>t</em>-based confidence intervals by setting <code>type</code> to <code>"lm"</code> when calling <code>confint()</code>, the function commonly used to form confidence intervals:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># OLS confidence intervals</span></span>
+<span id="cb27-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">confint</span>(lm_out_std, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lm"</span>), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.457 -0.120
+x1           0.099  0.293
+x2           0.572  0.765
+groupGp2     0.190  0.724
+groupGp3     0.193  0.634</code></pre>
+</div>
+</div>
+<p>Without setting <code>type</code>, the nonparametric bootstrap confidence intervals are returned (if available):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Bootstrap Confidence Intervals</span></span>
+<span id="cb29-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">confint</span>(lm_out_std), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.423 -0.164
+x1           0.101  0.287
+x2           0.589  0.739
+groupGp2     0.225  0.686
+groupGp3     0.200  0.632</code></pre>
+</div>
+</div>
+<p>As shown above, the confidence intervals of <code>x1</code> by the two methods are close to each other. However, the bootstrap confidence interval of <code>x2</code> is narrower than the <em>t</em>-based confidence interval.</p>
+<p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">ci_t <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">confint</span>(lm_out_std, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lm"</span>)</span>
+<span id="cb31-2">ci_b <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">confint</span>(lm_out_std)</span>
+<span id="cb31-3">width_t <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ci_t[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> ci_t[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb31-4">width_b <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ci_b[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> ci_b[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb31-5">ci_compare <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">CI_Width_t =</span> width_t,</span>
+<span id="cb31-6">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">CI_Width_boot =</span> width_b)</span>
+<span id="cb31-7">ci_compare<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>ratio <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ci_compare[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> ci_compare[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]</span>
+<span id="cb31-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(ci_compare, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            CI_Width_t CI_Width_boot ratio
+(Intercept)      0.337         0.259 1.303
+x1               0.193         0.186 1.038
+x2               0.193         0.150 1.289
+groupGp2         0.534         0.461 1.159
+groupGp3         0.441         0.432 1.021</code></pre>
+</div>
+</div>
+<p>The widths of the confidence intervals are nearly identical for <code>x1</code>. However, for <code>x2</code>, the <em>t</em>-based confidence interval is nearly 28.9% wider than the bootstrap confidence interval.</p>
+<p>For <code>groupGp2</code>, even though dummy variable is correctly not standardized, it can still be affected because the outcome variable, <code>y</code>, is standardized. Its <em>t</em>-based confidence interval is also wider than the bootstrap confidence interval by about 15.9%.</p>
+</section>
+</section>
+<section id="final-remarks" class="level1">
+<h1>Final Remarks</h1>
+<p>What <code>std_selected_boot()</code> does can be implemented in R code by researchers using base R packages only. The function was developed to make it easier for researchers to do standardization right, without adopting the all-or-none approach.</p>
+<p>More information on <code>std_selected_boot()</code> can be found from its <a href="https://sfcheung.github.io/stdmod/reference/std_selected.html">help page</a>.</p>
+</section>
+<section id="other-resources" class="level1">
+<h1>Other Resources</h1>
+<p>There are other program or function that also correctly skip categorical variables when doing standardization. For example, the linear regression procedure in <a href="https://www.jamovi.org/">jamovi</a> also do not standardized the dummy variables formed from categorical variables when standardized estimates are requested.</p>
+<p>For confidence intervals, other methods have also been proposed to take into account the sampling variability of the standard deviations. Examples are the methods proposed by <span class="citation" data-cites="dudgeon_improvements_2017">Dudgeon (2017)</span> and <span class="citation" data-cites="jones_computing_2013">Jones &amp; Waller (2013)</span>, in addition to the one proposed by <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span>.</p>
+</section>
+<section id="references" class="level1">
+
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2">
+<div id="ref-cheung_improving_2022" class="csl-entry">
+Cheung, S. F., Cheung, S.-H., Lau, E. Y. Y., Hui, C. H., &amp; Vong, W. N. (2022). Improving an old way to measure moderation effect in standardized units. <em>Health Psychology</em>, <em>41</em>(7), 502–505. <a href="https://doi.org/10.1037/hea0001188">https://doi.org/10.1037/hea0001188</a>
+</div>
+<div id="ref-dudgeon_improvements_2017" class="csl-entry">
+Dudgeon, P. (2017). Some improvements in confidence intervals for standardized regression coefficients. <em>Psychometrika</em>, <em>82</em>(4), 928–951. <a href="https://doi.org/10.1007/s11336-017-9563-z">https://doi.org/10.1007/s11336-017-9563-z</a>
+</div>
+<div id="ref-jones_computing_2013" class="csl-entry">
+Jones, J. A., &amp; Waller, N. G. (2013). Computing confidence intervals for standardized regression coefficients. <em>Psychological Methods</em>, <em>18</em>(4), 435–453. <a href="https://doi.org/10.1037/a0033269">https://doi.org/10.1037/a0033269</a>
+</div>
+<div id="ref-yuan_biases_2011" class="csl-entry">
+Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized regression coefficients. <em>Psychometrika</em>, <em>76</em>(4), 670–690. <a href="https://doi.org/10.1007/s11336-011-9224-6">https://doi.org/10.1007/s11336-011-9224-6</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><code>x1</code> and <code>x2</code> are intentionally generated from nonnormal distributions, for illustration. Note that OLS (ordinary least squares) regression does <em>not</em> assume that the predictors are multivariate normal. Using nonnormal predictors violate no assumptions of OLS regression.↩︎</p></li>
+<li id="fn2"><p>Suppose we only want to standardize <code>x1</code> and <code>y</code>, because <code>x2</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x1 + y</code>. Order does not matter.↩︎</p></li>
+<li id="fn3"><p>Note that there are indeed cases in which they are still unbiased, and cases in which the biases are negligible. See <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span> for a detailed discussion.↩︎</p></li>
+<li id="fn4"><p><code>std_selected()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.↩︎</p></li>
+<li id="fn5"><p>It can be argued that size differences should be taken into account. They should be, but probably not by standardizing the dummy variables and making the coefficients not interpretable.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>R</category>
+  <category>regression</category>
+  <category>categorical variables</category>
+  <category>stdmod</category>
+  <category>standardized</category>
+  <category>bootstrapping</category>
+  <category>confidence-intervals</category>
+  <guid>https://blogonresearch.github.io/posts/std_dummy/index.html</guid>
+  <pubDate>Sun, 25 Jun 2023 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Bootstrap Confidence Intervals for Standardized Solution in lavaan</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
@@ -24,49 +928,182 @@
 <p>However, it is known, though not well-known enough in my opinion, that, even if bootstrap confidence intervals are requested, the confidence intervals reported in the standardized solution are not bootstrap confidence intervals as in tools like <code>PROCESS</code> for standardized effects like standardized indirect effects, but are symmetric delta-method confidence intervals based on the bootstrap sampling variance-covariance matrix.</p>
 <p>Let’s use a sample dataset for illustration:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;"># Create the data</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">860541</span>)</span>
-<span id="cb1-3">n <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">100</span></span>
-<span id="cb1-4">x <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n)</span>
-<span id="cb1-5">m <span class="ot" style="color: #003B4F;">&lt;-</span> .<span class="dv" style="color: #AD0000;">4</span> <span class="sc" style="color: #5E5E5E;">*</span> x <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, <span class="fu" style="color: #4758AB;">sqrt</span>(<span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">-</span> .<span class="dv" style="color: #AD0000;">3</span><span class="sc" style="color: #5E5E5E;">^</span><span class="dv" style="color: #AD0000;">2</span>))</span>
-<span id="cb1-6">y <span class="ot" style="color: #003B4F;">&lt;-</span> .<span class="dv" style="color: #AD0000;">4</span> <span class="sc" style="color: #5E5E5E;">*</span> m <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, <span class="fu" style="color: #4758AB;">sqrt</span>(<span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">-</span> .<span class="dv" style="color: #AD0000;">4</span><span class="sc" style="color: #5E5E5E;">^</span><span class="dv" style="color: #AD0000;">2</span>))</span>
-<span id="cb1-7">dat <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">x =</span> <span class="dv" style="color: #AD0000;">10</span> <span class="sc" style="color: #5E5E5E;">*</span> x, <span class="at" style="color: #657422;">m =</span> <span class="dv" style="color: #AD0000;">2</span> <span class="sc" style="color: #5E5E5E;">*</span> m, <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">3</span> <span class="sc" style="color: #5E5E5E;">*</span> y)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the data</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">860541</span>)</span>
+<span id="cb1-3">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-4">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n)</span>
+<span id="cb1-5">m <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sqrt</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb1-6">y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sqrt</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb1-7">dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">m =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> m, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> y)</span></code></pre></div>
 </div>
 <p>We specify a simple regression model:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">library</span>(lavaan)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(lavaan)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>This is lavaan 0.6-13
 lavaan is FREE software! Please report any bugs.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">mod <span class="ot" style="color: #003B4F;">&lt;-</span></span>
-<span id="cb4-2"><span class="st" style="color: #20794D;">"</span></span>
-<span id="cb4-3"><span class="st" style="color: #20794D;">m ~ a * x</span></span>
-<span id="cb4-4"><span class="st" style="color: #20794D;">y ~ b * m + cp * x</span></span>
-<span id="cb4-5"><span class="st" style="color: #20794D;">ab := a * b</span></span>
-<span id="cb4-6"><span class="st" style="color: #20794D;">"</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">mod <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span></span>
+<span id="cb4-2"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb4-3"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">m ~ a * x</span></span>
+<span id="cb4-4"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">y ~ b * m + cp * x</span></span>
+<span id="cb4-5"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">ab := a * b</span></span>
+<span id="cb4-6"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span></code></pre></div>
 </div>
 <p>… and fit it with bootstrap confidence intervals (2023-01-28: Code and results updated for <code>lavaan</code> 0.6-13, <code>iseed</code> is used instead of <code>set.seed()</code>):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">fit <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sem</span>(mod, <span class="at" style="color: #657422;">data =</span> dat, <span class="at" style="color: #657422;">fixed.x =</span> <span class="cn" style="color: #8f5902;">FALSE</span>,</span>
-<span id="cb5-2">           <span class="at" style="color: #657422;">se =</span> <span class="st" style="color: #20794D;">"boot"</span>, <span class="at" style="color: #657422;">bootstrap =</span> <span class="dv" style="color: #AD0000;">2000</span>,</span>
-<span id="cb5-3">           <span class="at" style="color: #657422;">iseed =</span> <span class="dv" style="color: #AD0000;">8970</span>)</span></code></pre></div>
-</div>
-<div class="cell">
-
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sem</span>(mod, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> dat, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fixed.x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>,</span>
+<span id="cb5-2">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">se =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"boot"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bootstrap =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2000</span>,</span>
+<span id="cb5-3">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">iseed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8970</span>)</span></code></pre></div>
 </div>
 <p>Let’s focus on the confidence intervals of the indirect effect:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">est <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">parameterEstimates</span>(fit)</span>
-<span id="cb6-2">std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">standardizedSolution</span>(fit)</span>
-<span id="cb6-3"><span class="co" style="color: #5E5E5E;"># Unstandardized</span></span>
-<span id="cb6-4">est[<span class="dv" style="color: #AD0000;">7</span>, ]</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">est <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">parameterEstimates</span>(fit)</span>
+<span id="cb6-2">std <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">standardizedSolution</span>(fit)</span>
+<span id="cb6-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Unstandardized</span></span>
+<span id="cb6-4">est[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, ]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  lhs op rhs label   est    se     z pvalue ci.lower ci.upper
 7  ab := a*b    ab 0.025 0.015 1.686  0.092    0.001    0.059</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;"># Standardized</span></span>
-<span id="cb8-2">std[<span class="dv" style="color: #AD0000;">7</span>, ]</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Standardized</span></span>
+<span id="cb8-2">std[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, ]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  lhs op rhs label est.std    se     z pvalue ci.lower ci.upper
 7  ab := a*b    ab   0.088 0.049 1.774  0.076   -0.009    0.185</code></pre>
@@ -75,7 +1112,21 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 <p>They lead to different conclusions.</p>
 <p>As shown below, the confidence interval of the unstandardized indirect effect is percentile confidence interval that is asymmetric, as expected:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">est[<span class="dv" style="color: #AD0000;">7</span>, <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"ci.lower"</span>, <span class="st" style="color: #20794D;">"ci.upper"</span>)] <span class="sc" style="color: #5E5E5E;">-</span> est[<span class="dv" style="color: #AD0000;">7</span>, <span class="st" style="color: #20794D;">"est"</span>]</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">est[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ci.lower"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ci.upper"</span>)] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> est[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"est"</span>]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     ci.lower   ci.upper
 7 -0.02364024 0.03392409</code></pre>
@@ -83,35 +1134,87 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 </div>
 <p>However, the confidence interval of the standardized indirect effect is symmetric:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">std[<span class="dv" style="color: #AD0000;">7</span>, <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"ci.lower"</span>, <span class="st" style="color: #20794D;">"ci.upper"</span>)] <span class="sc" style="color: #5E5E5E;">-</span> std[<span class="dv" style="color: #AD0000;">7</span>, <span class="st" style="color: #20794D;">"est.std"</span>]</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">std[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ci.lower"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ci.upper"</span>)] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> std[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"est.std"</span>]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     ci.lower   ci.upper
 7 -0.09699904 0.09699904</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>This behavior has been discussed in the <a href="https://groups.google.com/g/lavaan">Google group for<code>lavaan</code></a> and so is known, but not “well-known” because I met many users who were not aware of this, especially when they use bootstrapping to get the confidence intervals for indirect effects but found that the confidence intervals of unstandardized and standardized indirect effect led to different conclusions, as in the example above.</p>
 <p>A solution already exists in <code>lavaan</code>. Users can use <code>bootstrapLavaan()</code> and get the bootstrap confidence intervals for many results, including the output of standardized solution.</p>
 <p>We first define a function to extract the standardized indirect effect:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">fct <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(fit) {</span>
-<span id="cb14-2">    lavaan<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">standardizedSolution</span>(fit)[<span class="dv" style="color: #AD0000;">7</span>, <span class="st" style="color: #20794D;">"est.std"</span>]</span>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">fct <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(fit) {</span>
+<span id="cb14-2">    lavaan<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">standardizedSolution</span>(fit)[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"est.std"</span>]</span>
 <span id="cb14-3">  }</span></code></pre></div>
 </div>
 <p>We then update the fit object to disable standard error because we only need the point estimates and then call <code>bootstrapLavaan()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">fit0 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">update</span>(fit, <span class="at" style="color: #657422;">se =</span> <span class="st" style="color: #20794D;">"none"</span>)</span>
-<span id="cb15-2">fit_boot <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">bootstrapLavaan</span>(fit0, <span class="at" style="color: #657422;">R =</span> <span class="dv" style="color: #AD0000;">2000</span>, <span class="at" style="color: #657422;">FUN =</span> fct, <span class="at" style="color: #657422;">iseed =</span> <span class="dv" style="color: #AD0000;">8970</span>)</span></code></pre></div>
-</div>
-<div class="cell">
-
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">fit0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">update</span>(fit, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">se =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span>
+<span id="cb15-2">fit_boot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bootstrapLavaan</span>(fit0, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">R =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2000</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">FUN =</span> fct, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">iseed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8970</span>)</span></code></pre></div>
 </div>
 <p>The percentile confidence interval can then be formed by <code>quantile()</code>.</p>
 <p>(Note that <code>lavaan()</code> does not use <code>quantile()</code> but use the approach by <code>boot.ci()</code>. The resulting interval can be slightly different from that by <code>quantile()</code>.)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;">quantile</span>(fit_boot[, <span class="dv" style="color: #AD0000;">1</span>], <span class="fu" style="color: #4758AB;">c</span>(.<span class="dv" style="color: #AD0000;">025</span>, .<span class="dv" style="color: #AD0000;">975</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">quantile</span>(fit_boot[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(.<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">025</span>, .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">975</span>))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       2.5%       97.5% 
 0.004372947 0.196203435 </code></pre>
@@ -126,11 +1229,29 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 <p>This would be useful to me because some of my projects involve large samples with missing data. and bootstrapping takes appreciable time even with parallelization.</p>
 <p>This is how to use this function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;">library</span>(semhelpinghands)</span>
-<span id="cb18-2">std_boot <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">standardizedSolution_boot_ci</span>(fit)</span>
-<span id="cb18-3"><span class="co" style="color: #5E5E5E;"># -c(9, 10) is used to remove the delta-method CIs from</span></span>
-<span id="cb18-4"><span class="co" style="color: #5E5E5E;"># the printout</span></span>
-<span id="cb18-5">std_boot[, <span class="sc" style="color: #5E5E5E;">-</span><span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">9</span>, <span class="dv" style="color: #AD0000;">10</span>)]</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(semhelpinghands)</span>
+<span id="cb18-2">std_boot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">standardizedSolution_boot_ci</span>(fit)</span>
+<span id="cb18-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># -c(9, 10) is used to remove the delta-method CIs from</span></span>
+<span id="cb18-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># the printout</span></span>
+<span id="cb18-5">std_boot[, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)]</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  lhs op rhs label est.std    se      z pvalue boot.ci.lower boot.ci.upper
 1   m  ~   x     a   0.232 0.105  2.213  0.027         0.015         0.425
@@ -146,14 +1267,30 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 <p><code>standardizedSolution_boot_ci()</code> works like <code>standardizedSolution()</code>, but extracts the stored bootstrap estimates, get the standardized solution from each set of estimates, and use them to form the bootstrap confidence intervals for the standardized solution.</p>
 <p>By default, the bootstrap standardized solution is also stored in the attribute <code>boot_est_std</code>. They can be extracted to examine the distribution. For example, the bootstrap standardized indirect effects can be extracted and plotted:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">std_boot_est <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">attr</span>(std_boot, <span class="st" style="color: #20794D;">"boot_est_std"</span>)</span>
-<span id="cb20-2">std_indirect_boot_est <span class="ot" style="color: #003B4F;">&lt;-</span> std_boot_est[, <span class="dv" style="color: #AD0000;">7</span>]</span>
-<span id="cb20-3"><span class="fu" style="color: #4758AB;">hist</span>(std_indirect_boot_est)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">std_boot_est <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">attr</span>(std_boot, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"boot_est_std"</span>)</span>
+<span id="cb20-2">std_indirect_boot_est <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> std_boot_est[, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>]</span>
+<span id="cb20-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hist</span>(std_indirect_boot_est)</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;">qqnorm</span>(std_indirect_boot_est)</span>
-<span id="cb21-2"><span class="fu" style="color: #4758AB;">qqline</span>(std_indirect_boot_est)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">qqnorm</span>(std_indirect_boot_est)</span>
+<span id="cb21-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">qqline</span>(std_indirect_boot_est)</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -188,24 +1325,48 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 <p>The function <code>show_more_options()</code> is very easy to use … because it accepts only one argument, the output of <code>lavaan()</code>.</p>
 <p>This is an example based on the example of <code>lavaan::cfa()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(lavaan)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(lavaan)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>This is lavaan 0.6-13
 lavaan is FREE software! Please report any bugs.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">HSmodel <span class="ot" style="color: #003B4F;">&lt;-</span></span>
-<span id="cb3-2"><span class="st" style="color: #20794D;">"</span></span>
-<span id="cb3-3"><span class="st" style="color: #20794D;">visual  =~ x1 + x2 + x3</span></span>
-<span id="cb3-4"><span class="st" style="color: #20794D;">textual =~ x4 + x5 + x6</span></span>
-<span id="cb3-5"><span class="st" style="color: #20794D;">speed   =~ x7 + x8 + x9</span></span>
-<span id="cb3-6"><span class="st" style="color: #20794D;">"</span></span>
-<span id="cb3-7">fit <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">cfa</span>(HSmodel,</span>
-<span id="cb3-8">           <span class="at" style="color: #657422;">data =</span> HolzingerSwineford1939)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">HSmodel <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span></span>
+<span id="cb3-2"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb3-3"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">visual  =~ x1 + x2 + x3</span></span>
+<span id="cb3-4"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">textual =~ x4 + x5 + x6</span></span>
+<span id="cb3-5"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">speed   =~ x7 + x8 + x9</span></span>
+<span id="cb3-6"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb3-7">fit <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cfa</span>(HSmodel,</span>
+<span id="cb3-8">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> HolzingerSwineford1939)</span></code></pre></div>
 </div>
 <p>To show the major options, just pass the output to <code>show_more_options()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">library</span>(semhelpinghands)</span>
-<span id="cb4-2"><span class="fu" style="color: #4758AB;">show_more_options</span>(fit)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(semhelpinghands)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">show_more_options</span>(fit)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Options                             Call    Actual  
  Estimator(s)                        default ML      
@@ -223,10 +1384,22 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 <p>Many of the entries are either (a) already available in the output of <code>summary()</code>, or (b) can be deduced from the output. However, I would like to have a table for quick reference, hence I wrote this function.</p>
 <p>Suppose <code>"MLR"</code> is used as the estimator:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">fit_MLR <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">cfa</span>(HSmodel,</span>
-<span id="cb6-2">               <span class="at" style="color: #657422;">data =</span> HolzingerSwineford1939,</span>
-<span id="cb6-3">               <span class="at" style="color: #657422;">estimator =</span> <span class="st" style="color: #20794D;">"MLR"</span>)</span>
-<span id="cb6-4"><span class="fu" style="color: #4758AB;">show_more_options</span>(fit_MLR)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">fit_MLR <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cfa</span>(HSmodel,</span>
+<span id="cb6-2">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> HolzingerSwineford1939,</span>
+<span id="cb6-3">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">estimator =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"MLR"</span>)</span>
+<span id="cb6-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">show_more_options</span>(fit_MLR)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Options                             Call    Actual            
  Estimator(s)                        MLR     ML                
@@ -243,26 +1416,130 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 <p>For example, <code>summary()</code> reports that <code>"Sandwich"</code> is the method used for standard errors, and <code>show_more_options()</code> shows that the exact name in the option is <code>"robust.huber.white"</code>. This is useful because the word <code>"sandwich"</code> does not appear in the help page of <code>lavOptions()</code>, while the word <code>"robust.huber.white"</code> does. Some users may not know what <code>"Sandwich"</code> stands for.</p>
 <p>This is a dataset for a path model, with missing data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">8745315</span>)</span>
-<span id="cb8-2">n <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">100</span></span>
-<span id="cb8-3">x <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n)</span>
-<span id="cb8-4">m <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">5</span> <span class="sc" style="color: #5E5E5E;">+</span> .<span class="dv" style="color: #AD0000;">2</span> <span class="sc" style="color: #5E5E5E;">*</span> x <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, .<span class="dv" style="color: #AD0000;">8</span>)</span>
-<span id="cb8-5">y <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">10</span> <span class="sc" style="color: #5E5E5E;">+</span> .<span class="dv" style="color: #AD0000;">3</span> <span class="sc" style="color: #5E5E5E;">*</span> m <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, .<span class="dv" style="color: #AD0000;">8</span>)</span>
-<span id="cb8-6">path_data <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(x, m, y)</span>
-<span id="cb8-7">path_data[<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">3</span>, <span class="dv" style="color: #AD0000;">5</span>, <span class="dv" style="color: #AD0000;">7</span>), <span class="st" style="color: #20794D;">"m"</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cn" style="color: #8f5902;">NA</span></span>
-<span id="cb8-8">path_data[<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">3</span>, <span class="dv" style="color: #AD0000;">6</span>, <span class="dv" style="color: #AD0000;">8</span>), <span class="st" style="color: #20794D;">"y"</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cn" style="color: #8f5902;">NA</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8745315</span>)</span>
+<span id="cb8-2">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb8-3">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n)</span>
+<span id="cb8-4">m <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)</span>
+<span id="cb8-5">y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)</span>
+<span id="cb8-6">path_data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(x, m, y)</span>
+<span id="cb8-7">path_data[<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span id="cb8-8">path_data[<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span></code></pre></div>
 </div>
 <p>Suppose we use only the default options to fit a path model:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">path_model <span class="ot" style="color: #003B4F;">&lt;-</span></span>
-<span id="cb9-2"><span class="st" style="color: #20794D;">"</span></span>
-<span id="cb9-3"><span class="st" style="color: #20794D;">m ~ a * x</span></span>
-<span id="cb9-4"><span class="st" style="color: #20794D;">y ~ b * m</span></span>
-<span id="cb9-5"><span class="st" style="color: #20794D;">ab := a * b</span></span>
-<span id="cb9-6"><span class="st" style="color: #20794D;">"</span></span>
-<span id="cb9-7">fit_path <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sem</span>(path_model,</span>
-<span id="cb9-8">                <span class="at" style="color: #657422;">data =</span> path_data)</span>
-<span id="cb9-9"><span class="fu" style="color: #4758AB;">show_more_options</span>(fit_path)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">path_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span></span>
+<span id="cb9-2"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb9-3"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">m ~ a * x</span></span>
+<span id="cb9-4"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">y ~ b * m</span></span>
+<span id="cb9-5"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">ab := a * b</span></span>
+<span id="cb9-6"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb9-7">fit_path <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sem</span>(path_model,</span>
+<span id="cb9-8">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> path_data)</span>
+<span id="cb9-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">show_more_options</span>(fit_path)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Options                             Call    Actual  
  Estimator(s)                        default ML      
@@ -277,7 +1554,9 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 </div>
 <p>The output shows that, by default, the mean structure is not modelled, listwise selection is used to handle missing data, and <code>x</code> variables (exogenous covariates, <code>x</code> in this example) are treated as fixed. This can be verified by the parameter estimates, in which the variance of <code>x</code> is a fixed parameter and hence has no standard error and no <em>p</em>-value:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">parameterEstimates</span>(fit_path)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">parameterEstimates</span>(fit_path)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  lhs op rhs label   est    se     z pvalue ci.lower ci.upper
 1   m  ~   x     a 0.075 0.078 0.966  0.334   -0.077    0.228
@@ -290,10 +1569,22 @@ lavaan is FREE software! Please report any bugs.</code></pre>
 </div>
 <p>Suppose we set missing to <code>"FIML"</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">fit_path_fiml <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sem</span>(path_model,</span>
-<span id="cb13-2">                     <span class="at" style="color: #657422;">data =</span> path_data,</span>
-<span id="cb13-3">                     <span class="at" style="color: #657422;">missing =</span> <span class="st" style="color: #20794D;">"FIML"</span>)</span>
-<span id="cb13-4"><span class="fu" style="color: #4758AB;">show_more_options</span>(fit_path_fiml)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">fit_path_fiml <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sem</span>(path_model,</span>
+<span id="cb13-2">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> path_data,</span>
+<span id="cb13-3">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">missing =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FIML"</span>)</span>
+<span id="cb13-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">show_more_options</span>(fit_path_fiml)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Options                             Call    Actual  
  Estimator(s)                        default ML      
@@ -359,49 +1650,111 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 <li><p>For the same reason, I use two spaces for indentation. A four-space indentation is too “expensive” to me.</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">tmpfct <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(x) {</span>
-<span id="cb1-2">    x<span class="sc" style="color: #5E5E5E;">^</span><span class="dv" style="color: #AD0000;">2</span></span>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">tmpfct <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb1-2">    x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
 <span id="cb1-3">  }</span></code></pre></div>
 </div>
 <ul>
 <li>I like using double-click to select a name. This does not work if periods are used inside a name. Therefore, I no longer use periods in a name, except for S3 methods. If necessary, I use underscores.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">this_is_long_name <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">this_is_long_name <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span></code></pre></div>
 </div>
 <ul>
 <li>I found it difficult to remember the case I used for a name. So, I stick to lowercase letters unless I am <em>very</em> certain that I can remember that I used uppercase letters.</li>
 </ul>
 <p>I don’t like camel case. It is OK for language that is not case sensitive, like Visual Basic and SPSS syntax commands, but is inconvenient for case sensitive languages like R.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;"># I don't like camel case.</span></span>
-<span id="cb3-2">thisIsNotWhatIDo <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span></span>
-<span id="cb3-3"><span class="co" style="color: #5E5E5E;"># I prefer this:</span></span>
-<span id="cb3-4">this_is_what_i_do <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># I don't like camel case.</span></span>
+<span id="cb3-2">thisIsNotWhatIDo <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># I prefer this:</span></span>
+<span id="cb3-4">this_is_what_i_do <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span></code></pre></div>
 </div>
 <ul>
 <li>Long function names are acceptable with me. With autocompletion in many IDEs, it is not important to use short names. Being easy to remember <em>part</em> of a name is important. An abbreviation is not easy to remember unless it is commonly used (e.g., SD).</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;"># This is easy to remember</span></span>
-<span id="cb4-2"><span class="fu" style="color: #4758AB;">factor_loadings</span>()</span>
-<span id="cb4-3"><span class="co" style="color: #5E5E5E;"># These variants are not</span></span>
-<span id="cb4-4"><span class="fu" style="color: #4758AB;">fload</span>()</span>
-<span id="cb4-5"><span class="fu" style="color: #4758AB;">facload</span>()</span>
-<span id="cb4-6"><span class="fu" style="color: #4758AB;">facload</span>()</span>
-<span id="cb4-7"><span class="fu" style="color: #4758AB;">fl</span>()</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This is easy to remember</span></span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor_loadings</span>()</span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># These variants are not</span></span>
+<span id="cb4-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fload</span>()</span>
+<span id="cb4-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facload</span>()</span>
+<span id="cb4-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facload</span>()</span>
+<span id="cb4-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fl</span>()</span></code></pre></div>
 </div>
 <ul>
 <li>I wrote stuff in Python occasionally. I like the Python style indentation, which is easy to read. So I use that style for my R code too.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="cf" style="color: #003B4F;">for</span> (j <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>) {</span>
-<span id="cb5-2">    <span class="co" style="color: #5E5E5E;"># Do something</span></span>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (j <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>) {</span>
+<span id="cb5-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Do something</span></span>
 <span id="cb5-3">  }</span>
-<span id="cb5-4"><span class="cf" style="color: #003B4F;">if</span> (x <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">1</span>) {</span>
-<span id="cb5-5">    <span class="co" style="color: #5E5E5E;"># Do something</span></span>
-<span id="cb5-6">  } <span class="cf" style="color: #003B4F;">else</span> {</span>
-<span id="cb5-7">    <span class="co" style="color: #5E5E5E;"># Do something else</span></span>
+<span id="cb5-4"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) {</span>
+<span id="cb5-5">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Do something</span></span>
+<span id="cb5-6">  } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> {</span>
+<span id="cb5-7">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Do something else</span></span>
 <span id="cb5-8">  }</span></code></pre></div>
 </div>
 <ul>
@@ -410,9 +1763,19 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 <li><p>Extra whitespace are OK with me. Readability is the main goal.</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;"># I may do this:</span></span>
-<span id="cb6-2">x  <span class="ot" style="color: #003B4F;">&lt;-</span>   <span class="dv" style="color: #AD0000;">1</span></span>
-<span id="cb6-3">y0 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">100</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># I may do this:</span></span>
+<span id="cb6-2">x  <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span>   <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb6-3">y0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span></code></pre></div>
 </div>
 <ul>
 <li><p>I use double quotes for string literals. I have to use two keys … but the habit is too difficult to break that I don’t bother changing it.</p></li>
@@ -443,7 +1806,7 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_startup.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">R Default GUI</figcaption><p></p>
+<figcaption class="figure-caption">R Default GUI</figcaption>
 </figure>
 </div>
 <p>The console above is not the default one. I like dark theme and single-document interface (SDI). I keep only a limited numbers of windows on my desktop and I never group windows in the taskbar. SDI is much more efficient for me to locate the window I need.</p>
@@ -451,7 +1814,7 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_configuration_annotated.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Rgui configuration</figcaption><p></p>
+<figcaption class="figure-caption">Rgui configuration</figcaption>
 </figure>
 </div>
 <p>The configuration is saved in the <code>Rconsole</code> file in the folder <code>etc</code> in R’s installation folder. Whenever I upgrade to a new version of R, I simply copy this file to the same folder in the new installation of R to have my preferred configuration. No need to set the configuration again. (I’ve just found that I haven’t changes this configuration for over five years!)</p>
@@ -459,46 +1822,110 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_devtools_menu.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">R GUI pulldown menu</figcaption><p></p>
+<figcaption class="figure-caption">R GUI pulldown menu</figcaption>
 </figure>
 </div>
 <p>To add a menu, we can use a script and two functions.</p>
 <p>The following function add a menu called <code>devtools</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">utils<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">winMenuAdd</span>(<span class="st" style="color: #20794D;">"devtools"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">utils<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">winMenuAdd</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"devtools"</span>)</span></code></pre></div>
 </div>
 <p>After a menu is added, items can be added by <code>utils::winMenuAddItem()</code>. For example, the following call add <code>check</code> to the menu <code>devtools</code>. If selected, the call <code>devtools::check()</code> will be executed:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">utils<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">winMenuAddItem</span>(<span class="st" style="color: #20794D;">"devtools"</span>,</span>
-<span id="cb2-2">                      <span class="st" style="color: #20794D;">"check"</span>,</span>
-<span id="cb2-3">                      <span class="st" style="color: #20794D;">"devtools::check()"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">utils<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">winMenuAddItem</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"devtools"</span>,</span>
+<span id="cb2-2">                      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"check"</span>,</span>
+<span id="cb2-3">                      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"devtools::check()"</span>)</span></code></pre></div>
 </div>
 <p>As the screenshot above showed, most of the items I added to <code>devtools</code> are those functions (menu items) in RStudio (as far as I recalled … as I haven’t used RStudio to develop package for a long time).</p>
 <p>Most common tasks that can be done through R code can be converted to a menu item. For example, I don’t like using the pulldown menu to change working directory. I can quickly copy the path to a folder using keyboard only (alt-D and then control-C in Explorer). Therefore, I have the following menu item added to the R GUI:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">utils<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">winMenuAddItem</span>(<span class="st" style="color: #20794D;">"Utils"</span>,</span>
-<span id="cb3-2">  <span class="st" style="color: #20794D;">"setwd from clipboard"</span>,</span>
-<span id="cb3-3">  <span class="st" style="color: #20794D;">"setwd(readClipboard());getwd()"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">utils<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">winMenuAddItem</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Utils"</span>,</span>
+<span id="cb3-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"setwd from clipboard"</span>,</span>
+<span id="cb3-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"setwd(readClipboard());getwd()"</span>)</span></code></pre></div>
 </div>
 <p><code>setwd(readClipboard())</code> changes the working directory to the folder I copied to clipboard. <code>getwd()</code> is added just to confirm the change.</p>
 <p>I sometimes open several instances of R GUI. To differentiate them, I use different color schemes:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_four_instances.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Four instances of R GUI</figcaption><p></p>
+<figcaption class="figure-caption">Four instances of R GUI</figcaption>
 </figure>
 </div>
 <p>This can be done inside R GUI too:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">utils<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">winMenuAddItem</span>(<span class="st" style="color: #20794D;">"Style"</span>,</span>
-<span id="cb4-2">  <span class="st" style="color: #20794D;">"Lime Green and Light Golden"</span>,</span>
-<span id="cb4-3">  <span class="st" style="color: #20794D;">"utils::loadRconsole('D:/My_Settings/Rconsole_lime_green_and_light_golden')"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">utils<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">winMenuAddItem</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Style"</span>,</span>
+<span id="cb4-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Lime Green and Light Golden"</span>,</span>
+<span id="cb4-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"utils::loadRconsole('D:/My_Settings/Rconsole_lime_green_and_light_golden')"</span>)</span></code></pre></div>
 </div>
 <p><code>utils::loadRconsole()</code> is used to load the R GUI configuration stored in a file. This file can be created by saving the settings in the R GUI configuration dialog above to a file. In the above example, the settings are stored in the file <code>Rconsole_lime_green_and_light_golden</code>. I have four such files, storing distinct color schemes.</p>
 <p>Like <code>Rconsole</code> for the color scheme and SDI, I would like to have custom menus when I start R GUI. This can be done by adding code like the following to the <code>Rprofile.site</code> file in the <code>etc</code> folder:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="cf" style="color: #003B4F;">if</span> ((<span class="fu" style="color: #4758AB;">Sys.getenv</span>(<span class="st" style="color: #20794D;">"RS_LOCAL_PEER"</span>) <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">""</span>) <span class="sc" style="color: #5E5E5E;">&amp;&amp;</span> (.Platform<span class="sc" style="color: #5E5E5E;">$</span>GUI <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Rgui"</span>)) {</span>
-<span id="cb5-2">    <span class="fu" style="color: #4758AB;">tryCatch</span>(<span class="fu" style="color: #4758AB;">source</span>(<span class="st" style="color: #20794D;">"D:/My_Settings/add_style_menu.R"</span>), <span class="at" style="color: #657422;">error =</span> <span class="cf" style="color: #003B4F;">function</span>(e) e)</span>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> ((<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Sys.getenv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RS_LOCAL_PEER"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;&amp;</span> (.Platform<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>GUI <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Rgui"</span>)) {</span>
+<span id="cb5-2">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tryCatch</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"D:/My_Settings/add_style_menu.R"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">error =</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(e) e)</span>
 <span id="cb5-3">  }</span></code></pre></div>
 </div>
 <p>I wrote this a long long time ago and I cannot recall their purposes. I believe <code>Sys.getenv("RS_LOCAL_PEER") == ""</code> is used to check whether a session is launched in RStudio. <code>.Platform$GUI == "Rgui"</code> is used to check whether an R session is launched by the default R GUI. I still occasionally use RStudio and the menus I created should not be added if an R session is launched inside RStudio. I used <code>tryCatch()</code> just in case there are issues that I overlooked.</p>
@@ -512,7 +1939,6 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
   <category>gui</category>
   <guid>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/index.html</guid>
   <pubDate>Tue, 20 Sep 2022 00:00:00 GMT</pubDate>
-  <media:content url="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_startup.png" medium="image" type="image/png" height="124" width="144"/>
 </item>
 <item>
   <title>One Function or Many Functions</title>
@@ -527,19 +1953,87 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 <p>Though not always the case, in R, it is common to do an analysis using several functions. One of them is the “main” function that do the main analysis. Other functions are used to extract information or compute other statistics.</p>
 <p>For example, to do multiple regression, this is what we may do:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;"># Create a Test Dataset</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">586045</span>)</span>
-<span id="cb1-3">n <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">100</span></span>
-<span id="cb1-4">dat <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">x1 =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">5</span>, <span class="dv" style="color: #AD0000;">1</span>),</span>
-<span id="cb1-5">                  <span class="at" style="color: #657422;">x2 =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">10</span>, <span class="dv" style="color: #AD0000;">2</span>))</span>
-<span id="cb1-6">dat<span class="sc" style="color: #5E5E5E;">$</span>y <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">2</span> <span class="sc" style="color: #5E5E5E;">*</span> dat<span class="sc" style="color: #5E5E5E;">$</span>x1 <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">*</span> dat<span class="sc" style="color: #5E5E5E;">$</span>x2 <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">15</span>)</span>
-<span id="cb1-7"><span class="co" style="color: #5E5E5E;"># Do regression</span></span>
-<span id="cb1-8">lm_out <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(y <span class="sc" style="color: #5E5E5E;">~</span> x1 <span class="sc" style="color: #5E5E5E;">+</span> x2, dat)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a Test Dataset</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">586045</span>)</span>
+<span id="cb1-3">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb1-4">dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x1 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb1-5">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x2 =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb1-6">dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> dat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>)</span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Do regression</span></span>
+<span id="cb1-8">lm_out <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x2, dat)</span></code></pre></div>
 </div>
 <p>The main analysis is done by <code>lm()</code>.</p>
 <p>We then use other functions on the output of <code>lm()</code>. For example, we can use <code>summary()</code> to print commonly requested results:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">summary</span>(lm_out)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(lm_out)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -564,14 +2058,18 @@ F-statistic: 6.072 on 2 and 97 DF,  p-value: 0.003276</code></pre>
 </div>
 <p>Confidence intervals and variance-covariance matrix of the estimates can be obtained by <code>confint()</code> and <code>vcov()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">confint</span>(lm_out)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">confint</span>(lm_out)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  2.5 %   97.5 %
 (Intercept) -44.6335974 3.106785
 x1           -0.4025881 6.140222
 x2            0.8791251 4.275063</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">vcov</span>(lm_out)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vcov</span>(lm_out)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            (Intercept)            x1           x2
 (Intercept)  144.647827 -13.347713331 -7.460851584
@@ -599,14 +2097,40 @@ x2            -7.460852  -0.005532551  0.731913160</code></pre>
  /ENTER x1 x2.</code></pre>
 <p>A similar function can be written in R:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;">regression</span>(<span class="at" style="color: #657422;">data =</span> dat,</span>
-<span id="cb10-2">           <span class="at" style="color: #657422;">dep =</span> <span class="st" style="color: #20794D;">"y"</span>,</span>
-<span id="cb10-3">           <span class="at" style="color: #657422;">ivs =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"x1"</span>, <span class="st" style="color: #20794D;">"x2"</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">regression</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> dat,</span>
+<span id="cb10-2">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dep =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>,</span>
+<span id="cb10-3">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ivs =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x2"</span>))</span></code></pre></div>
 </div>
 <p>We can write it in a more “R-way”:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">regression</span>(<span class="at" style="color: #657422;">data =</span> dat,</span>
-<span id="cb11-2">           <span class="at" style="color: #657422;">model =</span> y <span class="sc" style="color: #5E5E5E;">~</span> x1 <span class="sc" style="color: #5E5E5E;">+</span> x2)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">regression</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> dat,</span>
+<span id="cb11-2">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">model =</span> y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x2)</span></code></pre></div>
 </div>
 <p>The default printout is something similar to SPSS. It can be a list of tables (data frames) and a print method for printing the output.</p>
 <p>Actually, we can still say that we are adopting the do-one-thing-and-do-it-well approach, although the “one thing” is “an interface to a set of functions.”</p>
@@ -638,28 +2162,100 @@ x2            -7.460852  -0.005532551  0.731913160</code></pre>
 <p><code>w</code> is “High”: intercept = 3, slope = 2</p>
 <p>Write a simple function to compute the points</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;"># Simple regression model</span></span>
-<span id="cb1-2">xyline <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(x, a, b) {a <span class="sc" style="color: #5E5E5E;">+</span> b <span class="sc" style="color: #5E5E5E;">*</span> x}</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Simple regression model</span></span>
+<span id="cb1-2">xyline <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x, a, b) {a <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x}</span></code></pre></div>
 </div>
 <p>Set the range for <code>x</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Range of x</span></span>
-<span id="cb2-2">x <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">10</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Range of x</span></span>
+<span id="cb2-2">x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span></code></pre></div>
 </div>
 <p>Compute the predicted values of <code>y</code> at the lower and upper limit of the range of <code>x</code>, for each level of <code>w</code>, when all other predictors of <code>y</code> in the model, if any, are equal to zero:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;"># Generate the two points when moderator = "Low"</span></span>
-<span id="cb3-2">dat0 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">Moderator =</span> <span class="st" style="color: #20794D;">"Low"</span>,</span>
-<span id="cb3-3">                   <span class="at" style="color: #657422;">x =</span> x,</span>
-<span id="cb3-4">                   <span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">xyline</span>(x, <span class="at" style="color: #657422;">a =</span> <span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">b =</span> <span class="dv" style="color: #AD0000;">1</span>))</span>
-<span id="cb3-5"><span class="co" style="color: #5E5E5E;"># Generate the two points when moderator = "High"</span></span>
-<span id="cb3-6">dat1 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">Moderator =</span> <span class="st" style="color: #20794D;">"High"</span>,</span>
-<span id="cb3-7">                   <span class="at" style="color: #657422;">x =</span> x,</span>
-<span id="cb3-8">                   <span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">xyline</span>(x, <span class="at" style="color: #657422;">a =</span> <span class="dv" style="color: #AD0000;">3</span>, <span class="at" style="color: #657422;">b =</span> <span class="dv" style="color: #AD0000;">2</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate the two points when moderator = "Low"</span></span>
+<span id="cb3-2">dat0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Moderator =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Low"</span>,</span>
+<span id="cb3-3">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> x,</span>
+<span id="cb3-4">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xyline</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">a =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))</span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate the two points when moderator = "High"</span></span>
+<span id="cb3-6">dat1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Moderator =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"High"</span>,</span>
+<span id="cb3-7">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> x,</span>
+<span id="cb3-8">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xyline</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">a =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span></code></pre></div>
 </div>
 <p>Combine the datasets:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">dat <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rbind</span>(dat0, dat1)</span>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbind</span>(dat0, dat1)</span>
 <span id="cb4-2">dat</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Moderator  x  y
@@ -671,10 +2267,48 @@ x2            -7.460852  -0.005532551  0.731913160</code></pre>
 </div>
 <p>Draw the lines using <code>ggplot2</code>:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">library</span>(ggplot2)</span>
-<span id="cb6-2">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ggplot</span>(dat, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> x, <span class="at" style="color: #657422;">y =</span> y, <span class="at" style="color: #657422;">color =</span> Moderator)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb6-3">            <span class="fu" style="color: #4758AB;">geom_line</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb6-4">            <span class="fu" style="color: #4758AB;">scale_color_manual</span>(<span class="at" style="color: #657422;">values =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Low"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"blue"</span>, <span class="st" style="color: #20794D;">"High"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"red"</span>))</span>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb6-2">p <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(dat, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> Moderator)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-3">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-4">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Low"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blue"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"High"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>))</span>
 <span id="cb6-5">p</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -686,8 +2320,22 @@ x2            -7.460852  -0.005532551  0.731913160</code></pre>
 </div>
 <p>This plot can then be modified as necessary:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">p2 <span class="ot" style="color: #003B4F;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Independent Variable"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb7-2">          <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Dependent Variable"</span>)</span>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">p2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xlab</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Independent Variable"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-2">          <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ylab</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Dependent Variable"</span>)</span>
 <span id="cb7-3">p2</span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
