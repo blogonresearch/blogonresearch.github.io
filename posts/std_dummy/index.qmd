@@ -45,6 +45,13 @@ So, the "betas" for dummy variables,
 though maybe not "wrong", are
 *not interpretable*.
 
+Nothing new. This issue has been raised
+by others [e.g., @hayes_introduction_2022,
+p. 44]. Some programs (e.g.,
+[jamovi](https://www.jamovi.org/)) do
+not standardize dummy variables even
+when "betas" are requested.
+
 Unfortunately, standardizing
 them is
 quite common (including in my
