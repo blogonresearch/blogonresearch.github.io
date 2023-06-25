@@ -85,7 +85,7 @@ to the common workflow.
 1. Fit a regression model by `lm()` as
   usual.
 
-2. Pass the output to `std_selected()`
+2. Pass the output to `std_selected_boot()`
 and select variables to be standardized.
 :::
 
@@ -254,7 +254,7 @@ The output has one additional section:
 
 - Variables that are standardized[^std], and variables that are not transformed.
 
-[^std]: `std_selected()` allows users to
+[^std]: `std_selected_boot()` allows users to
 do only mean-centering or scaling by
 standard deviation. Meaning-centering
 and than scaling by standard deviation
