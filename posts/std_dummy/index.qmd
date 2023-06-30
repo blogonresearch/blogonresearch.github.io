@@ -559,7 +559,11 @@ are the methods proposed by @dudgeon_improvements_2017
 and @jones_computing_2013, in addition
 to the one proposed by @yuan_biases_2011.
 
-# Issues
+# Revision History and Issues
+
+The revision history of this post can
+be find in the [GitHub history of
+the source file](https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/std_dummy/index.qmd).
 
 For issues on this post, such as corrections
 and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)

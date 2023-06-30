@@ -619,7 +619,11 @@ bootstrapping, even though the point
 estimates are correct, the bootstrap
 confidence intervals are not.
 
-# Issues
+# Revision History and Issues
+
+The revision history of this post can
+be find in the [GitHub history of
+the source file](https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/std_mod/index.qmd).
 
 For issues on this post, such as corrections
 and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)
