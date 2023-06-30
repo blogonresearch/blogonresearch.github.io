@@ -10,7 +10,559 @@
 <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog on psychological research and methodology.</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Sat, 24 Jun 2023 16:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 30 Jun 2023 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>Proper Standardization in Moderated Regression Using std_selected_boot()</title>
+  <dc:creator>Shu Fai Cheung</dc:creator>
+  <link>https://blogonresearch.github.io/posts/std_mod/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>This post shows one simple way to get correctly standardized regression coefficients in multiple linear regression with a moderator, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
+<p>(<em>Note</em>: This post and some related posts, e.g., <a href="https://blogonresearch.github.io/posts/std_dummy/">this one on categorical variables</a>, have sections that are identical or highly similar. This is <em>intentional</em>, to make each article self-contained. Readers do not need to refer to other articles to understand the points.)</p>
+<section id="betas" class="level1">
+<h1>“Betas”</h1>
+<p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”).</p>
+<p>However, when a regression model has a moderator and hence a product term, the common practice, standardizing all variables, including the product term, will lead to “betas” that is difficult to interpret.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+A Standardized Product Is Not A Product of Standardized Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>That is, the standardized <img src="https://latex.codecogs.com/png.latex?x%20%5Ctimes%20w"> is not <img src="https://latex.codecogs.com/png.latex?%5Ctextrm%7Bstandardized%20%7D%20x%20%5Ctimes%20%5Ctextrm%7Bstandardized%20%7D%20w">. The value of the former is no longer a measure of the moderation effect.<sup>1</sup></p>
+</div>
+</div>
+<p>This point is not new. <span class="citation" data-cites="friedrich_defense_1982">Friedrich (1982)</span> has discussed this a long time ago, and <span class="citation" data-cites="aiken_multiple_1991">Aiken &amp; West (1991)</span> have also explored this in details.</p>
+<p>Unfortunately, reporting the “beta” of the product term computed this way is quite common (including in my own work).</p>
+<p>The solutions are simple:</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Standardize The Components
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the product term <img src="https://latex.codecogs.com/png.latex?x%20%5Ctimes%20w">, standardize <img src="https://latex.codecogs.com/png.latex?x"> (<img src="https://latex.codecogs.com/png.latex?z_x">) and <img src="https://latex.codecogs.com/png.latex?w"> (<img src="https://latex.codecogs.com/png.latex?z_w">), and compute the product of them, <img src="https://latex.codecogs.com/png.latex?z_x%20%5Ctimes%20z_w">.</p>
+</div>
+</div>
+<p>However, common statistical programs standardize <em>all</em> variables. To do standardization <em>right</em> in moderated regression, we need to <em>manually</em> do the standardization and compute the product term, <em>twice</em>.</p>
+<p>The function <code>std_selected_boot()</code> from the R package <code>stdmod</code>, which I and my collaborators developed for moderated regression <span class="citation" data-cites="cheung_improving_2022">(Cheung et al., 2022)</span>, can do the standardization as presented in <span class="citation" data-cites="aiken_multiple_1991">Aiken &amp; West (1991)</span> and <span class="citation" data-cites="friedrich_defense_1982">Friedrich (1982)</span>, without any drastic changes to the common workflow.</p>
+</section>
+<section id="how-to-use-std_selected_boot" class="level1">
+<h1>How to Use <code>std_selected_boot()</code></h1>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Workflow
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Fit a regression model by <code>lm()</code> as usual.</p></li>
+<li><p>Pass the output to <code>std_selected_boot()</code> and select variables to be standardized.</p></li>
+</ol>
+</div>
+</div>
+<p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has one additional feature:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What It Won’t Do (Correctly)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If a model has product terms, they will be formed <em>after</em> the component terms are standardized.</p>
+</div>
+</div>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<section id="do-regression-as-usual" class="level3">
+<h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
+<p>Suppose this is the data set:</p>
+<div class="cell">
+<details>
+<summary>Show the code for generating data</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">342532</span>)</span>
+<span id="cb1-2">n <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">200</span></span>
+<span id="cb1-3">control1 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">5</span>, <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb1-4">control2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">20</span>, <span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb1-5">x <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">10</span>, <span class="dv" style="color: #AD0000;">4</span>)</span>
+<span id="cb1-6">w <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">10</span>, <span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb1-7">y <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">10</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">*</span> control1 <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">2</span> <span class="sc" style="color: #5E5E5E;">*</span> control2 <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb1-8">     (<span class="dv" style="color: #AD0000;">3</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">*</span> (w <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">10</span>)) <span class="sc" style="color: #5E5E5E;">*</span> x <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">rnorm</span>(n, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">30</span>)</span>
+<span id="cb1-9">dat <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(control1, control2, x, w, y)</span>
+<span id="cb1-10"><span class="fu" style="color: #4758AB;">write.csv</span>(dat, <span class="st" style="color: #20794D;">"dat.csv"</span>)</span></code></pre></div>
+</details>
+</div>
+<p>This is the <a href="dat.csv">data file</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">head</span>(dat)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  control1 control2         x         w         y
+1 5.025877 22.32080  9.521779 11.049711 131.15905
+2 6.200119 17.04644 11.912240 10.860813 102.01347
+3 4.992346 27.28403  9.845949 10.515219  77.86161
+4 4.979231 12.85510  6.512449 13.635488  89.54024
+5 7.020257 15.48984  5.734798  9.846383  66.94897
+6 3.969682 24.61428  3.329810 10.221247  38.20317</code></pre>
+</div>
+</div>
+<p>The variable <code>x</code> is the predictor, <code>w</code> the moderator. The dataset also has two control variables, <code>control1</code> and <code>control2</code>. The outcome variable is <code>y</code>.</p>
+<p>This is the regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">lm_out <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(y <span class="sc" style="color: #5E5E5E;">~</span> control1 <span class="sc" style="color: #5E5E5E;">+</span> control2 <span class="sc" style="color: #5E5E5E;">+</span> x<span class="sc" style="color: #5E5E5E;">*</span>w, dat)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;">summary</span>(lm_out)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ control1 + control2 + x * w, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-86.895 -18.374  -0.556  19.255  70.971 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  40.8781    29.5919   1.381 0.168746    
+control1     -2.2750     2.1314  -1.067 0.287129    
+control2      1.0053     0.3821   2.631 0.009191 ** 
+x            -4.6922     2.3479  -1.998 0.047060 *  
+w             0.3635     2.4452   0.149 0.881986    
+x:w           0.7780     0.2287   3.402 0.000811 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 28.34 on 194 degrees of freedom
+Multiple R-squared:  0.3587,    Adjusted R-squared:  0.3422 
+F-statistic:  21.7 on 5 and 194 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The moderation effect is significant.</p>
+<ul>
+<li><p>If <code>w</code> increases by one unit, the effect of <code>x</code> increases by 0.778.</p></li>
+<li><p>If <code>w</code> is equal to zero, the effect of <code>x</code> is -4.692, and significant.</p></li>
+</ul>
+</section>
+<section id="do-standardization-right" class="level3">
+<h3 class="anchored" data-anchor-id="do-standardization-right">Do Standardization Right</h3>
+<p>Install <code>stdmod</code> and load it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">library</span>(stdmod)</span></code></pre></div>
+</div>
+<p>If we want to standardize all variables except for the product term, <em>and</em> compute the product term as the product of the <em>standardized</em> variables, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<sup>2</sup></p>
+<p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Beware of the <em>t</em>-based SE and CI
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If a variable is standardized, the usual <em>t</em>-based standard errors and confidence intervals of the coefficients that involve it <em>may</em> be biased.<sup>3</sup></p>
+</div>
+</div>
+<p>This is because (a) they do not take into account the sampling variation of the standard deviations used in standardization <span class="citation" data-cites="yuan_biases_2011">(Yuan &amp; Chan, 2011)</span>, and (b) the coefficients with standardization, the “betas”, are not normally distributed (though may be close to). Many statistical programs do not report the confidence intervals for “betas,” for a good reason.</p>
+<p>The case of moderated regression is more complicated because, as shown in <span class="citation" data-cites="cheung_improving_2022">Cheung et al. (2022)</span>, the correctly standardized product term involves the standard deviations of <em>three</em> variables, not two.</p>
+<p>This is why <code>std_selected_boot()</code> enables nonparametric bootstrapping percentile confidence intervals <em>by default</em>, just in case the bias is large.</p>
+<p>To have stable and reproducible confidence intervals, call <code>set.seed()</code> before calling <code>std_selected_boot()</code> and set <code>nboot</code> to the desired number of bootstrap samples (at least 2000 but 5000 or more is recommended):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">645321</span>)</span>
+<span id="cb7-2">lm_out_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">std_selected_boot</span>(lm_out,</span>
+<span id="cb7-3">                                <span class="at" style="color: #657422;">to_standardize =</span> <span class="sc" style="color: #5E5E5E;">~</span> .,</span>
+<span id="cb7-4">                                <span class="at" style="color: #657422;">nboot =</span> <span class="dv" style="color: #AD0000;">5000</span>)</span></code></pre></div>
+</div>
+<p>Call <code>summary()</code> as usual:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">summary</span>(lm_out_std)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call to std_selected_boot():
+std_selected_boot(lm_out = lm_out, to_standardize = ~., nboot = 5000)
+
+Selected variable(s) are centered by mean and/or scaled by SD
+- Variable(s) centered: y control1 control2 x w
+- Variable(s) scaled: y control1 control2 x w
+
+         centered_by  scaled_by                            Note
+y          83.477789 34.9370599 Standardized (mean = 0, SD = 1)
+control1    5.060548  0.9562693 Standardized (mean = 0, SD = 1)
+control2   19.625484  5.3780625 Standardized (mean = 0, SD = 1)
+x           9.844108  4.3166239 Standardized (mean = 0, SD = 1)
+w          10.132063  2.0474763 Standardized (mean = 0, SD = 1)
+
+Note:
+- Categorical variables will not be centered or scaled even if
+  requested.
+- Nonparametric bootstrapping 95% confidence intervals computed.
+- The number of bootstrap samples is 5000.
+
+Call:
+lm(formula = y ~ control1 + control2 + x * w, data = dat_mod)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.48720 -0.52591 -0.01591  0.55113  2.03139 
+
+Coefficients:
+             Estimate  CI Lower  CI Upper Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.020131 -0.005886  0.052164   0.057654   0.349 0.727347    
+control1    -0.062269 -0.152822  0.036064   0.058339  -1.067 0.287129    
+control2     0.154750  0.045436  0.265029   0.058813   2.631 0.009191 ** 
+x            0.394150  0.277605  0.502798   0.059581   6.615 3.52e-10 ***
+w            0.470113  0.358552  0.573546   0.057982   8.108 5.71e-14 ***
+x:w          0.196803  0.098112  0.289331   0.057843   3.402 0.000811 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.811 on 194 degrees of freedom
+Multiple R-squared:  0.3587,    Adjusted R-squared:  0.3422 
+F-statistic:  21.7 on 5 and 194 DF,  p-value: &lt; 2.2e-16
+
+Note:
+- Estimates and their statistics are based on the data after
+  mean-centering, scaling, or standardization.
+- [CI Lower, CI Upper] are bootstrap percentile confidence intervals.
+- Std. Error are not bootstrap SEs.</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The output has one additional section:</p>
+<ul>
+<li>Variables that are standardized<sup>4</sup>, and variables that are not transformed.</li>
+</ul>
+<p>As shown in the first section, <code>x</code> and <code>w</code> are standardized. <code>x:w</code> is not on the list. It is because <code>x:w</code> is not standardized. It should not be, as explained above.</p>
+<p>The other sections are similar to those for a usual multiple regression. Note that the column <code>Estimate</code> is intentionally <em>not</em> labelled as <code>Beta</code> because it is possible that only some variables are standardized. Labelling it as <code>Beta</code>, though common, is misleading.</p>
+</section>
+<section id="interpret-the-output" class="level3">
+<h3 class="anchored" data-anchor-id="interpret-the-output">Interpret The Output</h3>
+<p>The coefficient of the product term <code>x:w</code> is 0.197. That is, for each one <em>SD</em> increase of <code>w</code>, the <em>standardized</em> effect of <code>x</code> on <code>y</code> ( the “beta” of <code>x</code> on <code>y</code>) increases by 0.197.</p>
+<p>My collaborator and I proposed to call the moderation effect with <code>x</code>, <code>w</code>, and <code>y</code> standardized, <code>x:w</code> in the example, the <em>standardized moderation effect</em> <span class="citation" data-cites="cheung_improving_2022">(Cheung et al., 2022)</span>. When variables are standardized as proposed by <span class="citation" data-cites="friedrich_defense_1982">Friedrich (1982)</span>, the coefficients can be interpreted as usual in moderated regression, with all variables on the standardized metric.</p>
+<p>The coefficient of <code>x</code> is 0.394. This is the <em>standardized</em> effect (the “beta”) of <code>x</code> when <code>w</code> in this model is equal to zero. Because <code>w</code> is standardized, this is equivalent to say that this is the standardized effect of <code>x</code> when <code>w</code> is equal to its mean because the mean of a standardized variable is zero.</p>
+</section>
+<section id="conditional-effect" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-effect">Conditional Effect</h3>
+<p>The function <code>cond_effect_boot()</code> from <code>stdmod</code> can be used to compute the conditional effects. Just pass the output of <code>lm()</code> or <code>std_selected_boot()</code> to it.</p>
+<p>When the variables are standardized, <code>cond_effect_boot()</code> can be used to compute the <em>standardized</em> conditional effects, with nonparametric bootstrap confidence intervals. Just set <code>nboot</code> to the desired number of bootstrap samples. To ensure that the same <code>nboot</code> bootstrap samples are drawn, set the seed to the number used in <code>std_seleted_boot()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">645321</span>)</span>
+<span id="cb10-2">cond_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">cond_effect_boot</span>(lm_out_std,</span>
+<span id="cb10-3">                             <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"x"</span>,</span>
+<span id="cb10-4">                             <span class="at" style="color: #657422;">w =</span> <span class="st" style="color: #20794D;">"w"</span>,</span>
+<span id="cb10-5">                             <span class="at" style="color: #657422;">nboot =</span> <span class="dv" style="color: #AD0000;">5000</span>)</span>
+<span id="cb10-6">cond_std</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The effects of x on y, conditional on w:
+
+  Level      w x Effect CI Lower CI Upper  S.E.     t     p Sig
+   High  1.000    0.591    0.429    0.737 0.085 6.982 0.000 ***
+ Medium  0.000    0.394    0.278    0.503 0.060 6.615 0.000 ***
+    Low -1.000    0.197    0.051    0.340 0.081 2.424 0.016 *  
+
+[CI Lower, CI Upper] shows the 95% nonparametric bootstrap confidence
+interval(s) (based on 5000 bootstrap samples).
+
+
+The regression model:
+
+    y ~ control1 + control2 + x * w
+
+Interpreting the levels of w:
+
+  Level      w % Below From Mean (in SD)
+   High  1.000   81.50              1.00
+ Medium  0.000   51.00              0.00
+    Low -1.000   15.00             -1.00
+
+- % Below: The percent of cases equal to or less than a level.
+- From Mean (in SD): Distance of a level from the mean, in standard
+  deviation (+ve above, -ve below).
+
+Note:
+
+- The variable(s) y, x, w is/are standardized.
+- The conditional effects are the standardized effects of x on y.</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>As shown above, the effect of <code>x</code> is positive and significant when <code>w</code> ranges from one SD below mean to one SD above mean. The <em>standardized</em> effect of <code>x</code> on <code>y</code> when <code>w</code> is one SD above mean is 0.591.</p>
+</section>
+</section>
+</section>
+<section id="why-the-usual-practice-is-problematic" class="level1">
+<h1>Why The Usual Practice Is Problematic</h1>
+<section id="standardize-the-product-term" class="level2">
+<h2 class="anchored" data-anchor-id="standardize-the-product-term">Standardize the Product Term</h2>
+<p>Assume that we standardize <em>all</em> variables, including the product term, as in some statistical program. To simulate this, let’s manually create the product term, standardize all variables, including the product term, and do regression:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">dat<span class="sc" style="color: #5E5E5E;">$</span>x_w <span class="ot" style="color: #003B4F;">&lt;-</span> dat<span class="sc" style="color: #5E5E5E;">$</span>x <span class="sc" style="color: #5E5E5E;">*</span> dat<span class="sc" style="color: #5E5E5E;">$</span>w</span>
+<span id="cb12-2">dat_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(<span class="fu" style="color: #4758AB;">scale</span>(dat))</span>
+<span id="cb12-3"><span class="fu" style="color: #4758AB;">head</span>(dat_std)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     control1   control2             x           w          y        x_w
+1 -0.03625650  0.5011678 -0.0746715806  0.44818493  1.3647761  0.1360233
+2  1.19168346 -0.4795487  0.4791086834  0.35592570  0.5305451  0.6515372
+3 -0.07132155  1.4240348  0.0004264965  0.18713570 -0.1607514  0.1001691
+4 -0.08503578 -1.2588894 -0.7718205413  1.71109398  0.1735248 -0.2141245
+5  2.04932709 -0.7689844 -0.9519731607 -0.13952791 -0.4731027 -0.9039326
+6 -1.14075236  0.9276200 -1.5091188133  0.04355764 -1.2958909 -1.3825065</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">psych<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">describe</span>(dat_std, <span class="at" style="color: #657422;">range =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">skew =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         vars   n mean sd   se
+control1    1 200    0  1 0.07
+control2    2 200    0  1 0.07
+x           3 200    0  1 0.07
+w           4 200    0  1 0.07
+y           5 200    0  1 0.07
+x_w         6 200    0  1 0.07</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">lm_out_std_wrong <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(y <span class="sc" style="color: #5E5E5E;">~</span> control1 <span class="sc" style="color: #5E5E5E;">+</span> control2 <span class="sc" style="color: #5E5E5E;">+</span> x <span class="sc" style="color: #5E5E5E;">+</span> w <span class="sc" style="color: #5E5E5E;">+</span> x_w, dat_std)</span></code></pre></div>
+</details>
+</div>
+<p>The following results are what found in common statistical programs that standardize all variables, including the product term, to yield the “betas”:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;">printCoefmat</span>(<span class="fu" style="color: #4758AB;">summary</span>(lm_out_std_wrong)<span class="sc" style="color: #5E5E5E;">$</span>coefficients,</span>
+<span id="cb17-2">             <span class="at" style="color: #657422;">zap.ind =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb17-3">             <span class="at" style="color: #657422;">P.values =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.000000   0.057350  0.0000  1.00000    
+control1    -0.062270   0.058339 -1.0674  0.28713    
+control2     0.154750   0.058813  2.6312  0.00919 ** 
+x           -0.579740   0.290091 -1.9985  0.04706 *  
+w            0.021300   0.143300  0.1486  0.88199    
+x_w          1.043740   0.306771  3.4023  0.00081 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>Let us compare the results.</p>
+<section id="p-values" class="level3">
+<h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
+<p>Some <em>p</em>-values are different, which is expected:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">coef_std <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">summary</span>(lm_out_std)<span class="sc" style="color: #5E5E5E;">$</span>coefficients</span>
+<span id="cb19-2">coef_std_wrong <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">summary</span>(lm_out_std_wrong)<span class="sc" style="color: #5E5E5E;">$</span>coefficients</span>
+<span id="cb19-3"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">cbind</span>(<span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">p-value (Std Correct)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std[, <span class="st" style="color: #20794D;">"Pr(&gt;|t|)"</span>],</span>
+<span id="cb19-4">            <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">p-value (Std All)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std_wrong[, <span class="st" style="color: #20794D;">"Pr(&gt;|t|)"</span>]), <span class="dv" style="color: #AD0000;">5</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            p-value (Std Correct) p-value (Std All)
+(Intercept)               0.72735           1.00000
+control1                  0.28713           0.28713
+control2                  0.00919           0.00919
+x                         0.00000           0.04706
+w                         0.00000           0.88199
+x:w                       0.00081           0.00081</code></pre>
+</div>
+</div>
+<p>The <em>p</em>-values of <code>x:w</code> are the same, which is expected <span class="citation" data-cites="aiken_multiple_1991">(see Aiken &amp; West, 1991)</span>.</p>
+<p>However, the <em>p</em>-values of <code>x</code> and <code>w</code> are very different. This is not just because they are effects of <code>x</code> and <code>w</code> conditional on other values. They actually are <em>not</em> conditional effects as we usually understood, explained in the next section.</p>
+</section>
+<section id="coefficient-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
+<p>Let us compare the coefficients:</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">cbind</span>(<span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">Estimate (Std Correct)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std[, <span class="st" style="color: #20794D;">"Estimate"</span>],</span>
+<span id="cb21-2">            <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">Estimate (Std All)</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> coef_std_wrong[, <span class="st" style="color: #20794D;">"Estimate"</span>]), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Estimate (Std Correct) Estimate (Std All)
+(Intercept)                  0.020              0.000
+control1                    -0.062             -0.062
+control2                     0.155              0.155
+x                            0.394             -0.580
+w                            0.470              0.021
+x:w                          0.197              1.044</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The coefficients of <code>x</code>, <code>w</code>, and <code>x:w</code> have very different values between the correct standardized solution and the standardized solution with product term standardized.</p>
+<p>Two points of note for the second column, the solution with the product term itself standardized:</p>
+<ol type="1">
+<li><p>The coefficient of <code>x:w</code> , when it is standardized (called <code>x_w</code>), is not a product term. The value 1.044 is <em>not</em> the increase of effect of <code>x</code> when <code>w</code> increases by one SD, nor by one unit.</p></li>
+<li><p>The coefficient of <code>x</code> is <em>not</em> the usual conditional effect. Mathematically, it is the standardized effect of <code>x</code> when <code>w</code> is equal to “some value”. However, what is this value? This is not easy to determine because <code>x_w</code> is not a product term. The coefficient of <code>w</code> has the same problem.</p></li>
+</ol>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Standardizing the Product Term Make Interpretation Difficult
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>The coefficient of the product term is no longer the moderation effect (except in some very special cases).</li>
+<li>The coefficients of the component terms, the focal variable and the moderator, are no longer the conditional effects of values easily deducible from the results.</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="use-t-statistics-confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="use-t-statistics-confidence-intervals">Use <em>t</em> Statistics Confidence Intervals</h2>
+<p>Some programs gives confidence intervals of “betas” using <em>t</em> statistics. That is, standardize variables, do regression, and form the confidence intervals, as if the standardized variables were the original data.</p>
+<p>Let us compare the bootstrap confidence intervals with the usual OLS confidence intervals based on the <em>t</em>-statistics.</p>
+<p>For the output of <code>std_selected_boot()</code>, we can request the <em>t</em>-based confidence intervals by setting <code>type</code> to <code>"lm"</code> when calling <code>confint()</code>, the function commonly used to form confidence intervals:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="co" style="color: #5E5E5E;"># OLS confidence intervals</span></span>
+<span id="cb23-2"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">confint</span>(lm_out_std, <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"lm"</span>), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.094  0.134
+control1    -0.177  0.053
+control2     0.039  0.271
+x            0.277  0.512
+w            0.356  0.584
+x:w          0.083  0.311</code></pre>
+</div>
+</div>
+<p>Without setting <code>type</code>, the nonparametric bootstrap confidence intervals are returned (if available):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="co" style="color: #5E5E5E;"># Bootstrap Confidence Intervals</span></span>
+<span id="cb25-2"><span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">confint</span>(lm_out_std), <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             2.5 % 97.5 %
+(Intercept) -0.006  0.052
+control1    -0.153  0.036
+control2     0.045  0.265
+x            0.278  0.503
+w            0.359  0.574
+x:w          0.098  0.289</code></pre>
+</div>
+</div>
+<p>As shown above, the confidence intervals of <code>x</code>, <code>w</code>, and <code>x:w</code> by the two methods are close to each other. However, the bootstrap confidence intervals tend to be narrower than the <em>t</em>-based confidence intervals.</p>
+<p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">ci_t <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">confint</span>(lm_out_std, <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"lm"</span>)</span>
+<span id="cb27-2">ci_b <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">confint</span>(lm_out_std)</span>
+<span id="cb27-3">width_t <span class="ot" style="color: #003B4F;">&lt;-</span> ci_t[, <span class="dv" style="color: #AD0000;">2</span>] <span class="sc" style="color: #5E5E5E;">-</span> ci_t[, <span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb27-4">width_b <span class="ot" style="color: #003B4F;">&lt;-</span> ci_b[, <span class="dv" style="color: #AD0000;">2</span>] <span class="sc" style="color: #5E5E5E;">-</span> ci_b[, <span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb27-5">ci_compare <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">CI_Width_t =</span> width_t,</span>
+<span id="cb27-6">                         <span class="at" style="color: #657422;">CI_Width_boot =</span> width_b)</span>
+<span id="cb27-7">ci_compare<span class="sc" style="color: #5E5E5E;">$</span>ratio <span class="ot" style="color: #003B4F;">&lt;-</span> ci_compare[, <span class="dv" style="color: #AD0000;">1</span>] <span class="sc" style="color: #5E5E5E;">/</span> ci_compare[, <span class="dv" style="color: #AD0000;">2</span>]</span>
+<span id="cb27-8"><span class="fu" style="color: #4758AB;">round</span>(ci_compare, <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            CI_Width_t CI_Width_boot ratio
+(Intercept)      0.227         0.058 3.918
+control1         0.230         0.189 1.218
+control2         0.232         0.220 1.056
+x                0.235         0.225 1.044
+w                0.229         0.215 1.064
+x:w              0.228         0.191 1.193</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>The <em>t</em>-based confidence interval of the product term, the standardized moderation effect, is nearly 19.3% wider than the bootstrap confidence interval.</p>
+</section>
+</section>
+<section id="final-remarks" class="level1">
+<h1>Final Remarks</h1>
+<p>What <code>std_selected_boot()</code> does can be implemented in R code by researchers using base R packages only. The function was developed to make it easier for researchers to do standardization right in moderated regression, without adopting the all-or-none approach.</p>
+<p>More information on <code>std_selected_boot()</code> can be found from its <a href="https://sfcheung.github.io/stdmod/reference/std_selected.html">help page</a>.</p>
+</section>
+<section id="other-resources" class="level1">
+<h1>Other Resources</h1>
+<p>There are programs that advocate the correct way to do standardization in moderated regression. For example, users are recommended to standardize variables before using them to do moderated regression. Done this way, they yield correct point estimates for standardized solution as <code>std_selected_boot()</code> does.</p>
+<p>However, I am not aware of program that do the bootstrapping correctly when forming the bootstrapping confidence interval for the correctly standardized solution. It is because <em>both</em> the multiple regression <em>and</em> standardization need to be done in <em>each</em> bootstrap sample. If standardization is done only once, before doing bootstrapping, even though the point estimates are correct, the bootstrap confidence intervals are not.</p>
+</section>
+<section id="issues" class="level1">
+<h1>Issues</h1>
+<p>For issues on this post, such as corrections and mistakes, please <a href="https://github.com/blogonresearch/blogonresearch.github.io/issues">open an issue</a> for the GitHub repository for this blog. Thanks.</p>
+</section>
+<section id="references" class="level1">
+
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2">
+<div id="ref-aiken_multiple_1991" class="csl-entry">
+Aiken, L. S., &amp; West, S. G. (1991). <em>Multiple regression: <span>Testing</span> and interpreting interactions</em>. SAGE Publication.
+</div>
+<div id="ref-cheung_improving_2022" class="csl-entry">
+Cheung, S. F., Cheung, S.-H., Lau, E. Y. Y., Hui, C. H., &amp; Vong, W. N. (2022). Improving an old way to measure moderation effect in standardized units. <em>Health Psychology</em>, <em>41</em>(7), 502–505. <a href="https://doi.org/10.1037/hea0001188">https://doi.org/10.1037/hea0001188</a>
+</div>
+<div id="ref-friedrich_defense_1982" class="csl-entry">
+Friedrich, R. J. (1982). In defense of multiplicative terms in multiple regression equations. <em>American Journal of Political Science</em>, <em>26</em>(4), 797–833. <a href="https://doi.org/10.2307/2110973">https://doi.org/10.2307/2110973</a>
+</div>
+<div id="ref-yuan_biases_2011" class="csl-entry">
+Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized regression coefficients. <em>Psychometrika</em>, <em>76</em>(4), 670–690. <a href="https://doi.org/10.1007/s11336-011-9224-6">https://doi.org/10.1007/s11336-011-9224-6</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Standardized <img src="https://latex.codecogs.com/png.latex?x%20%5Ctimes%20w"> can be close to <img src="https://latex.codecogs.com/png.latex?%5Ctextrm%7Bstandardized%20%7D%20x%20%5Ctimes%20%5Ctextrm%7Bstandardized%20%7D%20w">, but only in some very specific situations, as shown in <span class="citation" data-cites="cheung_improving_2022">Cheung et al. (2022)</span>.↩︎</p></li>
+<li id="fn2"><p>Suppose we only want to standardize <code>x</code> and <code>y</code>, because <code>w</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x + y</code>. Order does not matter.↩︎</p></li>
+<li id="fn3"><p>Note that there are indeed cases in which they are still unbiased, and cases in which the biases are negligible. See <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span> for a detailed discussion.↩︎</p></li>
+<li id="fn4"><p><code>std_selected_boot()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>R</category>
+  <category>regression</category>
+  <category>moderation</category>
+  <category>stdmod</category>
+  <category>standardized</category>
+  <category>bootstrapping</category>
+  <category>confidence-intervals</category>
+  <guid>https://blogonresearch.github.io/posts/std_mod/index.html</guid>
+  <pubDate>Fri, 30 Jun 2023 16:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Standardize Variables Except For Dummy Variables, Using std_selected_boot()</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
@@ -21,6 +573,7 @@
 
 
 <p>This post shows one simple way to get meaningful standardized regression coefficients in multiple linear regression with dummy variables, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
+<p>(<em>Note</em>: This post and some related posts, e.g., <a href="https://blogonresearch.github.io/posts/std_mod/">this one on moderated regression</a>, have sections that are identical or highly similar. This is <em>intentional</em>, to make each article self-contained. Readers do not need to refer to other articles to understand the points.)</p>
 <section id="betas" class="level1">
 <h1>“Betas”</h1>
 <p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”). However, even if it is justifiable to interpret effects of some variables in the standardized metric, dummy variables, if any, should still not be standardized;</p>
@@ -457,6 +1010,10 @@ groupGp3         0.441         0.432 1.021</code></pre>
 <h1>Other Resources</h1>
 <p>There are other program or function that also correctly skip categorical variables when doing standardization. For example, the linear regression procedure in <a href="https://www.jamovi.org/">jamovi</a> also do not standardized the dummy variables formed from categorical variables when standardized estimates are requested.</p>
 <p>For confidence intervals, other methods have also been proposed to take into account the sampling variability of the standard deviations. Examples are the methods proposed by <span class="citation" data-cites="dudgeon_improvements_2017">Dudgeon (2017)</span> and <span class="citation" data-cites="jones_computing_2013">Jones &amp; Waller (2013)</span>, in addition to the one proposed by <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (2011)</span>.</p>
+</section>
+<section id="issues" class="level1">
+<h1>Issues</h1>
+<p>For issues on this post, such as corrections and mistakes, please <a href="https://github.com/blogonresearch/blogonresearch.github.io/issues">open an issue</a> for the GitHub repository for this blog. Thanks.</p>
 </section>
 <section id="references" class="level1">
 

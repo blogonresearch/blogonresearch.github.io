@@ -1,0 +1,629 @@
+---
+title: "Proper Standardization in Moderated Regression Using std_selected_boot()"
+author: "Shu Fai Cheung"
+date: '2023-07-01'
+categories: ["R", "regression", "moderation", "stdmod", "standardized", "bootstrapping", "confidence-intervals"]
+bibliography: references.bib
+csl: apa.csl
+---
+
+This post shows one simple way
+to get correctly standardized
+regression coefficients in
+multiple linear regression
+with a moderator,
+with
+appropriate confidence
+intervals, using `std_selected_boot()` from
+the [`stdmod`](https://sfcheung.github.io/stdmod/) package.
+
+(*Note*: This post and some related posts,
+e.g., [this one on categorical variables](https://blogonresearch.github.io/posts/std_dummy/), have sections that are
+identical or highly similar.
+This is *intentional*, to make each
+article self-contained. Readers do
+not need to refer to other articles
+to understand the points.)
+
+# "Betas"
+
+It is common in my area, psychology, to
+report standardized coefficients, the
+so-called "betas," when reporting the
+results of multiple
+regression or related methods. It is so
+common that some programs have the "betas"
+reported by default, alongside the
+unstandardized coefficients (the "Bs").
+
+However, when a regression model has
+a moderator and hence a product term,
+the common practice, standardizing
+all variables, including the product
+term, will lead to "betas" that is
+difficult to interpret.
+
+::: {.callout-warning}
+## A Standardized Product Is Not A Product of Standardized Variables
+That is, the standardized $x \times w$ is not
+$\textrm{standardized } x \times \textrm{standardized } w$.
+The value of the former is no longer a measure of the
+moderation effect.[^except]
+:::
+
+[^except]: Standardized $x \times w$ can
+be close to
+$\textrm{standardized } x \times \textrm{standardized } w$,
+but only in some very specific situations,
+as shown in @cheung_improving_2022.
+
+This point is not new. @friedrich_defense_1982
+has discussed this a long time ago, and
+@aiken_multiple_1991 have also explored
+this in details.
+
+Unfortunately, reporting the "beta"
+of the product term computed this
+way is
+quite common (including in my
+own work).
+
+The solutions are simple:
+
+::: {.callout-tip}
+## Standardize The Components
+For the product term $x \times w$,
+standardize $x$ ($z_x$) and
+$w$ ($z_w$), and compute the
+product of them, $z_x \times z_w$.
+:::
+
+However, common statistical programs
+standardize *all* variables. To do
+standardization *right* in moderated
+regression, we need to *manually*
+do the standardization and compute
+the product term, *twice*.
+
+The function `std_selected_boot()` from the
+R package `stdmod`, which I and my
+collaborators developed for moderated regression [@cheung_improving_2022],
+can do the standardization as
+presented in @aiken_multiple_1991
+and @friedrich_defense_1982,
+without any drastic changes
+to the common workflow.
+
+# How to Use `std_selected_boot()`
+
+::: {.callout-tip}
+## Workflow
+1. Fit a regression model by `lm()` as
+  usual.
+
+2. Pass the output to `std_selected_boot()`
+and select variables to be standardized.
+:::
+
+It was designed to let
+users have full control on which variables
+to standardize (see this
+[article](https://sfcheung.github.io/stdmod/articles/std_selected.html) on how).
+It has one additional feature:
+
+::: {.callout-note}
+## What It Won't Do (Correctly)
+If a model has product terms, they will be
+formed *after* the component terms
+are standardized.
+:::
+
+## Example
+
+### Do Regression As Usual
+
+Suppose this is the data set:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code for generating data"
+set.seed(342532)
+n <- 200
+control1 <- rnorm(n, 5, 1)
+control2 <- rnorm(n, 20, 5)
+x <- rnorm(n, 10, 4)
+w <- rnorm(n, 10, 2)
+y <- 10 + 1 * control1 + 2 * control2 +
+     (3 + 1 * (w - 10)) * x + rnorm(n, 0, 30)
+dat <- data.frame(control1, control2, x, w, y)
+write.csv(dat, "dat.csv")
+```
+
+This is the [data file](dat.csv).
+
+```{r}
+head(dat)
+```
+
+The variable `x` is the predictor,
+`w` the moderator. The dataset also has
+two control variables, `control1` and
+`control2`. The outcome variable is
+`y`.
+
+This is the regression model.
+
+```{r}
+lm_out <- lm(y ~ control1 + control2 + x*w, dat)
+summary(lm_out)
+```
+
+```{r}
+#| echo: false
+lm_out_coef <- coef(lm_out)
+b_x <- lm_out_coef["x"]
+b_x_text <- formatC(b_x, digits = 3, format = "f")
+b_xw <- lm_out_coef["x:w"]
+b_xw_text <- formatC(b_xw, digits = 3, format = "f")
+```
+
+The moderation effect is significant.
+
+  - If `w` increases by one unit, the
+    effect of `x` increases by
+    `r b_xw_text`.
+
+  - If `w` is equal to zero, the effect
+    of `x` is `r b_x_text`, and
+    significant.
+
+### Do Standardization Right
+
+Install `stdmod` and load it:
+
+```{r}
+library(stdmod)
+```
+
+If we want to standardize all variables
+except for the product term, *and*
+compute the product term as the product
+of the *standardized* variables,
+we just pass the output to
+`std_selected_boot()`,
+and set `to_standardize` to `~ .`. The
+right-hand side of `~` denotes the variables
+to be standardized. If set to `.`, then
+all numeric variables, including the
+outcome variable (`y`),
+will be standardized.[^selectsome]
+
+[^selectsome]: Suppose we only want to
+standardize `x` and `y`, because `w`
+is on a meaningful unit, we can
+set `to_standardize` to `~ x + y`.
+Order does not matter.
+
+But this is not just about the coefficient.
+There is one issue with standardization:
+**confidence intervals**.
+
+::: {.callout-warning}
+## Beware of the *t*-based SE and CI
+If a variable is standardized, the
+usual *t*-based standard errors and
+confidence intervals of the
+coefficients that involve it *may* be
+biased.[^biased]
+:::
+
+[^biased]: Note that there are indeed
+cases in which they are still unbiased,
+and cases in which the biases are
+negligible. See @yuan_biases_2011
+for a detailed discussion.
+
+This is because
+(a) they do not take into account the
+sampling variation of the standard deviations
+used in standardization [@yuan_biases_2011],
+and (b) the coefficients with standardization,
+the "betas", are not normally distributed
+(though may be close to). Many statistical
+programs do not report the confidence
+intervals for "betas," for a good reason.
+
+The case of moderated
+regression is more complicated
+because, as shown in
+@cheung_improving_2022, the correctly
+standardized product term involves the
+standard deviations of *three*
+variables, not two.
+
+This is why `std_selected_boot()` enables
+nonparametric bootstrapping percentile
+confidence
+intervals *by default*, just in case
+the bias is large.
+
+To have stable
+and reproducible confidence intervals,
+call `set.seed()` before calling
+`std_selected_boot()` and set `nboot`
+to the desired number of bootstrap
+samples (at least 2000 but 5000
+or more is recommended):
+
+```{r}
+set.seed(645321)
+lm_out_std <- std_selected_boot(lm_out,
+                                to_standardize = ~ .,
+                                nboot = 5000)
+```
+
+Call `summary()` as usual:
+
+```{r}
+summary(lm_out_std)
+```
+
+```{r}
+#| echo: false
+lm_out_std_coef <- coef(lm_out_std)
+b_std_x <- lm_out_std_coef["x"]
+b_std_x_text <- formatC(b_std_x, digits = 3, format = "f")
+b_std_xw <- lm_out_std_coef["x:w"]
+b_std_xw_text <- formatC(b_std_xw, digits = 3, format = "f")
+```
+
+The output has one additional section:
+
+- Variables that are standardized[^std], and variables that are not transformed.
+
+[^std]: `std_selected_boot()` allows users to
+do only mean-centering or scaling by
+standard deviation. Meaning-centering
+and than scaling by standard deviation
+is equivalent to standardization.
+
+As shown in the first section, `x`
+and `w` are standardized. `x:w` is
+not on the list. It is because `x:w`
+is not standardized. It should not be,
+as explained above.
+
+The other sections are similar to those
+for a usual multiple regression.
+Note that the column `Estimate` is
+intentionally *not* labelled as `Beta`
+because it is possible that only some
+variables are standardized. Labelling
+it as `Beta`, though common, is
+misleading.
+
+### Interpret The Output
+
+The coefficient of the product term
+`x:w` is `r b_std_xw_text`.
+That is, for each one *SD* increase of `w`, the
+*standardized* effect of `x` on `y` (
+the "beta" of `x` on `y`) increases by
+`r b_std_xw_text`.
+
+My collaborator and I proposed
+to call the moderation effect with `x`,
+`w`, and `y` standardized,
+`x:w` in the example, the
+*standardized moderation effect*
+[@cheung_improving_2022].
+When variables are standardized as
+proposed by @friedrich_defense_1982,
+the coefficients can be interpreted as
+usual in moderated regression, with all
+variables on the standardized metric.
+
+The coefficient of `x` is `r b_std_x_text`.
+This is the *standardized* effect (the
+"beta") of `x` when `w` in this model is
+equal to zero. Because `w` is standardized,
+this is equivalent to say that this is
+the standardized effect of `x` when `w`
+is equal to its mean because the mean
+of a standardized variable is zero.
+
+### Conditional Effect
+
+The function `cond_effect_boot()` from
+`stdmod` can be used to compute the
+conditional effects. Just pass
+the output of `lm()` or
+`std_selected_boot()` to it.
+
+When the variables
+are standardized, `cond_effect_boot()`
+can be used to
+compute the *standardized*
+conditional effects, with
+nonparametric bootstrap confidence
+intervals. Just set
+`nboot` to the desired number of
+bootstrap samples. To ensure that
+the same `nboot` bootstrap samples are
+drawn, set the seed to the number used
+in `std_seleted_boot()`.
+
+```{r}
+set.seed(645321)
+cond_std <- cond_effect_boot(lm_out_std,
+                             x = "x",
+                             w = "w",
+                             nboot = 5000)
+cond_std
+```
+
+```{r}
+#| echo: false
+cond_std_coef <- coef(cond_std)
+cond_std_coef_text <- formatC(cond_std_coef, digits = 3, format = "f")
+b_std_x_w_lo_text <- cond_std_coef_text["Low"]
+b_std_x_w_me_text <- cond_std_coef_text["Medium"]
+b_std_x_w_hi_text <- cond_std_coef_text["High"]
+```
+
+As shown above, the effect of `x`
+is positive and significant when `w`
+ranges from one SD below mean to one SD
+above mean. The *standardized* effect
+of `x` on `y` when `w` is one SD above
+mean is `r b_std_x_w_hi_text`.
+
+# Why The Usual Practice Is Problematic
+
+## Standardize the Product Term
+
+Assume that we standardize *all*
+variables, including the product term,
+as in
+some statistical
+program. To simulate this, let's
+manually create the product term,
+standardize all variables, including
+the product term, and do regression:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+dat$x_w <- dat$x * dat$w
+dat_std <- as.data.frame(scale(dat))
+head(dat_std)
+psych::describe(dat_std, range = FALSE, skew = FALSE)
+lm_out_std_wrong <- lm(y ~ control1 + control2 + x + w + x_w, dat_std)
+```
+
+The following results are what found
+in common statistical programs that
+standardize all variables, including
+the product term, to yield the "betas":
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+printCoefmat(summary(lm_out_std_wrong)$coefficients,
+             zap.ind = 1:4,
+             P.values = TRUE)
+```
+
+```{r}
+#| echo: false
+lm_out_std_wrong_coef <- coef(lm_out_std_wrong)
+lm_out_std_wrong_coef_text <- formatC(lm_out_std_wrong_coef, digits = 3, format = "f")
+```
+
+Let us compare the results.
+
+### *p*-values
+
+Some *p*-values are different, which is expected:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+coef_std <- summary(lm_out_std)$coefficients
+coef_std_wrong <- summary(lm_out_std_wrong)$coefficients
+round(cbind(`p-value (Std Correct)` = coef_std[, "Pr(>|t|)"],
+            `p-value (Std All)` = coef_std_wrong[, "Pr(>|t|)"]), 5)
+```
+
+The *p*-values of `x:w` are the same,
+which is expected [see @aiken_multiple_1991].
+
+However, the *p*-values of `x` and `w` are
+very different. This is not just because
+they are effects of `x` and `w` conditional
+on other values. They actually are
+*not* conditional effects as we
+usually understood, explained
+in the next section.
+
+### Coefficient Estimates
+
+Let us compare the coefficients:
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+round(cbind(`Estimate (Std Correct)` = coef_std[, "Estimate"],
+            `Estimate (Std All)` = coef_std_wrong[, "Estimate"]), 3)
+```
+
+```{r}
+#| echo: false
+lm_out_std_coef <- coef(lm_out_std)
+std_coef_select <- formatC(lm_out_std_coef, digits = 3, format = "f")
+lm_out_std_coef_wrong <- coef(lm_out_std_wrong)
+std_coef_all <- formatC(lm_out_std_coef_wrong, digits = 3, format = "f")
+```
+
+The coefficients of `x`, `w`, and `x:w`
+have very different values between the
+correct standardized solution and the
+standardized solution with product term
+standardized.
+
+Two points of note for the second
+column, the solution with the product
+term itself standardized:
+
+  1. The coefficient of `x:w`
+      , when it
+      is standardized
+      (called `x_w`), is not a
+      product term. The value
+      `r std_coef_all["x_w"]` is
+      *not* the increase of effect of
+      `x` when `w` increases by one SD,
+      nor by one unit.
+
+  2. The coefficient of `x` is *not*
+      the usual conditional effect.
+      Mathematically,
+      it is the standardized effect of
+      `x` when `w` is equal to "some
+      value". However, what is this
+      value? This is not easy to
+      determine because `x_w` is not
+      a product term. The coefficient
+      of `w` has the same problem.
+
+::: {.callout-warning}
+## Standardizing the Product Term Make Interpretation Difficult
+  - The coefficient of the product term
+    is no longer the moderation effect
+    (except in some very special cases).
+  - The coefficients of the component
+    terms, the focal variable and the
+    moderator, are no longer the
+    conditional effects of values easily
+    deducible from the results.
+:::
+
+## Use *t* Statistics Confidence Intervals
+
+Some programs gives confidence intervals
+of "betas" using *t* statistics. That is,
+standardize variables, do regression,
+and form the confidence intervals,
+as if the standardized variables
+were the original data.
+
+Let us compare the bootstrap confidence
+intervals with the usual OLS confidence
+intervals based on the *t*-statistics.
+
+For the output of `std_selected_boot()`,
+we can request the *t*-based confidence
+intervals by setting `type` to
+`"lm"` when calling `confint()`, the
+function commonly used to form
+confidence intervals:
+
+```{r}
+# OLS confidence intervals
+round(confint(lm_out_std, type = "lm"), 3)
+```
+
+Without setting `type`, the
+nonparametric bootstrap confidence
+intervals are returned (if available):
+
+```{r}
+# Bootstrap Confidence Intervals
+round(confint(lm_out_std), 3)
+```
+
+As shown above, the confidence
+intervals of `x`, `w`, and
+`x:w` by the two methods
+are close to each other. However,
+the bootstrap confidence intervals
+tend to be narrower than the
+*t*-based confidence intervals.
+
+We can compare the widths of the
+confidence intervals by examining
+their ratios (`ratio` = `CI_Width_t` / `CI_Width_boot`):
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+ci_t <- confint(lm_out_std, type = "lm")
+ci_b <- confint(lm_out_std)
+width_t <- ci_t[, 2] - ci_t[, 1]
+width_b <- ci_b[, 2] - ci_b[, 1]
+ci_compare <- data.frame(CI_Width_t = width_t,
+                         CI_Width_boot = width_b)
+ci_compare$ratio <- ci_compare[, 1] / ci_compare[, 2]
+round(ci_compare, 3)
+```
+
+```{r}
+#| echo: false
+ratio_xw <- paste0(formatC(ci_compare["x:w", "ratio"] * 100 - 100, digits = 1, format = "f"), "%")
+```
+
+The *t*-based
+confidence interval of the product
+term, the standardized moderation
+effect, is nearly `r ratio_xw` wider
+than the bootstrap confidence interval.
+
+# Final Remarks
+
+What `std_selected_boot()` does can be
+implemented in R code by researchers using
+base R packages only.
+The function was developed to make
+it easier for researchers to do
+standardization right in moderated
+regression, without adopting
+the all-or-none approach.
+
+More information on `std_selected_boot()`
+can be found from its
+[help page](https://sfcheung.github.io/stdmod/reference/std_selected.html).
+
+# Other Resources
+
+There are programs that advocate the
+correct way to do standardization
+in moderated regression. For example,
+users are recommended to standardize
+variables before using them to do
+moderated regression. Done this way,
+they yield correct point estimates
+for standardized solution
+as `std_selected_boot()` does.
+
+However, I am not aware of program that
+do the bootstrapping correctly when
+forming the bootstrapping confidence
+interval for the correctly standardized
+solution. It is because *both* the
+multiple regression *and* standardization
+need to be done in *each* bootstrap
+sample. If
+standardization
+is done only once, before doing
+bootstrapping, even though the point
+estimates are correct, the bootstrap
+confidence intervals are not.
+
+# Issues
+
+For issues on this post, such as corrections
+and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)
+for the GitHub repository for this blog.
+Thanks.
+
+# References

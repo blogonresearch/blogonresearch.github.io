@@ -17,6 +17,14 @@ appropriate confidence
 intervals, using `std_selected_boot()` from
 the [`stdmod`](https://sfcheung.github.io/stdmod/) package.
 
+(*Note*: This post and some related posts,
+e.g., [this one on moderated regression](https://blogonresearch.github.io/posts/std_mod/), have sections that are
+identical or highly similar.
+This is *intentional*, to make each
+article self-contained. Readers do
+not need to refer to other articles
+to understand the points.)
+
 # "Betas"
 
 It is common in my area, psychology, to
@@ -550,6 +558,13 @@ the standard deviations. Examples
 are the methods proposed by @dudgeon_improvements_2017
 and @jones_computing_2013, in addition
 to the one proposed by @yuan_biases_2011.
+
+# Issues
+
+For issues on this post, such as corrections
+and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)
+for the GitHub repository for this blog.
+Thanks.
 
 # References
 

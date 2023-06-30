@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shu Fai Cheung">
-<meta name="dcterms.date" content="2023-06-25">
+<meta name="dcterms.date" content="2023-07-01">
 
-<title>Blogonresearch - Standardize Variables Except For Dummy Variables, Using std_selected_boot()</title>
+<title>Blogonresearch - Proper Standardization in Moderated Regression Using std_selected_boot()</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -146,6 +146,7 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -240,11 +241,11 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Standardize Variables Except For Dummy Variables, Using std_selected_boot()</h1>
+      <h1 class="title">Proper Standardization in Moderated Regression Using std_selected_boot()</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">regression</div>
-                <div class="quarto-category">categorical variables</div>
+                <div class="quarto-category">moderation</div>
                 <div class="quarto-category">stdmod</div>
                 <div class="quarto-category">standardized</div>
                 <div class="quarto-category">bootstrapping</div>
@@ -266,7 +267,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 25, 2023</p>
+        <p class="date">July 1, 2023</p>
       </div>
     </div>
     
@@ -284,27 +285,27 @@ div.csl-indent {
 
 
 
-<p>This post shows one simple way to get meaningful standardized regression coefficients in multiple linear regression with dummy variables, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
-<p>(<em>Note</em>: This post and some related posts, e.g., <a href="https://blogonresearch.github.io/posts/std_mod/">this one on moderated regression</a>, have sections that are identical or highly similar. This is <em>intentional</em>, to make each article self-contained. Readers do not need to refer to other articles to understand the points.)</p>
+<p>This post shows one simple way to get correctly standardized regression coefficients in multiple linear regression with a moderator, with appropriate confidence intervals, using <code>std_selected_boot()</code> from the <a href="https://sfcheung.github.io/stdmod/"><code>stdmod</code></a> package.</p>
+<p>(<em>Note</em>: This post and some related posts, e.g., <a href="https://blogonresearch.github.io/posts/std_dummy/">this one on categorical variables</a>, have sections that are identical or highly similar. This is <em>intentional</em>, to make each article self-contained. Readers do not need to refer to other articles to understand the points.)</p>
 <section id="betas" class="level1">
 <h1>“Betas”</h1>
-<p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”). However, even if it is justifiable to interpret effects of some variables in the standardized metric, dummy variables, if any, should still not be standardized;</p>
+<p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”).</p>
+<p>However, when a regression model has a moderator and hence a product term, the common practice, standardizing all variables, including the product term, will lead to “betas” that is difficult to interpret.</p>
 <div class="callout-warning callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Dummy Variables Standardized Are No Longer Dummy Variables
+A Standardized Product Is Not A Product of Standardized Variables
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The dummy variable can no longer be interpreted as a dummy variable because it no longer takes either 0 or 1.</p>
+<p>That is, the standardized <span class="math inline">\(x \times w\)</span> is not <span class="math inline">\(\textrm{standardized } x \times \textrm{standardized } w\)</span>. The value of the former is no longer a measure of the moderation effect.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 </div>
 </div>
-<p>So, the “betas” for dummy variables, though maybe not “wrong”, are <em>not interpretable</em>.</p>
-<p>Nothing new. This issue has been raised by others <span class="citation" data-cites="hayes_introduction_2022">(e.g., <a href="#ref-hayes_introduction_2022" role="doc-biblioref">Hayes, 2022, p. 44</a>)</span>. Some programs (e.g., <a href="https://www.jamovi.org/">jamovi</a>) do not standardize dummy variables even when “betas” are requested.</p>
-<p>Unfortunately, standardizing them is quite common (including in my own work).</p>
+<p>This point is not new. <span class="citation" data-cites="friedrich_defense_1982">Friedrich (<a href="#ref-friedrich_defense_1982" role="doc-biblioref">1982</a>)</span> has discussed this a long time ago, and <span class="citation" data-cites="aiken_multiple_1991">Aiken &amp; West (<a href="#ref-aiken_multiple_1991" role="doc-biblioref">1991</a>)</span> have also explored this in details.</p>
+<p>Unfortunately, reporting the “beta” of the product term computed this way is quite common (including in my own work).</p>
 <p>The solutions are simple:</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -312,16 +313,15 @@ Dummy Variables Standardized Are No Longer Dummy Variables
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Do Not Standardize Dummy Variables
+Standardize The Components
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Standardize other variables <em>except</em> for the dummy variables.</p>
+<p>For the product term <span class="math inline">\(x \times w\)</span>, standardize <span class="math inline">\(x\)</span> (<span class="math inline">\(z_x\)</span>) and <span class="math inline">\(w\)</span> (<span class="math inline">\(z_w\)</span>), and compute the product of them, <span class="math inline">\(z_x \times z_w\)</span>.</p>
 </div>
 </div>
-<p>However, common statistical programs standardize <em>all</em> variables. No choice. All or none.</p>
-<p>To do standardization <em>right</em> when dummy variables are present, we need to <em>manually</em> do the standardization. Doable but inconvenient.</p>
-<p>The function <code>std_selected_boot()</code> from the R package <code>stdmod</code>, which I and my collaborators developed <span class="citation" data-cites="cheung_improving_2022">(<a href="#ref-cheung_improving_2022" role="doc-biblioref">Cheung et al., 2022</a>)</span>, can do the standardization right without any major changes to the common workflow.</p>
+<p>However, common statistical programs standardize <em>all</em> variables. To do standardization <em>right</em> in moderated regression, we need to <em>manually</em> do the standardization and compute the product term, <em>twice</em>.</p>
+<p>The function <code>std_selected_boot()</code> from the R package <code>stdmod</code>, which I and my collaborators developed for moderated regression <span class="citation" data-cites="cheung_improving_2022">(<a href="#ref-cheung_improving_2022" role="doc-biblioref">Cheung et al., 2022</a>)</span>, can do the standardization as presented in <span class="citation" data-cites="aiken_multiple_1991">Aiken &amp; West (<a href="#ref-aiken_multiple_1991" role="doc-biblioref">1991</a>)</span> and <span class="citation" data-cites="friedrich_defense_1982">Friedrich (<a href="#ref-friedrich_defense_1982" role="doc-biblioref">1982</a>)</span>, without any drastic changes to the common workflow.</p>
 </section>
 <section id="how-to-use-std_selected_boot" class="level1">
 <h1>How to Use <code>std_selected_boot()</code></h1>
@@ -341,7 +341,7 @@ Workflow
 </ol>
 </div>
 </div>
-<p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has an additional feature:</p>
+<p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has one additional feature:</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -352,78 +352,80 @@ What It Won’t Do (Correctly)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>It automatically skips factors and string variables in standardization. That is, their dummy variables will never be standardized.</p>
+<p>If a model has product terms, they will be formed <em>after</em> the component terms are standardized.</p>
 </div>
 </div>
 <section id="example" class="level2">
 <h2 class="anchored" data-anchor-id="example">Example</h2>
 <section id="do-regression-as-usual" class="level3">
 <h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
-<p>Suppose this is the data set:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Suppose this is the data set:</p>
 <div class="cell">
 <details>
 <summary>Show the code for generating data</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1453243</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">342532</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Gp1"</span>, <span class="st">"Gp2"</span>, <span class="st">"Gp3"</span>),</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span> n,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">30</span>, .<span class="dv">20</span>, .<span class="dv">50</span>),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> (<span class="fu">rchisq</span>(n, <span class="dv">2</span>) <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">4</span> <span class="sc">+</span> <span class="dv">10</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">1</span>, <span class="dv">10</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">+</span> <span class="fl">0.45</span> <span class="sc">/</span> <span class="dv">1</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="dv">4</span> <span class="sc">/</span> <span class="dv">1</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">sapply</span>(group, <span class="cf">switch</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">Gp1 =</span> <span class="dv">1</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">Gp2 =</span> <span class="dv">8</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">Gp3 =</span> <span class="dv">6</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">10</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x1 =</span> <span class="fu">round</span>(x1, <span class="dv">2</span>),</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">x2 =</span> <span class="fu">round</span>(x2, <span class="dv">2</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                  group,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">y =</span> <span class="fu">round</span>(y, <span class="dv">2</span>))</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"dat.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>control1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">5</span>, <span class="dv">1</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>control2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">20</span>, <span class="dv">5</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">10</span>, <span class="dv">4</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> control1 <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> control2 <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>     (<span class="dv">3</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (w <span class="sc">-</span> <span class="dv">10</span>)) <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">30</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(control1, control2, x, w, y)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"dat.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>This is the <a href="dat.csv">data file</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    x1   x2 group     y
-1 9.97 7.84   Gp1 44.99
-2 2.45 5.11   Gp1 47.27
-3 8.50 8.87   Gp2 60.00
-4 4.10 5.60   Gp1 37.05
-5 8.16 7.18   Gp3 45.51
-6 2.53 9.19   Gp1 54.71</code></pre>
+<pre><code>  control1 control2         x         w         y
+1 5.025877 22.32080  9.521779 11.049711 131.15905
+2 6.200119 17.04644 11.912240 10.860813 102.01347
+3 4.992346 27.28403  9.845949 10.515219  77.86161
+4 4.979231 12.85510  6.512449 13.635488  89.54024
+5 7.020257 15.48984  5.734798  9.846383  66.94897
+6 3.969682 24.61428  3.329810 10.221247  38.20317</code></pre>
 </div>
 </div>
-<p>The variables <code>x1</code> and <code>x2</code> are continuous predictors. The variable <code>group</code> is a string variable, with three possible values: <code>Gp1</code>, <code>Gp2</code>, and <code>Gp3</code>. The outcome variable is <code>y</code>.</p>
-<p>This is the regression model:</p>
+<p>The variable <code>x</code> is the predictor, <code>w</code> the moderator. The dataset also has two control variables, <code>control1</code> and <code>control2</code>. The outcome variable is <code>y</code>.</p>
+<p>This is the regression model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lm_out <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> group, dat)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lm_out <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> control1 <span class="sc">+</span> control2 <span class="sc">+</span> x<span class="sc">*</span>w, dat)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = y ~ x1 + x2 + group, data = dat)
+lm(formula = y ~ control1 + control2 + x * w, data = dat)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--42.755  -7.165   0.355   6.597  25.317 
+-86.895 -18.374  -0.556  19.255  70.971 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   9.8205     2.2545   4.356 2.14e-05 ***
-x1            0.4080     0.1021   3.997 9.10e-05 ***
-x2            4.1642     0.3051  13.649  &lt; 2e-16 ***
-groupGp2      6.9809     2.0704   3.372 0.000901 ***
-groupGp3      6.3161     1.7076   3.699 0.000282 ***
+(Intercept)  40.8781    29.5919   1.381 0.168746    
+control1     -2.2750     2.1314  -1.067 0.287129    
+control2      1.0053     0.3821   2.631 0.009191 ** 
+x            -4.6922     2.3479  -1.998 0.047060 *  
+w             0.3635     2.4452   0.149 0.881986    
+x:w           0.7780     0.2287   3.402 0.000811 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 10.49 on 195 degrees of freedom
-Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
-F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 28.34 on 194 degrees of freedom
+Multiple R-squared:  0.3587,    Adjusted R-squared:  0.3422 
+F-statistic:  21.7 on 5 and 194 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<div class="cell">
+
+</div>
+<p>The moderation effect is significant.</p>
+<ul>
+<li><p>If <code>w</code> increases by one unit, the effect of <code>x</code> increases by 0.778.</p></li>
+<li><p>If <code>w</code> is equal to zero, the effect of <code>x</code> is -4.692, and significant.</p></li>
+</ul>
 </section>
 <section id="do-standardization-right" class="level3">
 <h3 class="anchored" data-anchor-id="do-standardization-right">Do Standardization Right</h3>
@@ -431,7 +433,7 @@ F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stdmod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>If we want to standardize all variables except for categorical variables, if any, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>If we want to standardize all variables except for the product term, <em>and</em> compute the product term as the product of the <em>standardized</em> variables, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
 <div class="callout-warning callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -447,15 +449,16 @@ Beware of the <em>t</em>-based SE and CI
 </div>
 </div>
 <p>This is because (a) they do not take into account the sampling variation of the standard deviations used in standardization <span class="citation" data-cites="yuan_biases_2011">(<a href="#ref-yuan_biases_2011" role="doc-biblioref">Yuan &amp; Chan, 2011</a>)</span>, and (b) the coefficients with standardization, the “betas”, are not normally distributed (though may be close to). Many statistical programs do not report the confidence intervals for “betas,” for a good reason.</p>
+<p>The case of moderated regression is more complicated because, as shown in <span class="citation" data-cites="cheung_improving_2022">Cheung et al. (<a href="#ref-cheung_improving_2022" role="doc-biblioref">2022</a>)</span>, the correctly standardized product term involves the standard deviations of <em>three</em> variables, not two.</p>
 <p>This is why <code>std_selected_boot()</code> enables nonparametric bootstrapping percentile confidence intervals <em>by default</em>, just in case the bias is large.</p>
 <p>To have stable and reproducible confidence intervals, call <code>set.seed()</code> before calling <code>std_selected_boot()</code> and set <code>nboot</code> to the desired number of bootstrap samples (at least 2000 but 5000 or more is recommended):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">870516</span>)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">645321</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>lm_out_std <span class="ot">&lt;-</span> <span class="fu">std_selected_boot</span>(lm_out,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">to_standardize =</span> <span class="sc">~</span> .,</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">nboot =</span> <span class="dv">5000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can call <code>summary()</code> as usual to print the results:</p>
+<p>Call <code>summary()</code> as usual:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_out_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -464,14 +467,15 @@ Call to std_selected_boot():
 std_selected_boot(lm_out = lm_out, to_standardize = ~., nboot = 5000)
 
 Selected variable(s) are centered by mean and/or scaled by SD
-- Variable(s) centered: y x1 x2 group
-- Variable(s) scaled: y x1 x2 group
+- Variable(s) centered: y control1 control2 x w
+- Variable(s) scaled: y control1 control2 x w
 
-      centered_by scaled_by                            Note
-y        40.36635 15.286176 Standardized (mean = 0, SD = 1)
-x1        9.41020  7.342158 Standardized (mean = 0, SD = 1)
-x2        5.35520  2.454193 Standardized (mean = 0, SD = 1)
-group          NA        NA Nonnumeric                     
+         centered_by  scaled_by                            Note
+y          83.477789 34.9370599 Standardized (mean = 0, SD = 1)
+control1    5.060548  0.9562693 Standardized (mean = 0, SD = 1)
+control2   19.625484  5.3780625 Standardized (mean = 0, SD = 1)
+x           9.844108  4.3166239 Standardized (mean = 0, SD = 1)
+w          10.132063  2.0474763 Standardized (mean = 0, SD = 1)
 
 Note:
 - Categorical variables will not be centered or scaled even if
@@ -480,25 +484,26 @@ Note:
 - The number of bootstrap samples is 5000.
 
 Call:
-lm(formula = y ~ x1 + x2 + group, data = dat_mod)
+lm(formula = y ~ control1 + control2 + x * w, data = dat_mod)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--2.79695 -0.46875  0.02324  0.43155  1.65619 
+-2.48720 -0.52591 -0.01591  0.55113  2.03139 
 
 Coefficients:
-            Estimate CI Lower CI Upper Std. Error t value Pr(&gt;|t|)    
-(Intercept) -0.28825 -0.42260 -0.16397    0.08545  -3.374 0.000895 ***
-x1           0.19598  0.10064  0.28696    0.04903   3.997  9.1e-05 ***
-x2           0.66856  0.58901  0.73888    0.04898  13.649  &lt; 2e-16 ***
-groupGp2     0.45668  0.22507  0.68592    0.13544   3.372 0.000901 ***
-groupGp3     0.41319  0.20033  0.63209    0.11171   3.699 0.000282 ***
+             Estimate  CI Lower  CI Upper Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.020131 -0.005886  0.052164   0.057654   0.349 0.727347    
+control1    -0.062269 -0.152822  0.036064   0.058339  -1.067 0.287129    
+control2     0.154750  0.045436  0.265029   0.058813   2.631 0.009191 ** 
+x            0.394150  0.277605  0.502798   0.059581   6.615 3.52e-10 ***
+w            0.470113  0.358552  0.573546   0.057982   8.108 5.71e-14 ***
+x:w          0.196803  0.098112  0.289331   0.057843   3.402 0.000811 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.6863 on 195 degrees of freedom
-Multiple R-squared:  0.5385,    Adjusted R-squared:  0.5291 
-F-statistic: 56.89 on 4 and 195 DF,  p-value: &lt; 2.2e-16
+Residual standard error: 0.811 on 194 degrees of freedom
+Multiple R-squared:  0.3587,    Adjusted R-squared:  0.3422 
+F-statistic:  21.7 on 5 and 194 DF,  p-value: &lt; 2.2e-16
 
 Note:
 - Estimates and their statistics are based on the data after
@@ -514,74 +519,121 @@ Note:
 <ul>
 <li>Variables that are standardized<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, and variables that are not transformed.</li>
 </ul>
-<p>The other sections are similar to those of a usual multiple regression. Note that the column <code>Estimate</code> is intentionally <em>not</em> labelled as <code>Beta</code> because it is possible that only some variables are standardized. Labelling it as <code>Beta</code>, though common, is misleading.</p>
+<p>As shown in the first section, <code>x</code> and <code>w</code> are standardized. <code>x:w</code> is not on the list. It is because <code>x:w</code> is not standardized. It should not be, as explained above.</p>
+<p>The other sections are similar to those for a usual multiple regression. Note that the column <code>Estimate</code> is intentionally <em>not</em> labelled as <code>Beta</code> because it is possible that only some variables are standardized. Labelling it as <code>Beta</code>, though common, is misleading.</p>
 </section>
 <section id="interpret-the-output" class="level3">
 <h3 class="anchored" data-anchor-id="interpret-the-output">Interpret The Output</h3>
-<p>In the regression output, because <code>y</code>, <code>x1</code>, and <code>x2</code> are standardized, they are the usual “betas.” However, <code>group</code> is not standardized and so <code>groupGp2</code> and <code>groupGp3</code> still take only two possible values, 0 and 1, and so can still be interpreted as usual.</p>
-<p>For example, the coefficient of <code>groupGp2</code> is 0.457. That is, compared to <code>Gp1</code>, the reference group, the predicted value of <code>y</code> is 0.457 SD (of <code>y</code>) higher in <code>Gp2</code>.</p>
-<p>On the other hand, the coefficient of <code>groupGp3</code> is 0.413. That is, compared to <code>Gp1</code>, the predicted value of <code>y</code> is 0.413 SD (of <code>y</code>) higher in <code>Gp3</code>.</p>
-<p>In short, the coefficients of all dummy variables can be interpreted as usual, though the difference in the outcome variable (dependent variable) is in SD of this variable if it is standardized.</p>
+<p>The coefficient of the product term <code>x:w</code> is 0.197. That is, for each one <em>SD</em> increase of <code>w</code>, the <em>standardized</em> effect of <code>x</code> on <code>y</code> ( the “beta” of <code>x</code> on <code>y</code>) increases by 0.197.</p>
+<p>My collaborator and I proposed to call the moderation effect with <code>x</code>, <code>w</code>, and <code>y</code> standardized, <code>x:w</code> in the example, the <em>standardized moderation effect</em> <span class="citation" data-cites="cheung_improving_2022">(<a href="#ref-cheung_improving_2022" role="doc-biblioref">Cheung et al., 2022</a>)</span>. When variables are standardized as proposed by <span class="citation" data-cites="friedrich_defense_1982">Friedrich (<a href="#ref-friedrich_defense_1982" role="doc-biblioref">1982</a>)</span>, the coefficients can be interpreted as usual in moderated regression, with all variables on the standardized metric.</p>
+<p>The coefficient of <code>x</code> is 0.394. This is the <em>standardized</em> effect (the “beta”) of <code>x</code> when <code>w</code> in this model is equal to zero. Because <code>w</code> is standardized, this is equivalent to say that this is the standardized effect of <code>x</code> when <code>w</code> is equal to its mean because the mean of a standardized variable is zero.</p>
+</section>
+<section id="conditional-effect" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-effect">Conditional Effect</h3>
+<p>The function <code>cond_effect_boot()</code> from <code>stdmod</code> can be used to compute the conditional effects. Just pass the output of <code>lm()</code> or <code>std_selected_boot()</code> to it.</p>
+<p>When the variables are standardized, <code>cond_effect_boot()</code> can be used to compute the <em>standardized</em> conditional effects, with nonparametric bootstrap confidence intervals. Just set <code>nboot</code> to the desired number of bootstrap samples. To ensure that the same <code>nboot</code> bootstrap samples are drawn, set the seed to the number used in <code>std_seleted_boot()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">645321</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cond_std <span class="ot">&lt;-</span> <span class="fu">cond_effect_boot</span>(lm_out_std,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">w =</span> <span class="st">"w"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                             <span class="at">nboot =</span> <span class="dv">5000</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>cond_std</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The effects of x on y, conditional on w:
+
+  Level      w x Effect CI Lower CI Upper  S.E.     t     p Sig
+   High  1.000    0.591    0.429    0.737 0.085 6.982 0.000 ***
+ Medium  0.000    0.394    0.278    0.503 0.060 6.615 0.000 ***
+    Low -1.000    0.197    0.051    0.340 0.081 2.424 0.016 *  
+
+[CI Lower, CI Upper] shows the 95% nonparametric bootstrap confidence
+interval(s) (based on 5000 bootstrap samples).
+
+
+The regression model:
+
+    y ~ control1 + control2 + x * w
+
+Interpreting the levels of w:
+
+  Level      w % Below From Mean (in SD)
+   High  1.000   81.50              1.00
+ Medium  0.000   51.00              0.00
+    Low -1.000   15.00             -1.00
+
+- % Below: The percent of cases equal to or less than a level.
+- From Mean (in SD): Distance of a level from the mean, in standard
+  deviation (+ve above, -ve below).
+
+Note:
+
+- The variable(s) y, x, w is/are standardized.
+- The conditional effects are the standardized effects of x on y.</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>As shown above, the effect of <code>x</code> is positive and significant when <code>w</code> ranges from one SD below mean to one SD above mean. The <em>standardized</em> effect of <code>x</code> on <code>y</code> when <code>w</code> is one SD above mean is 0.591.</p>
 </section>
 </section>
 </section>
-<section id="why-the-common-practice-is-problematic" class="level1">
-<h1>Why The Common Practice Is Problematic</h1>
-<section id="standardize-all-variables" class="level2">
-<h2 class="anchored" data-anchor-id="standardize-all-variables">Standardize All Variables</h2>
-<p>Assume that we standardize <em>all</em> variables, including the dummy variables, as in some statistical program. To simulate this, I manually create the dummy variables, standardize them, and do regression:</p>
+<section id="why-the-usual-practice-is-problematic" class="level1">
+<h1>Why The Usual Practice Is Problematic</h1>
+<section id="standardize-the-product-term" class="level2">
+<h2 class="anchored" data-anchor-id="standardize-the-product-term">Standardize the Product Term</h2>
+<p>Assume that we standardize <em>all</em> variables, including the product term, as in some statistical program. To simulate this, let’s manually create the product term, standardize all variables, including the product term, and do regression:</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp2 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp3 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"Gp2"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>groupGp3 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"Gp3"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>dat_std <span class="ot">&lt;-</span> dat[, <span class="fu">c</span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"groupGp2"</span>, <span class="st">"groupGp3"</span>, <span class="st">"y"</span>)]</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>dat_std <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(dat_std))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>x_w <span class="ot">&lt;-</span> dat<span class="sc">$</span>x <span class="sc">*</span> dat<span class="sc">$</span>w</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>dat_std <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(dat))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>           x1          x2   groupGp2   groupGp3          y
-1  0.07624462  1.01247114 -0.5220306 -0.9206479  0.3024726
-2 -0.94797747 -0.09991063 -0.5220306 -0.9206479  0.4516270
-3 -0.12396901  1.43216096  1.9060186 -0.9206479  1.2844056
-4 -0.72324789  0.09974764 -0.5220306 -0.9206479 -0.2169509
-5 -0.17027692  0.74354368 -0.5220306  1.0807606  0.3364903
-6 -0.93708149  1.56255004 -0.5220306 -0.9206479  0.9383413</code></pre>
+<pre><code>     control1   control2             x           w          y        x_w
+1 -0.03625650  0.5011678 -0.0746715806  0.44818493  1.3647761  0.1360233
+2  1.19168346 -0.4795487  0.4791086834  0.35592570  0.5305451  0.6515372
+3 -0.07132155  1.4240348  0.0004264965  0.18713570 -0.1607514  0.1001691
+4 -0.08503578 -1.2588894 -0.7718205413  1.71109398  0.1735248 -0.2141245
+5  2.04932709 -0.7689844 -0.9519731607 -0.13952791 -0.4731027 -0.9039326
+6 -1.14075236  0.9276200 -1.5091188133  0.04355764 -1.2958909 -1.3825065</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describe</span>(dat_std, <span class="at">range =</span> <span class="cn">FALSE</span>, <span class="at">skew =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">describe</span>(dat_std, <span class="at">range =</span> <span class="cn">FALSE</span>, <span class="at">skew =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>         vars   n mean sd   se
-x1          1 200    0  1 0.07
-x2          2 200    0  1 0.07
-groupGp2    3 200    0  1 0.07
-groupGp3    4 200    0  1 0.07
-y           5 200    0  1 0.07</code></pre>
+control1    1 200    0  1 0.07
+control2    2 200    0  1 0.07
+x           3 200    0  1 0.07
+w           4 200    0  1 0.07
+y           5 200    0  1 0.07
+x_w         6 200    0  1 0.07</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>lm_out_std_wrong <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> groupGp2 <span class="sc">+</span> groupGp3, dat_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lm_out_std_wrong <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> control1 <span class="sc">+</span> control2 <span class="sc">+</span> x <span class="sc">+</span> w <span class="sc">+</span> x_w, dat_std)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The following results are what found in common statistical programs that standardize all variables, including the dummy variables, to yield the “betas”:</p>
+<p>The following results are what found in common statistical programs that standardize all variables, including the product term, to yield the “betas”:</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printCoefmat</span>(<span class="fu">summary</span>(lm_out_std_wrong)<span class="sc">$</span>coefficients,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">zap.ind =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">P.values =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printCoefmat</span>(<span class="fu">summary</span>(lm_out_std_wrong)<span class="sc">$</span>coefficients,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">zap.ind =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">P.values =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 0.000000   0.048525  0.0000  1.00000    
-x1          0.195980   0.049034  3.9968    9e-05 ***
-x2          0.668560   0.048983 13.6488  &lt; 2e-16 ***
-groupGp2    0.188080   0.055783  3.3717  0.00090 ***
-groupGp3    0.206450   0.055817  3.6987  0.00028 ***
+<pre><code>             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.000000   0.057350  0.0000  1.00000    
+control1    -0.062270   0.058339 -1.0674  0.28713    
+control2     0.154750   0.058813  2.6312  0.00919 ** 
+x           -0.579740   0.290091 -1.9985  0.04706 *  
+w            0.021300   0.143300  0.1486  0.88199    
+x_w          1.043740   0.306771  3.4023  0.00081 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -592,65 +644,72 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Let us compare the results.</p>
 <section id="p-values" class="level3">
 <h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
-<p>The <em>p</em>-values are the same, which is expected:</p>
+<p>Some <em>p</em>-values are different, which is expected:</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>coef_std <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_out_std)<span class="sc">$</span>coefficients</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>coef_std_wrong <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_out_std_wrong)<span class="sc">$</span>coefficients</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">p-value (Std Selected)</span><span class="st">`</span> <span class="ot">=</span> coef_std[, <span class="st">"Pr(&gt;|t|)"</span>],</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">p-value (Std All)</span><span class="st">`</span> <span class="ot">=</span> coef_std_wrong[, <span class="st">"Pr(&gt;|t|)"</span>]), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>coef_std <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_out_std)<span class="sc">$</span>coefficients</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>coef_std_wrong <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_out_std_wrong)<span class="sc">$</span>coefficients</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">p-value (Std Correct)</span><span class="st">`</span> <span class="ot">=</span> coef_std[, <span class="st">"Pr(&gt;|t|)"</span>],</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">p-value (Std All)</span><span class="st">`</span> <span class="ot">=</span> coef_std_wrong[, <span class="st">"Pr(&gt;|t|)"</span>]), <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>            p-value (Std Selected) p-value (Std All)
-(Intercept)                  0.001             1.000
-x1                           0.000             0.000
-x2                           0.000             0.000
-groupGp2                     0.001             0.001
-groupGp3                     0.000             0.000</code></pre>
+<pre><code>            p-value (Std Correct) p-value (Std All)
+(Intercept)               0.72735           1.00000
+control1                  0.28713           0.28713
+control2                  0.00919           0.00919
+x                         0.00000           0.04706
+w                         0.00000           0.88199
+x:w                       0.00081           0.00081</code></pre>
 </div>
 </div>
+<p>The <em>p</em>-values of <code>x:w</code> are the same, which is expected <span class="citation" data-cites="aiken_multiple_1991">(see <a href="#ref-aiken_multiple_1991" role="doc-biblioref">Aiken &amp; West, 1991</a>)</span>.</p>
+<p>However, the <em>p</em>-values of <code>x</code> and <code>w</code> are very different. This is not just because they are effects of <code>x</code> and <code>w</code> conditional on other values. They actually are <em>not</em> conditional effects as we usually understood, explained in the next section.</p>
 </section>
 <section id="coefficient-estimates" class="level3">
 <h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
-<p>However, the coefficients for the dummy variables are different:</p>
+<p>Let us compare the coefficients:</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">Estimate (Std Selected)</span><span class="st">`</span> <span class="ot">=</span> coef_std[, <span class="st">"Estimate"</span>],</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Estimate (Std All)</span><span class="st">`</span> <span class="ot">=</span> coef_std_wrong[, <span class="st">"Estimate"</span>]), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">Estimate (Std Correct)</span><span class="st">`</span> <span class="ot">=</span> coef_std[, <span class="st">"Estimate"</span>],</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Estimate (Std All)</span><span class="st">`</span> <span class="ot">=</span> coef_std_wrong[, <span class="st">"Estimate"</span>]), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>            Estimate (Std Selected) Estimate (Std All)
-(Intercept)                  -0.288              0.000
-x1                            0.196              0.196
-x2                            0.669              0.669
-groupGp2                      0.457              0.188
-groupGp3                      0.413              0.206</code></pre>
+<pre><code>            Estimate (Std Correct) Estimate (Std All)
+(Intercept)                  0.020              0.000
+control1                    -0.062             -0.062
+control2                     0.155              0.155
+x                            0.394             -0.580
+w                            0.470              0.021
+x:w                          0.197              1.044</code></pre>
 </div>
 </div>
-<p>The coefficients of <code>groupGp2</code> and <code>groupGp3</code>, when they are standardized, are not meaningful. After standardization, they are no longer either 0 or 1.</p>
-<p>For example, the so-called “beta” of <code>groupGp2</code>, 0.188, is <em>not</em> the difference between <code>Gp2</code> and <code>Gp1</code> on standardized <code>y</code>. It is the increase in standardized <code>y</code> when <code>groupGp2</code> “increases by one SD”, which is meaningless.</p>
-<p>What’s worse, the ranking of the coefficients changed. If we interpret the coefficients with dummy variables not standardized, the <code>Gp2 vs. Gp1</code> difference is larger than the <code>Gp3 vs. Gp1</code> difference (0.457 vs 0.413).</p>
-<p>However, if we interpret the coefficients with dummy variables standardized, we would have a different conclusion: the <code>Gp2 vs. Gp1</code> difference is <em>smaller</em> than the <code>Gp3 vs. Gp1</code> difference (0.188 vs 0.206), though only slightly.</p>
-<p>The reason is, there are more cases in <code>Gp3</code> than in <code>Gp2</code>. The differences in the SDs of the dummy variables are large enough to reverse the ranking:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Gp1 Gp2 Gp3 
- 65  43  92 </code></pre>
+
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(dat<span class="sc">$</span>groupGp2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4118533</code></pre>
+<p>The coefficients of <code>x</code>, <code>w</code>, and <code>x:w</code> have very different values between the correct standardized solution and the standardized solution with product term standardized.</p>
+<p>Two points of note for the second column, the solution with the product term itself standardized:</p>
+<ol type="1">
+<li><p>The coefficient of <code>x:w</code> , when it is standardized (called <code>x_w</code>), is not a product term. The value 1.044 is <em>not</em> the increase of effect of <code>x</code> when <code>w</code> increases by one SD, nor by one unit.</p></li>
+<li><p>The coefficient of <code>x</code> is <em>not</em> the usual conditional effect. Mathematically, it is the standardized effect of <code>x</code> when <code>w</code> is equal to “some value”. However, what is this value? This is not easy to determine because <code>x_w</code> is not a product term. The coefficient of <code>w</code> has the same problem.</p></li>
+</ol>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(dat<span class="sc">$</span>groupGp3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4996481</code></pre>
+<div class="callout-caption-container flex-fill">
+Standardizing the Product Term Make Interpretation Difficult
 </div>
 </div>
-<p>I created the data to demonstrate that this reversal in ranking is <em>possible</em>. This may not happen in real data. However, having groups with different numbers of cases is probably the norm rather than the exception in real data.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="callout-body-container callout-body">
+<ul>
+<li>The coefficient of the product term is no longer the moderation effect (except in some very special cases).</li>
+<li>The coefficients of the component terms, the focal variable and the moderator, are no longer the conditional effects of values easily deducible from the results.</li>
+</ul>
+</div>
+</div>
 </section>
 </section>
 <section id="use-t-statistics-confidence-intervals" class="level2">
@@ -659,69 +718,71 @@ Gp1 Gp2 Gp3
 <p>Let us compare the bootstrap confidence intervals with the usual OLS confidence intervals based on the <em>t</em>-statistics.</p>
 <p>For the output of <code>std_selected_boot()</code>, we can request the <em>t</em>-based confidence intervals by setting <code>type</code> to <code>"lm"</code> when calling <code>confint()</code>, the function commonly used to form confidence intervals:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OLS confidence intervals</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">confint</span>(lm_out_std, <span class="at">type =</span> <span class="st">"lm"</span>), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OLS confidence intervals</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">confint</span>(lm_out_std, <span class="at">type =</span> <span class="st">"lm"</span>), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             2.5 % 97.5 %
-(Intercept) -0.457 -0.120
-x1           0.099  0.293
-x2           0.572  0.765
-groupGp2     0.190  0.724
-groupGp3     0.193  0.634</code></pre>
+(Intercept) -0.094  0.134
+control1    -0.177  0.053
+control2     0.039  0.271
+x            0.277  0.512
+w            0.356  0.584
+x:w          0.083  0.311</code></pre>
 </div>
 </div>
 <p>Without setting <code>type</code>, the nonparametric bootstrap confidence intervals are returned (if available):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrap Confidence Intervals</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">confint</span>(lm_out_std), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrap Confidence Intervals</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">confint</span>(lm_out_std), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             2.5 % 97.5 %
-(Intercept) -0.423 -0.164
-x1           0.101  0.287
-x2           0.589  0.739
-groupGp2     0.225  0.686
-groupGp3     0.200  0.632</code></pre>
+(Intercept) -0.006  0.052
+control1    -0.153  0.036
+control2     0.045  0.265
+x            0.278  0.503
+w            0.359  0.574
+x:w          0.098  0.289</code></pre>
 </div>
 </div>
-<p>As shown above, the confidence intervals of <code>x1</code> by the two methods are close to each other. However, the bootstrap confidence interval of <code>x2</code> is narrower than the <em>t</em>-based confidence interval.</p>
+<p>As shown above, the confidence intervals of <code>x</code>, <code>w</code>, and <code>x:w</code> by the two methods are close to each other. However, the bootstrap confidence intervals tend to be narrower than the <em>t</em>-based confidence intervals.</p>
 <p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ci_t <span class="ot">&lt;-</span> <span class="fu">confint</span>(lm_out_std, <span class="at">type =</span> <span class="st">"lm"</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>ci_b <span class="ot">&lt;-</span> <span class="fu">confint</span>(lm_out_std)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>width_t <span class="ot">&lt;-</span> ci_t[, <span class="dv">2</span>] <span class="sc">-</span> ci_t[, <span class="dv">1</span>]</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>width_b <span class="ot">&lt;-</span> ci_b[, <span class="dv">2</span>] <span class="sc">-</span> ci_b[, <span class="dv">1</span>]</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>ci_compare <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">CI_Width_t =</span> width_t,</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_Width_boot =</span> width_b)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ci_compare<span class="sc">$</span>ratio <span class="ot">&lt;-</span> ci_compare[, <span class="dv">1</span>] <span class="sc">/</span> ci_compare[, <span class="dv">2</span>]</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(ci_compare, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ci_t <span class="ot">&lt;-</span> <span class="fu">confint</span>(lm_out_std, <span class="at">type =</span> <span class="st">"lm"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ci_b <span class="ot">&lt;-</span> <span class="fu">confint</span>(lm_out_std)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>width_t <span class="ot">&lt;-</span> ci_t[, <span class="dv">2</span>] <span class="sc">-</span> ci_t[, <span class="dv">1</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>width_b <span class="ot">&lt;-</span> ci_b[, <span class="dv">2</span>] <span class="sc">-</span> ci_b[, <span class="dv">1</span>]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>ci_compare <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">CI_Width_t =</span> width_t,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_Width_boot =</span> width_b)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>ci_compare<span class="sc">$</span>ratio <span class="ot">&lt;-</span> ci_compare[, <span class="dv">1</span>] <span class="sc">/</span> ci_compare[, <span class="dv">2</span>]</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(ci_compare, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>            CI_Width_t CI_Width_boot ratio
-(Intercept)      0.337         0.259 1.303
-x1               0.193         0.186 1.038
-x2               0.193         0.150 1.289
-groupGp2         0.534         0.461 1.159
-groupGp3         0.441         0.432 1.021</code></pre>
+(Intercept)      0.227         0.058 3.918
+control1         0.230         0.189 1.218
+control2         0.232         0.220 1.056
+x                0.235         0.225 1.044
+w                0.229         0.215 1.064
+x:w              0.228         0.191 1.193</code></pre>
 </div>
 </div>
 <div class="cell">
 
 </div>
-<p>The widths of the confidence intervals are nearly identical for <code>x1</code>. However, for <code>x2</code>, the <em>t</em>-based confidence interval is nearly 28.9% wider than the bootstrap confidence interval.</p>
-<p>For <code>groupGp2</code>, even though dummy variable is correctly not standardized, it can still be affected because the outcome variable, <code>y</code>, is standardized. Its <em>t</em>-based confidence interval is also wider than the bootstrap confidence interval by about 15.9%.</p>
+<p>The <em>t</em>-based confidence interval of the product term, the standardized moderation effect, is nearly 19.3% wider than the bootstrap confidence interval.</p>
 </section>
 </section>
 <section id="final-remarks" class="level1">
 <h1>Final Remarks</h1>
-<p>What <code>std_selected_boot()</code> does can be implemented in R code by researchers using base R packages only. The function was developed to make it easier for researchers to do standardization right, without adopting the all-or-none approach.</p>
+<p>What <code>std_selected_boot()</code> does can be implemented in R code by researchers using base R packages only. The function was developed to make it easier for researchers to do standardization right in moderated regression, without adopting the all-or-none approach.</p>
 <p>More information on <code>std_selected_boot()</code> can be found from its <a href="https://sfcheung.github.io/stdmod/reference/std_selected.html">help page</a>.</p>
 </section>
 <section id="other-resources" class="level1">
 <h1>Other Resources</h1>
-<p>There are other program or function that also correctly skip categorical variables when doing standardization. For example, the linear regression procedure in <a href="https://www.jamovi.org/">jamovi</a> also do not standardized the dummy variables formed from categorical variables when standardized estimates are requested.</p>
-<p>For confidence intervals, other methods have also been proposed to take into account the sampling variability of the standard deviations. Examples are the methods proposed by <span class="citation" data-cites="dudgeon_improvements_2017">Dudgeon (<a href="#ref-dudgeon_improvements_2017" role="doc-biblioref">2017</a>)</span> and <span class="citation" data-cites="jones_computing_2013">Jones &amp; Waller (<a href="#ref-jones_computing_2013" role="doc-biblioref">2013</a>)</span>, in addition to the one proposed by <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (<a href="#ref-yuan_biases_2011" role="doc-biblioref">2011</a>)</span>.</p>
+<p>There are programs that advocate the correct way to do standardization in moderated regression. For example, users are recommended to standardize variables before using them to do moderated regression. Done this way, they yield correct point estimates for standardized solution as <code>std_selected_boot()</code> does.</p>
+<p>However, I am not aware of program that do the bootstrapping correctly when forming the bootstrapping confidence interval for the correctly standardized solution. It is because <em>both</em> the multiple regression <em>and</em> standardization need to be done in <em>each</em> bootstrap sample. If standardization is done only once, before doing bootstrapping, even though the point estimates are correct, the bootstrap confidence intervals are not.</p>
 </section>
 <section id="issues" class="level1">
 <h1>Issues</h1>
@@ -736,17 +797,14 @@ groupGp3         0.441         0.432 1.021</code></pre>
 
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
+<div id="ref-aiken_multiple_1991" class="csl-entry" role="doc-biblioentry">
+Aiken, L. S., &amp; West, S. G. (1991). <em>Multiple regression: <span>Testing</span> and interpreting interactions</em>. SAGE Publication.
+</div>
 <div id="ref-cheung_improving_2022" class="csl-entry" role="doc-biblioentry">
 Cheung, S. F., Cheung, S.-H., Lau, E. Y. Y., Hui, C. H., &amp; Vong, W. N. (2022). Improving an old way to measure moderation effect in standardized units. <em>Health Psychology</em>, <em>41</em>(7), 502–505. <a href="https://doi.org/10.1037/hea0001188">https://doi.org/10.1037/hea0001188</a>
 </div>
-<div id="ref-dudgeon_improvements_2017" class="csl-entry" role="doc-biblioentry">
-Dudgeon, P. (2017). Some improvements in confidence intervals for standardized regression coefficients. <em>Psychometrika</em>, <em>82</em>(4), 928–951. <a href="https://doi.org/10.1007/s11336-017-9563-z">https://doi.org/10.1007/s11336-017-9563-z</a>
-</div>
-<div id="ref-hayes_introduction_2022" class="csl-entry" role="doc-biblioentry">
-Hayes, A. F. (2022). <em>Introduction to mediation, moderation, and conditional process analysis: A regression-based approach</em> (Third edition). The Guilford Press.
-</div>
-<div id="ref-jones_computing_2013" class="csl-entry" role="doc-biblioentry">
-Jones, J. A., &amp; Waller, N. G. (2013). Computing confidence intervals for standardized regression coefficients. <em>Psychological Methods</em>, <em>18</em>(4), 435–453. <a href="https://doi.org/10.1037/a0033269">https://doi.org/10.1037/a0033269</a>
+<div id="ref-friedrich_defense_1982" class="csl-entry" role="doc-biblioentry">
+Friedrich, R. J. (1982). In defense of multiplicative terms in multiple regression equations. <em>American Journal of Political Science</em>, <em>26</em>(4), 797–833. <a href="https://doi.org/10.2307/2110973">https://doi.org/10.2307/2110973</a>
 </div>
 <div id="ref-yuan_biases_2011" class="csl-entry" role="doc-biblioentry">
 Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized regression coefficients. <em>Psychometrika</em>, <em>76</em>(4), 670–690. <a href="https://doi.org/10.1007/s11336-011-9224-6">https://doi.org/10.1007/s11336-011-9224-6</a>
@@ -754,11 +812,10 @@ Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized r
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p><code>x1</code> and <code>x2</code> are intentionally generated from nonnormal distributions, for illustration. Note that OLS (ordinary least squares) regression does <em>not</em> assume that the predictors are multivariate normal. Using nonnormal predictors violate no assumptions of OLS regression.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Suppose we only want to standardize <code>x1</code> and <code>y</code>, because <code>x2</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x1 + y</code>. Order does not matter.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Standardized <span class="math inline">\(x \times w\)</span> can be close to <span class="math inline">\(\textrm{standardized } x \times \textrm{standardized } w\)</span>, but only in some very specific situations, as shown in <span class="citation" data-cites="cheung_improving_2022">Cheung et al. (<a href="#ref-cheung_improving_2022" role="doc-biblioref">2022</a>)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Suppose we only want to standardize <code>x</code> and <code>y</code>, because <code>w</code> is on a meaningful unit, we can set <code>to_standardize</code> to <code>~ x + y</code>. Order does not matter.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Note that there are indeed cases in which they are still unbiased, and cases in which the biases are negligible. See <span class="citation" data-cites="yuan_biases_2011">Yuan &amp; Chan (<a href="#ref-yuan_biases_2011" role="doc-biblioref">2011</a>)</span> for a detailed discussion.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p><code>std_selected_boot()</code> allows users to do only mean-centering or scaling by standard deviation. Meaning-centering and than scaling by standard deviation is equivalent to standardization.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>It can be argued that size differences should be taken into account. They should be, but probably not by standardizing the dummy variables and making the coefficients not interpretable.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
