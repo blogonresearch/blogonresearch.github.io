@@ -9,7 +9,7 @@
 <link>https://blogonresearch.github.io/index.html</link>
 <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog on psychological research and methodology.</description>
-<generator>quarto-1.3.433</generator>
+<generator>quarto-1.3.450</generator>
 <lastBuildDate>Sat, 01 Jul 2023 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Proper Standardization in Moderated Regression Using std_selected_boot()</title>
@@ -3241,7 +3241,7 @@ font-style: inherit;">"Dependent Variable"</span>)</span>
   <category>moderation</category>
   <guid>https://blogonresearch.github.io/posts/plot_mod/index.html</guid>
   <pubDate>Sun, 11 Sep 2022 00:00:00 GMT</pubDate>
-  <media:content url="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" medium="image" type="image/png" height="103" width="144"/>
+  <media:content url="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>Reviving an Old Blog</title>
