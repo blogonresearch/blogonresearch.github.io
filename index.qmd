@@ -12,6 +12,11 @@ listing:
   feed: true
 page-layout: full
 title-block-banner: true
+format:
+  html:
+    include-in-header:
+      - text: |
+          <meta name="google-site-verification" content="0VLBmFnW_UJFI-7gXnORPBsWxqZwmzuGpK-TeVRLBjQ" />
 ---
 
 
