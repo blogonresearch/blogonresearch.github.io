@@ -3031,6 +3031,25 @@ font-style: inherit;">+</span> x2)</span></code></pre></div>
   <pubDate>Wed, 14 Sep 2022 00:00:00 GMT</pubDate>
 </item>
 <item>
+  <title>Reviving an Old Blog</title>
+  <dc:creator>Shu Fai Cheung</dc:creator>
+  <link>https://blogonresearch.github.io/posts/the_first_post/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>This is a “revival” of an old blog of mine on psychological research and methodology (hence the name <em>Blogonresearch</em>). Just anything on research and methodology that are useful to me, and maybe also useful to others.</p>
+<p>Edit 2023-01-28: This is actually the “second revival” as I switched from Hugo to Quarto in early 2023.</p>
+
+
+
+ ]]></description>
+  <category>blog</category>
+  <guid>https://blogonresearch.github.io/posts/the_first_post/index.html</guid>
+  <pubDate>Sun, 11 Sep 2022 00:00:00 GMT</pubDate>
+</item>
+<item>
   <title>Plotting Moderation Effects With ggplot2</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
   <link>https://blogonresearch.github.io/posts/plot_mod/index.html</link>
@@ -3242,25 +3261,6 @@ font-style: inherit;">"Dependent Variable"</span>)</span>
   <guid>https://blogonresearch.github.io/posts/plot_mod/index.html</guid>
   <pubDate>Sun, 11 Sep 2022 00:00:00 GMT</pubDate>
   <media:content url="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" medium="image" type="image/png"/>
-</item>
-<item>
-  <title>Reviving an Old Blog</title>
-  <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/the_first_post/index.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>This is a “revival” of an old blog of mine on psychological research and methodology (hence the name <em>Blogonresearch</em>). Just anything on research and methodology that are useful to me, and maybe also useful to others.</p>
-<p>Edit 2023-01-28: This is actually the “second revival” as I switched from Hugo to Quarto in early 2023.</p>
-
-
-
- ]]></description>
-  <category>blog</category>
-  <guid>https://blogonresearch.github.io/posts/the_first_post/index.html</guid>
-  <pubDate>Sun, 11 Sep 2022 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
