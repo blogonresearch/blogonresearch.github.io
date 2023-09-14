@@ -5,8 +5,8 @@ date: '2022-09-28'
 categories: ["R", "lavaan", "bootstrapping", "confidence-intervals", "semhelpinghands", "standardized"]
 bibliography: references.bib
 csl: apa.csl
-aliases:
-  - ../../post/2022-09-28-bootstrap-confidence-intervals-for-standardized-solution-in-lavaan/index.html
+# aliases:
+#   - ../../post/2022-09-28-bootstrap-confidence-intervals-for-standardized-solution-in-lavaan/index.html
 ---
 
 

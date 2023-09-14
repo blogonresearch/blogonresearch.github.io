@@ -3,8 +3,8 @@ title: My Own Style in R
 author: "Shu Fai Cheung"
 date: '2022-09-24'
 categories: ["R", "code-style"]
-aliases:
-  - ../../post/2022-09-24-my-own-style-in-r/index.html
+# aliases:
+#   - ../../post/2022-09-24-my-own-style-in-r/index.html
 ---
 
 

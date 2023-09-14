@@ -5,8 +5,8 @@ date: '2022-09-26'
 categories: ["R", "lavaan", "semhelpinghands"]
 bibliography: references.bib
 csl: apa.csl
-aliases:
-  - ../../post/2022-09-26-show-options-set-by-lavaan/index.html
+# aliases:
+#   - ../../post/2022-09-26-show-options-set-by-lavaan/index.html
 ---
 
 `lavaan` is a convenient tool for doing

@@ -26,12 +26,12 @@
 <h1>“Betas”</h1>
 <p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”).</p>
 <p>However, when a regression model has a moderator and hence a product term, the common practice, standardizing all variables, including the product term, will lead to “betas” that is difficult to interpret.</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 A Standardized Product Is Not A Product of Standardized Variables
 </div>
 </div>
@@ -42,12 +42,12 @@ A Standardized Product Is Not A Product of Standardized Variables
 <p>This point is not new. <span class="citation" data-cites="friedrich_defense_1982">Friedrich (1982)</span> has discussed this a long time ago, and <span class="citation" data-cites="aiken_multiple_1991">Aiken &amp; West (1991)</span> have also explored this in details.</p>
 <p>Unfortunately, reporting the “beta” of the product term computed this way is quite common (including in my own work).</p>
 <p>The solutions are simple:</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Standardize The Components
 </div>
 </div>
@@ -60,12 +60,12 @@ Standardize The Components
 </section>
 <section id="how-to-use-std_selected_boot" class="level1">
 <h1>How to Use <code>std_selected_boot()</code></h1>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Workflow
 </div>
 </div>
@@ -77,12 +77,12 @@ Workflow
 </div>
 </div>
 <p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has one additional feature:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 What It Won’t Do (Correctly)
 </div>
 </div>
@@ -257,9 +257,6 @@ Multiple R-squared:  0.3587,    Adjusted R-squared:  0.3422
 F-statistic:  21.7 on 5 and 194 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>The moderation effect is significant.</p>
 <ul>
 <li><p>If <code>w</code> increases by one unit, the effect of <code>x</code> increases by 0.778.</p></li>
@@ -276,12 +273,12 @@ font-style: inherit;">library</span>(stdmod)</span></code></pre></div>
 </div>
 <p>If we want to standardize all variables except for the product term, <em>and</em> compute the product term as the product of the <em>standardized</em> variables, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<sup>2</sup></p>
 <p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Beware of the <em>t</em>-based SE and CI
 </div>
 </div>
@@ -371,9 +368,6 @@ Note:
 - Std. Error are not bootstrap SEs.</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>The output has one additional section:</p>
 <ul>
 <li>Variables that are standardized<sup>4</sup>, and variables that are not transformed.</li>
@@ -450,9 +444,6 @@ Note:
 - The variable(s) y, x, w is/are standardized.
 - The conditional effects are the standardized effects of x on y.</code></pre>
 </div>
-</div>
-<div class="cell">
-
 </div>
 <p>As shown above, the effect of <code>x</code> is positive and significant when <code>w</code> ranges from one SD below mean to one SD above mean. The <em>standardized</em> effect of <code>x</code> on <code>y</code> when <code>w</code> is one SD above mean is 0.591.</p>
 </section>
@@ -579,9 +570,6 @@ x_w          1.043740   0.306771  3.4023  0.00081 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>Let us compare the results.</p>
 <section id="p-values" class="level3">
 <h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
@@ -690,21 +678,18 @@ w                            0.470              0.021
 x:w                          0.197              1.044</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>The coefficients of <code>x</code>, <code>w</code>, and <code>x:w</code> have very different values between the correct standardized solution and the standardized solution with product term standardized.</p>
 <p>Two points of note for the second column, the solution with the product term itself standardized:</p>
 <ol type="1">
 <li><p>The coefficient of <code>x:w</code> , when it is standardized (called <code>x_w</code>), is not a product term. The value 1.044 is <em>not</em> the increase of effect of <code>x</code> when <code>w</code> increases by one SD, nor by one unit.</p></li>
 <li><p>The coefficient of <code>x</code> is <em>not</em> the usual conditional effect. Mathematically, it is the standardized effect of <code>x</code> when <code>w</code> is equal to “some value”. However, what is this value? This is not easy to determine because <code>x_w</code> is not a product term. The coefficient of <code>w</code> has the same problem.</p></li>
 </ol>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Standardizing the Product Term Make Interpretation Difficult
 </div>
 </div>
@@ -843,9 +828,6 @@ w                0.229         0.215 1.064
 x:w              0.228         0.191 1.193</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>The <em>t</em>-based confidence interval of the product term, the standardized moderation effect, is nearly 19.3% wider than the bootstrap confidence interval.</p>
 </section>
 </section>
@@ -918,12 +900,12 @@ Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized r
 <section id="betas" class="level1">
 <h1>“Betas”</h1>
 <p>It is common in my area, psychology, to report standardized coefficients, the so-called “betas,” when reporting the results of multiple regression or related methods. It is so common that some programs have the “betas” reported by default, alongside the unstandardized coefficients (the “Bs”). However, even if it is justifiable to interpret effects of some variables in the standardized metric, dummy variables, if any, should still not be standardized;</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Dummy Variables Standardized Are No Longer Dummy Variables
 </div>
 </div>
@@ -935,12 +917,12 @@ Dummy Variables Standardized Are No Longer Dummy Variables
 <p>Nothing new. This issue has been raised by others <span class="citation" data-cites="hayes_introduction_2022">(e.g., Hayes, 2022, p. 44)</span>. Some programs (e.g., <a href="https://www.jamovi.org/">jamovi</a>) do not standardize dummy variables even when “betas” are requested.</p>
 <p>Unfortunately, standardizing them is quite common (including in my own work).</p>
 <p>The solutions are simple:</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Do Not Standardize Dummy Variables
 </div>
 </div>
@@ -954,12 +936,12 @@ Do Not Standardize Dummy Variables
 </section>
 <section id="how-to-use-std_selected_boot" class="level1">
 <h1>How to Use <code>std_selected_boot()</code></h1>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Workflow
 </div>
 </div>
@@ -971,12 +953,12 @@ Workflow
 </div>
 </div>
 <p>It was designed to let users have full control on which variables to standardize (see this <a href="https://sfcheung.github.io/stdmod/articles/std_selected.html">article</a> on how). It has an additional feature:</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 What It Won’t Do (Correctly)
 </div>
 </div>
@@ -1216,12 +1198,12 @@ font-style: inherit;">library</span>(stdmod)</span></code></pre></div>
 </div>
 <p>If we want to standardize all variables except for categorical variables, if any, we just pass the output to <code>std_selected_boot()</code>, and set <code>to_standardize</code> to <code>~ .</code>. The right-hand side of <code>~</code> denotes the variables to be standardized. If set to <code>.</code>, then all numeric variables, including the outcome variable (<code>y</code>), will be standardized.<sup>2</sup></p>
 <p>But this is not just about the coefficient. There is one issue with standardization: <strong>confidence intervals</strong>.</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Beware of the <em>t</em>-based SE and CI
 </div>
 </div>
@@ -1307,9 +1289,6 @@ Note:
 - [CI Lower, CI Upper] are bootstrap percentile confidence intervals.
 - Std. Error are not bootstrap SEs.</code></pre>
 </div>
-</div>
-<div class="cell">
-
 </div>
 <p>The output has one additional section:</p>
 <ul>
@@ -1494,9 +1473,6 @@ groupGp3    0.206450   0.055817  3.6987  0.00028 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-</div>
-<div class="cell">
-
 </div>
 <p>Let us compare the results.</p>
 <section id="p-values" class="level3">
@@ -1761,9 +1737,6 @@ groupGp2         0.534         0.461 1.159
 groupGp3         0.441         0.432 1.021</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>The widths of the confidence intervals are nearly identical for <code>x1</code>. However, for <code>x2</code>, the <em>t</em>-based confidence interval is nearly 28.9% wider than the bootstrap confidence interval.</p>
 <p>For <code>groupGp2</code>, even though dummy variable is correctly not standardized, it can still be affected because the outcome variable, <code>y</code>, is standardized. Its <em>t</em>-based confidence interval is also wider than the bootstrap confidence interval by about 15.9%.</p>
 </section>
@@ -1988,9 +1961,6 @@ font-style: inherit;">iseed =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">8970</span>)</span></code></pre></div>
 </div>
-<div class="cell">
-
-</div>
 <p>Let’s focus on the confidence intervals of the indirect effect:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">est <span class="ot" style="color: #003B4F;
@@ -2069,9 +2039,6 @@ font-style: inherit;">"est.std"</span>]</span></code></pre></div>
 7 -0.09699904 0.09699904</code></pre>
 </div>
 </div>
-<div class="cell">
-
-</div>
 <p>This behavior has been discussed in the <a href="https://groups.google.com/g/lavaan">Google group for<code>lavaan</code></a> and so is known, but not “well-known” because I met many users who were not aware of this, especially when they use bootstrapping to get the confidence intervals for indirect effects but found that the confidence intervals of unstandardized and standardized indirect effect led to different conclusions, as in the example above.</p>
 <p>A solution already exists in <code>lavaan</code>. Users can use <code>bootstrapLavaan()</code> and get the bootstrap confidence intervals for many results, including the output of standardized solution.</p>
 <p>We first define a function to extract the standardized indirect effect:</p>
@@ -2118,9 +2085,6 @@ background-color: null;
 font-style: inherit;">iseed =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">8970</span>)</span></code></pre></div>
-</div>
-<div class="cell">
-
 </div>
 <p>The percentile confidence interval can then be formed by <code>quantile()</code>.</p>
 <p>(Note that <code>lavaan()</code> does not use <code>quantile()</code> but use the approach by <code>boot.ci()</code>. The resulting interval can be slightly different from that by <code>quantile()</code>.)</p>
@@ -2727,7 +2691,7 @@ font-style: inherit;">100</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_startup.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">R Default GUI</figcaption><p></p>
+<figcaption class="figure-caption">R Default GUI</figcaption>
 </figure>
 </div>
 <p>The console above is not the default one. I like dark theme and single-document interface (SDI). I keep only a limited numbers of windows on my desktop and I never group windows in the taskbar. SDI is much more efficient for me to locate the window I need.</p>
@@ -2735,7 +2699,7 @@ font-style: inherit;">100</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_configuration_annotated.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Rgui configuration</figcaption><p></p>
+<figcaption class="figure-caption">Rgui configuration</figcaption>
 </figure>
 </div>
 <p>The configuration is saved in the <code>Rconsole</code> file in the folder <code>etc</code> in R’s installation folder. Whenever I upgrade to a new version of R, I simply copy this file to the same folder in the new installation of R to have my preferred configuration. No need to set the configuration again. (I’ve just found that I haven’t changes this configuration for over five years!)</p>
@@ -2743,7 +2707,7 @@ font-style: inherit;">100</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_devtools_menu.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">R GUI pulldown menu</figcaption><p></p>
+<figcaption class="figure-caption">R GUI pulldown menu</figcaption>
 </figure>
 </div>
 <p>To add a menu, we can use a script and two functions.</p>
@@ -2795,7 +2759,7 @@ font-style: inherit;">"setwd(readClipboard());getwd()"</span>)</span></code></pr
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_four_instances.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Four instances of R GUI</figcaption><p></p>
+<figcaption class="figure-caption">Four instances of R GUI</figcaption>
 </figure>
 </div>
 <p>This can be done inside R GUI too:</p>
