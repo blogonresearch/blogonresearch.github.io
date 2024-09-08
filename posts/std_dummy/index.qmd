@@ -569,7 +569,3 @@ For issues on this post, such as corrections
 and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)
 for the GitHub repository for this blog.
 Thanks.
-
-# References
-
-

@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/manymome_simple_mediation/index.html",
       "/posts/std_mod/index.html",
       "/posts/std_dummy/index.html",
       "/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html",
