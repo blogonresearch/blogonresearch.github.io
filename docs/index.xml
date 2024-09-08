@@ -6,16 +6,832 @@
       version="2.0">
 <channel>
 <title>Blogonresearch</title>
-<link>https://blogonresearch.github.io/index.html</link>
+<link>https://blogonresearch.github.io/</link>
 <atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog on psychological research and methodology.</description>
-<generator>quarto-1.3.433</generator>
-<lastBuildDate>Fri, 30 Jun 2023 16:00:00 GMT</lastBuildDate>
+<generator>quarto-1.5.57</generator>
+<lastBuildDate>Sat, 07 Sep 2024 16:00:00 GMT</lastBuildDate>
+<item>
+  <title>Simple Mediation in a Regression Model Using manymome: A Tutorial</title>
+  <dc:creator>Shu Fai Cheung</dc:creator>
+  <link>https://blogonresearch.github.io/posts/manymome_simple_mediation/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(S. F. Cheung &amp; Cheung, 2023)</span> to test a mediation effect in a simple mediation model fitted by multiple regression.</p>
+<section id="pre-requisite" class="level1">
+<h1>Pre-Requisite</h1>
+<p>Readers are expected to have basic R skills and know how to fit a linear regression model using <code>lm()</code>.</p>
+<p>The package <code>manymome</code> can be installed from CRAN:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"manymome"</span>)</span></code></pre></div>
+</section>
+<section id="data" class="level1">
+<h1>Data</h1>
+<p>This is the data file for illustration, from <code>manymome</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(manymome)</span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(data_med, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          x        m        y       c1       c2
+1  9.931992 17.89644 20.73893 1.426513 6.103290
+2  8.331493 17.92150 22.91594 2.940388 3.832698
+3 10.327471 17.83178 22.14201 3.012678 5.770532</code></pre>
+</div>
+</div>
+</section>
+<section id="a-simple-mediation-model" class="level1">
+<h1>A Simple Mediation Model</h1>
+<p>First we fit a simple mediation model using only <code>x</code>, <code>m</code>, and <code>y</code>.</p>
+<div class="cell" data-layout-align="center" data-fig-heigh="2">
+<div class="cell-output-display">
+<div id="fig-full-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-full-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blogonresearch.github.io/posts/manymome_simple_mediation/index_files/figure-html/fig-full-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-full-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A Simple Mediation Model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In this model:</p>
+<ul>
+<li><p><code>x</code> is the predictor (independent variable).</p></li>
+<li><p><code>y</code> is the outcome variable (dependent variable).</p></li>
+<li><p><code>m</code> is the mediator.</p></li>
+</ul>
+<p>The goal is to compute and test the indirect effect from <code>x</code> to <code>y</code> through <code>m</code>.</p>
+</section>
+<section id="fit-the-models-by-lm" class="level1">
+<h1>Fit the Models by <code>lm()</code></h1>
+<p>To estimate all the regression coefficients, just fit two regression models:</p>
+<ul>
+<li><p>Predict <code>m</code> by <code>x</code> (Figure&nbsp;2).</p></li>
+<li><p>Predict <code>y</code> by <code>m</code> and <code>x</code> (Figure&nbsp;3).</p></li>
+</ul>
+<div class="cell" data-layout-align="center" data-fig-heigh="2">
+<div class="cell-output-display">
+<div id="fig-m-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-m-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blogonresearch.github.io/posts/manymome_simple_mediation/index_files/figure-html/fig-m-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-m-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The Model Predicting <code>m</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig-heigh="2">
+<div class="cell-output-display">
+<div id="fig-y-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-y-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blogonresearch.github.io/posts/manymome_simple_mediation/index_files/figure-html/fig-y-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-y-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The Model Predicting <code>y</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This can be easily done by <code>lm()</code> in R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict m</span></span>
+<span id="cb4-2">model_m <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x,</span>
+<span id="cb4-3">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_med)</span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict y</span></span>
+<span id="cb4-5">model_y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x,</span>
+<span id="cb4-6">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_med)</span></code></pre></div>
+</div>
+<p>These are the regression results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(model_m)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lm(formula = m ~ x, data = data_med)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  9.39332    0.83320   11.27   &lt;2e-16 ***
+x            0.92400    0.08358   11.06   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.8774 on 98 degrees of freedom
+Multiple R-squared:  0.555, Adjusted R-squared:  0.5505 
+F-statistic: 122.2 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(model_y)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lm(formula = y ~ m + x, data = data_med)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   3.3618     2.9480   1.140 0.256930    
+m             0.8596     0.2358   3.645 0.000432 ***
+x             0.4277     0.2925   1.462 0.146862    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.048 on 97 degrees of freedom
+Multiple R-squared:  0.3512,    Adjusted R-squared:  0.3378 
+F-statistic: 26.26 on 2 and 97 DF,  p-value: 7.704e-10</code></pre>
+</div>
+</div>
+<p>The direct effect is the coefficient of <code>x</code> in the model predicting <code>y</code>, which is 0.428, and not significant.</p>
+</section>
+<section id="the-indirect-effect" class="level1">
+<h1>The Indirect Effect</h1>
+<p>The indirect effect is the product of the <code>a</code>-path and the <code>b</code>-path. To test this indirect effect, one common method is nonparametric bootstrapping <span class="citation" data-cites="cheung_comparison_2009">MacKinnon et al. (2002)</span>. This can be done easily by <code>indirect_effect()</code> from the package <code>manymome</code>.</p>
+<section id="combine-the-regression-results" class="level2">
+<h2 class="anchored" data-anchor-id="combine-the-regression-results">Combine the Regression Results</h2>
+<p>We first combine the regression models by <a href="https://sfcheung.github.io/manymome/reference/lm2list.html"><code>lm2list()</code></a> into one object to represent the whole model (Figure&nbsp;1):<sup>1</sup></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">full_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm2list</span>(model_m,</span>
+<span id="cb9-2">                      model_y)</span>
+<span id="cb9-3">full_model</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The models:
+m ~ x
+y ~ m + x</code></pre>
+</div>
+</div>
+</section>
+<section id="compute-and-test-the-indirect-effect" class="level2">
+<h2 class="anchored" data-anchor-id="compute-and-test-the-indirect-effect">Compute and Test the Indirect Effect</h2>
+<p>For this simple model, we can simply use <a href="https://sfcheung.github.io/manymome/reference/cond_indirect.html"><code>indirect_effect()</code></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">ind <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">indirect_effect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>,</span>
+<span id="cb11-2">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>,</span>
+<span id="cb11-3">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">m =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>,</span>
+<span id="cb11-4">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fit =</span> full_model,</span>
+<span id="cb11-5">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">boot_ci =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb11-6">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">R =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5000</span>,</span>
+<span id="cb11-7">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3456</span>)</span></code></pre></div>
+</div>
+<p>These are the main arguments:</p>
+<ul>
+<li><p><code>x</code>: The name of the <code>x</code> variable, the start of the indirect path.</p></li>
+<li><p><code>y</code>: The name of the <code>y</code> variable, the end of the indirect path.</p></li>
+<li><p><code>m</code>: The name of the mediator.</p></li>
+<li><p><code>fit</code>: The regression models combined by <code>lm2list()</code>.</p></li>
+<li><p><code>boot_ci</code>: If <code>TRUE</code>, bootstrap confidence interval will be formed.</p></li>
+<li><p><code>R</code>, the number of bootstrap samples. It is fast for regression models and I recommend using at least 5000 bootstrap samples or even 10000, because the results may not be stable enough if indirect effect is close to zero <span class="citation" data-cites="cheung_semlbci_2023">(an example can be found in S. F. Cheung &amp; Pesigan, 2023)</span>.</p></li>
+<li><p><code>seed</code>: The seed for the random number generator, to make the resampling reproducible. This argument should always be set when doing bootstrapping.</p></li>
+</ul>
+<p>By default, parallel processing will be used and a progress bar will be displayed.</p>
+<p>Just typing the name of the output can print the major results</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">ind</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                     
+ Path:               x -&gt; m -&gt; y     
+ Indirect Effect:    0.794           
+ 95.0% Bootstrap CI: [0.393 to 1.250]
+
+Computation Formula:
+  (b.m~x)*(b.y~m)
+Computation:
+  (0.92400)*(0.85957)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+  m~x       0.924
+  y~m       0.860</code></pre>
+</div>
+</div>
+<p>As shown above, the indirect effect is 0.794. The 95% bootstrap confidence interval is [0.393; 1.250]. The indirect effect is positive and significant.</p>
+<p>For transparency, the output also shows how the indirect effect was computed.</p>
+</section>
+<section id="standardized-indirect-effect" class="level2">
+<h2 class="anchored" data-anchor-id="standardized-indirect-effect">Standardized Indirect Effect</h2>
+<p>To compute and test the standardized indirect effect, with both the <code>x</code>-variable and <code>y</code>-variable standardized, add <code>standardized_x = TRUE</code> and <code>standardized_y = TRUE</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">ind_stdxy <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">indirect_effect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>,</span>
+<span id="cb14-2">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>,</span>
+<span id="cb14-3">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">m =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>,</span>
+<span id="cb14-4">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fit =</span> full_model,</span>
+<span id="cb14-5">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">boot_ci =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb14-6">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">R =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5000</span>,</span>
+<span id="cb14-7">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3456</span>,,</span>
+<span id="cb14-8">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">standardized_x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb14-9">                             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">standardized_y =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div>
+</div>
+<p>The results can be printed as usual:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">ind_stdxy</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect (Both 'x' and 'y' Standardized) ==
+                                     
+ Path:               x -&gt; m -&gt; y     
+ Indirect Effect:    0.333           
+ 95.0% Bootstrap CI: [0.170 to 0.512]
+
+Computation Formula:
+  (b.m~x)*(b.y~m)*sd_x/sd_y
+Computation:
+  (0.92400)*(0.85957)*(1.05515)/(2.51729)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+  m~x       0.924
+  y~m       0.860
+
+NOTE:
+- The effects of the component paths are from the model, not
+  standardized.</code></pre>
+</div>
+</div>
+<p>The standardized indirect effect is 0.333. The 95% bootstrap confidence interval is [0.170; 0.512], significant.</p>
+</section>
+</section>
+<section id="a-simple-mediation-model-with-some-control-variables" class="level1">
+<h1>A Simple Mediation Model With Some Control Variables</h1>
+<p>Suppose we want to fit a more complicated model, with some other variables included, such as control variables <code>c1</code> and <code>c2</code> in the dataset (Figure&nbsp;4).</p>
+<div class="cell" data-layout-align="center" data-fig-caption="A Simple Mediation Model With Control Variables" data-fig-heigh="4">
+<div class="cell-output-display">
+<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="576">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blogonresearch.github.io/posts/manymome_simple_mediation/index_files/figure-html/fig-full-model2-1.png" id="fig-full-model2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Although there are more predictors (<code>c1</code> and <code>c2</code>) and more direct and indirect paths (e.g., <code>c1</code> to <code>y</code> through <code>m</code>), there are still only just two regression models. We can fit them as usual by <code>lm()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">model2_m <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c2,</span>
+<span id="cb17-2">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_med)</span>
+<span id="cb17-3">model2_y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c2,</span>
+<span id="cb17-4">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_med)</span></code></pre></div>
+</div>
+<p>These are the regression results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(model2_m)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lm(formula = m ~ x + c1 + c2, data = data_med)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  9.68941    0.91979  10.534   &lt;2e-16 ***
+x            0.93469    0.08083  11.563   &lt;2e-16 ***
+c1           0.19778    0.07678   2.576   0.0115 *  
+c2          -0.16841    0.10305  -1.634   0.1055    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.8425 on 96 degrees of freedom
+Multiple R-squared:  0.5981,    Adjusted R-squared:  0.5855 
+F-statistic: 47.62 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(model2_y)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lm(formula = y ~ m + x + c1 + c2, data = data_med)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)   4.4152     3.3016   1.337  0.18432   
+m             0.7847     0.2495   3.145  0.00222 **
+x             0.5077     0.3057   1.661  0.10004   
+c1            0.1405     0.1941   0.724  0.47093   
+c2           -0.1544     0.2554  -0.604  0.54695   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.06 on 95 degrees of freedom
+Multiple R-squared:  0.3576,    Adjusted R-squared:  0.3305 </code></pre>
+</div>
+</div>
+<p>We then just combine them by <code>lm2list()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1">full_model2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm2list</span>(model2_m,</span>
+<span id="cb22-2">                       model2_y)</span>
+<span id="cb22-3">full_model2</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The models:
+m ~ x + c1 + c2
+y ~ m + x + c1 + c2</code></pre>
+</div>
+</div>
+<p>The indirect effect can be computed and tested in exactly the same way:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">ind2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">indirect_effect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>,</span>
+<span id="cb24-2">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>,</span>
+<span id="cb24-3">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">m =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>,</span>
+<span id="cb24-4">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fit =</span> full_model2,</span>
+<span id="cb24-5">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">boot_ci =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb24-6">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">R =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5000</span>,</span>
+<span id="cb24-7">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3456</span>)</span></code></pre></div>
+</div>
+<p>This is the result:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">ind2</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                     
+ Path:               x -&gt; m -&gt; y     
+ Indirect Effect:    0.733           
+ 95.0% Bootstrap CI: [0.288 to 1.203]
+
+Computation Formula:
+  (b.m~x)*(b.y~m)
+Computation:
+  (0.93469)*(0.78469)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+  m~x       0.935
+  y~m       0.785</code></pre>
+</div>
+</div>
+<p>The indirect effect is 0.733. The 95% bootstrap confidence interval is [0.288; 1.203], decreased after the control variables are included, but still significant.</p>
+<p>Standardized indirect effect can also be computed and tested just by adding <code>standardized_x = TRUE</code> and <code>standardized_y = TRUE</code>.</p>
+</section>
+<section id="advanced-topics" class="level1">
+<h1>Advanced Topics</h1>
+<section id="customize-the-printout" class="level2">
+<h2 class="anchored" data-anchor-id="customize-the-printout">Customize the Printout</h2>
+<p>The printout can be customized in several ways. For example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(ind,</span>
+<span id="cb27-2">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">digits =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,</span>
+<span id="cb27-3">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pvalue =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb27-4">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pvalue_digits =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,</span>
+<span id="cb27-5">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">se =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                   
+ Path:               x -&gt; m -&gt; y   
+ Indirect Effect:    0.79          
+ 95.0% Bootstrap CI: [0.39 to 1.25]
+ Bootstrap p-value:  0.000         
+ Bootstrap SE:       0.22          
+
+Computation Formula:
+  (b.m~x)*(b.y~m)
+Computation:
+  (0.92400)*(0.85957)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+Standard error (SE) based on nonparametric bootstrapping with 5000
+bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+  m~x        0.92
+  y~m        0.86</code></pre>
+</div>
+</div>
+<ul>
+<li><p><code>digits</code>: The number of digits after the decimal point for major output. Default is 3.</p></li>
+<li><p><code>pvalue</code>: Whether bootstrapping <em>p</em>-value is printed. The method by <span class="citation" data-cites="asparouhov_bootstrap_2021">Asparouhov &amp; Muthén (2021)</span> is used.</p></li>
+<li><p><code>pvalue_digits</code>: The number of digits after the decimal point for the <em>p</em>-value. Default is 3.</p></li>
+<li><p><code>se</code>: The standard error based on bootstrapping (i.e., the standard deviation of the bootstrap estimates).</p></li>
+</ul>
+</section>
+<section id="missing-data" class="level2">
+<h2 class="anchored" data-anchor-id="missing-data">Missing Data</h2>
+<p>Care needs to be taken if missing data is present. Let’s remove some data points from the data file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">data_med_missing <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_med</span>
+<span id="cb29-2">data_med_missing[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"x"</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span id="cb29-3">data_med_missing[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span id="cb29-4">data_med_missing[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span></span>
+<span id="cb29-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(data_med_missing)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          x        m        y       c1       c2
+1        NA 17.89644 20.73893 1.426513 6.103290
+2        NA       NA 22.91594 2.940388 3.832698
+3        NA       NA       NA 3.012678 5.770532
+4 11.196969       NA       NA 3.120056 4.654931
+5 11.887811 22.08645       NA 4.440018 3.959033
+6  8.198297 16.95198       NA 2.495083 3.763712</code></pre>
+</div>
+</div>
+<p>If we do the regression separately, the cases used in the two models will be different:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict m</span></span>
+<span id="cb31-2">model_m_missing <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x,</span>
+<span id="cb31-3">                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_med_missing)</span>
+<span id="cb31-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict y</span></span>
+<span id="cb31-5">model_y_missing <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x,</span>
+<span id="cb31-6">                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_med_missing)</span></code></pre></div>
+</div>
+<p>The sample sizes are not the same:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nobs</span>(model_m_missing)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 96</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nobs</span>(model_y_missing)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 94</code></pre>
+</div>
+</div>
+<p>If they are combined by <code>lm2list()</code>, an error will occur. The function <code>lm2list()</code> will compare the data to see if the cases used are likely to be different.<sup>2</sup></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm2list</span>(model_m_missing,</span>
+<span id="cb36-2">        model_y_missing)</span></code></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in check_lm_consistency(...): The data sets used in the lm models do not have identical sample size. All lm models must be fitted to the same sample.</code></pre>
+</div>
+</div>
+<p>A simple (though not ideal) solution is to use listwise deletion, keeping only cases with complete data. This can be done by <code>na.omit()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1">data_med_listwise <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">na.omit</span>(data_med_missing)</span>
+<span id="cb38-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(data_med_listwise)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           x        m        y         c1       c2
+7  10.091769 19.42649 26.14005  2.5023227 6.196603
+8   9.307707 18.29251 24.24033  1.3108621 4.892843
+9   6.904119 15.91634 23.97662  1.3010467 3.796913
+10 10.706891 18.00798 26.55098  1.9488566 5.835160
+11  9.524557 17.80304 24.14855 -0.4604918 3.663987
+12  9.307470 17.21214 23.17019  4.2970431 5.538241</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nrow</span>(data_med_listwise)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 94</code></pre>
+</div>
+</div>
+<p>The number of cases using listwise deletion is 94, less than the full sample with missing data (100).</p>
+<p>The steps above can then be proceed as usual.</p>
+</section>
+</section>
+<section id="functions-used-in-this-example" class="level1">
+<h1>Functions Used In This Example</h1>
+<p>These are the main functions used:</p>
+<ul>
+<li><p><a href="https://sfcheung.github.io/manymome/reference/lm2list.html"><code>lm2list()</code></a>: Combining the results of several one-outcome regression models.</p></li>
+<li><p><a href="https://sfcheung.github.io/manymome/reference/cond_indirect.html"><code>indirect_effect()</code></a>: Compute and test an indirect effect.</p></li>
+</ul>
+</section>
+<section id="further-information" class="level1">
+<h1>Further Information</h1>
+<p>The package <code>manymome</code> has no inherent limitations on the number of variables and the form of the mediation models. An illustration using a more complicated models with both parallel and serial mediation paths can be found in <a href="https://sfcheung.github.io/manymome/articles/med_lm.html">this online article</a>.</p>
+<p>Other features of <code>manymome</code> can be found in <a href="https://sfcheung.github.io/manymome/">the website</a> for it.</p>
+</section>
+<section id="disclaimer-similarity-across-tutorials" class="level1">
+<h1>Disclaimer: Similarity Across Tutorials</h1>
+<p>To keep each tutorial self-contained, some sections are intentionally repeated nearly verbatim (“recycled”) to reduce the hassle to read several articles to learn how to do one task.</p>
+</section>
+<section id="revision-history-and-issues" class="level1">
+<h1>Revision History and Issues</h1>
+<p>The revision history of this post can be find in the <a href="https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/manymome_simple_mediation/index.qmd">GitHub history of the source file</a>.</p>
+<p>For issues on this post, such as corrections and mistakes, please <a href="https://github.com/blogonresearch/blogonresearch.github.io/issues">open an issue</a> for the GitHub repository for this blog. Thanks.</p>
+
+<p>:::</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2">
+<div id="ref-asparouhov_bootstrap_2021" class="csl-entry">
+Asparouhov, T., &amp; Muthén, B. O. (2021). <em>Bootstrap <em>p</em>-value computation</em>. <a href="https://www.statmodel.com/download/FAQ-Bootstrap%20-%20Pvalue.pdf">https://www.statmodel.com/download/FAQ-Bootstrap%20-%20Pvalue.pdf</a>
+</div>
+<div id="ref-cheung_comparison_2009" class="csl-entry">
+Cheung, M. W.-L. (2009). Comparison of methods for constructing confidence intervals of standardized indirect effects. <em>Behavior Research Methods</em>, <em>41</em>(2), 425–438. <a href="https://doi.org/10.3758/BRM.41.2.425">https://doi.org/10.3758/BRM.41.2.425</a>
+</div>
+<div id="ref-cheung_manymome_2023" class="csl-entry">
+Cheung, S. F., &amp; Cheung, S.-H. (2023). <em>Manymome</em>: <span>An</span> <span>R</span> package for computing the indirect effects, conditional effects, and conditional indirect effects, standardized or unstandardized, and their bootstrap confidence intervals, in many (though not all) models. <em>Behavior Research Methods</em>. <a href="https://doi.org/10.3758/s13428-023-02224-z">https://doi.org/10.3758/s13428-023-02224-z</a>
+</div>
+<div id="ref-cheung_semlbci_2023" class="csl-entry">
+Cheung, S. F., &amp; Pesigan, I. J. A. (2023). <em>Semlbci</em>: <span>An</span> <span>R</span> package for forming likelihood-based confidence intervals for parameter estimates, correlations, indirect effects, and other derived parameters. <em>Structural Equation Modeling: A Multidisciplinary Journal</em>, <em>30</em>(6), 985–999. <a href="https://doi.org/10.1080/10705511.2023.2183860">https://doi.org/10.1080/10705511.2023.2183860</a>
+</div>
+<div id="ref-mackinnon_comparison_2002" class="csl-entry">
+MacKinnon, D. P., Lockwood, C. M., Hoffman, J. M., West, S. G., &amp; Sheets, V. (2002). A comparison of methods to test mediation and other intervening variable effects. <em>Psychological Methods</em>, <em>7</em>(1), 83–104. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2819363/">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2819363/</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The order does not matter when using <code>lm2list</code>.↩︎</p></li>
+<li id="fn2"><p>The function <code>lm2list()</code> checks not only sample sizes. Even if the sample sizes are the same, an error will still be raised if there is evidence suggesting that the samples are not the same, such as different values of <code>x</code> in the two models.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>R</category>
+  <category>mediation</category>
+  <category>manymome</category>
+  <category>bootstrapping</category>
+  <guid>https://blogonresearch.github.io/posts/manymome_simple_mediation/</guid>
+  <pubDate>Sat, 07 Sep 2024 16:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Proper Standardization in Moderated Regression Using std_selected_boot()</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/std_mod/index.html</link>
+  <link>https://blogonresearch.github.io/posts/std_mod/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -96,7 +912,7 @@ What It Won’t Do (Correctly)
 <h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
 <p>Suppose this is the data set:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code for generating data</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -347,19 +1163,26 @@ Residuals:
 -2.48720 -0.52591 -0.01591  0.55113  2.03139 
 
 Coefficients:
-             Estimate  CI Lower  CI Upper Std. Error t value Pr(&gt;|t|)    
-(Intercept)  0.020131 -0.005886  0.052164   0.057654   0.349 0.727347    
-control1    -0.062269 -0.152822  0.036064   0.058339  -1.067 0.287129    
-control2     0.154750  0.045436  0.265029   0.058813   2.631 0.009191 ** 
-x            0.394150  0.277605  0.502798   0.059581   6.615 3.52e-10 ***
-w            0.470113  0.358552  0.573546   0.057982   8.108 5.71e-14 ***
-x:w          0.196803  0.098112  0.289331   0.057843   3.402 0.000811 ***
+            Estimate CI Lower CI Upper Std. Error t value Pr(&gt;|t|)    
+(Intercept)   0.0201  -0.0059   0.0522     0.0577  0.3492 0.727347    
+control1     -0.0623  -0.1528   0.0361     0.0583 -1.0674 0.287129    
+control2      0.1548   0.0454   0.2650     0.0588  2.6312 0.009191 ** 
+x             0.3941   0.2776   0.5028     0.0596  6.6154  &lt; 0.001 ***
+w             0.4701   0.3586   0.5735     0.0580  8.1079  &lt; 0.001 ***
+x:w           0.1968   0.0981   0.2893     0.0578  3.4023  &lt; 0.001 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 0.811 on 194 degrees of freedom
-Multiple R-squared:  0.3587,    Adjusted R-squared:  0.3422 
-F-statistic:  21.7 on 5 and 194 DF,  p-value: &lt; 2.2e-16
+
+R-squared                : 0.3587
+Adjusted R-squared       : 0.3422
+ANOVA test of R-squared  : F(5, 194) = 21.7047, p &lt; 0.001
+
+= Test the highest order term =
+The highest order term             : x:w
+R-squared increase adding this term: 0.0383
+F test of R-squared increase       : F(1, 194) = 11.5759, p &lt; 0.001
 
 Note:
 - Estimates and their statistics are based on the data after
@@ -455,7 +1278,7 @@ Note:
 <h2 class="anchored" data-anchor-id="standardize-the-product-term">Standardize the Product Term</h2>
 <p>Assume that we standardize <em>all</em> variables, including the product term, as in some statistical program. To simulate this, let’s manually create the product term, standardize all variables, including the product term, and do regression:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">dat<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -488,7 +1311,7 @@ font-style: inherit;">head</span>(dat_std)</span></code></pre></div>
 5  2.04932709 -0.7689844 -0.9519731607 -0.13952791 -0.4731027 -0.9039326
 6 -1.14075236  0.9276200 -1.5091188133  0.04355764 -1.2958909 -1.3825065</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">psych<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -513,7 +1336,7 @@ w           4 200    0  1 0.07
 y           5 200    0  1 0.07
 x_w         6 200    0  1 0.07</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">lm_out_std_wrong <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -534,7 +1357,7 @@ font-style: inherit;">+</span> x_w, dat_std)</span></code></pre></div>
 </div>
 <p>The following results are what found in common statistical programs that standardize all variables, including the product term, to yield the “betas”:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -575,7 +1398,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
 <p>Some <em>p</em>-values are different, which is expected:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">coef_std <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -637,7 +1460,7 @@ x:w                       0.00081           0.00081</code></pre>
 <h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
 <p>Let us compare the coefficients:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -757,7 +1580,7 @@ x:w          0.098  0.289</code></pre>
 <p>As shown above, the confidence intervals of <code>x</code>, <code>w</code>, and <code>x:w</code> by the two methods are close to each other. However, the bootstrap confidence intervals tend to be narrower than the <em>t</em>-based confidence intervals.</p>
 <p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">ci_t <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -845,16 +1668,14 @@ x:w              0.228         0.191 1.193</code></pre>
 <h1>Revision History and Issues</h1>
 <p>The revision history of this post can be find in the <a href="https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/std_mod/index.qmd">GitHub history of the source file</a>.</p>
 <p>For issues on this post, such as corrections and mistakes, please <a href="https://github.com/blogonresearch/blogonresearch.github.io/issues">open an issue</a> for the GitHub repository for this blog. Thanks.</p>
-</section>
-<section id="references" class="level1">
 
-
+<p>:::</p>
 
 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2">
 <div id="ref-aiken_multiple_1991" class="csl-entry">
 Aiken, L. S., &amp; West, S. G. (1991). <em>Multiple regression: <span>Testing</span> and interpreting interactions</em>. SAGE Publication.
 </div>
@@ -883,14 +1704,15 @@ Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized r
   <category>standardized</category>
   <category>bootstrapping</category>
   <category>confidence-intervals</category>
-  <guid>https://blogonresearch.github.io/posts/std_mod/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/std_mod/</guid>
   <pubDate>Fri, 30 Jun 2023 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Standardize Variables Except For Dummy Variables, Using std_selected_boot()</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/std_dummy/index.html</link>
+  <link>https://blogonresearch.github.io/posts/std_dummy/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -972,7 +1794,7 @@ What It Won’t Do (Correctly)
 <h3 class="anchored" data-anchor-id="do-regression-as-usual">Do Regression As Usual</h3>
 <p>Suppose this is the data set:<sup>1</sup></p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code for generating data</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1074,6 +1896,7 @@ font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sapply</span>(group, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">switch</span>,</span>
 <span id="cb1-10">                                   <span class="at" style="color: #657422;
 background-color: null;
@@ -1311,7 +2134,7 @@ Note:
 <h2 class="anchored" data-anchor-id="standardize-all-variables">Standardize All Variables</h2>
 <p>Assume that we standardize <em>all</em> variables, including the dummy variables, as in some statistical program. To simulate this, I manually create the dummy variables, standardize them, and do regression:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">dat<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1396,7 +2219,7 @@ font-style: inherit;">head</span>(dat_std)</span></code></pre></div>
 5 -0.17027692  0.74354368 -0.5220306  1.0807606  0.3364903
 6 -0.93708149  1.56255004 -0.5220306 -0.9206479  0.9383413</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">psych<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1420,7 +2243,7 @@ groupGp2    3 200    0  1 0.07
 groupGp3    4 200    0  1 0.07
 y           5 200    0  1 0.07</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">lm_out_std_wrong <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1439,7 +2262,7 @@ font-style: inherit;">+</span> groupGp3, dat_std)</span></code></pre></div>
 </div>
 <p>The following results are what found in common statistical programs that standardize all variables, including the dummy variables, to yield the “betas”:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1479,7 +2302,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h3 class="anchored" data-anchor-id="p-values"><em>p</em>-values</h3>
 <p>The <em>p</em>-values are the same, which is expected:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">coef_std <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1538,7 +2361,7 @@ groupGp3                     0.000             0.000</code></pre>
 <h3 class="anchored" data-anchor-id="coefficient-estimates">Coefficient Estimates</h3>
 <p>However, the coefficients for the dummy variables are different:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1667,7 +2490,7 @@ groupGp3     0.200  0.632</code></pre>
 <p>As shown above, the confidence intervals of <code>x1</code> by the two methods are close to each other. However, the bootstrap confidence interval of <code>x2</code> is narrower than the <em>t</em>-based confidence interval.</p>
 <p>We can compare the widths of the confidence intervals by examining their ratios (<code>ratio</code> = <code>CI_Width_t</code> / <code>CI_Width_boot</code>):</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">ci_t <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1757,14 +2580,15 @@ groupGp3         0.441         0.432 1.021</code></pre>
 <p>For issues on this post, such as corrections and mistakes, please <a href="https://github.com/blogonresearch/blogonresearch.github.io/issues">open an issue</a> for the GitHub repository for this blog. Thanks.</p>
 </section>
 <section id="references" class="level1">
+<h1>References</h1>
 
-
+<p>:::</p>
 
 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2">
 <div id="ref-cheung_improving_2022" class="csl-entry">
 Cheung, S. F., Cheung, S.-H., Lau, E. Y. Y., Hui, C. H., &amp; Vong, W. N. (2022). Improving an old way to measure moderation effect in standardized units. <em>Health Psychology</em>, <em>41</em>(7), 502–505. <a href="https://doi.org/10.1037/hea0001188">https://doi.org/10.1037/hea0001188</a>
 </div>
@@ -1797,14 +2621,15 @@ Yuan, K.-H., &amp; Chan, W. (2011). Biases and standard errors of standardized r
   <category>standardized</category>
   <category>bootstrapping</category>
   <category>confidence-intervals</category>
-  <guid>https://blogonresearch.github.io/posts/std_dummy/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/std_dummy/</guid>
   <pubDate>Sat, 24 Jun 2023 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Bootstrap Confidence Intervals for Standardized Solution in lavaan</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html</link>
+  <link>https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2047,6 +2872,7 @@ font-style: inherit;">"est.std"</span>]</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(fit) {</span>
 <span id="cb14-2">    lavaan<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2168,7 +2994,11 @@ font-style: inherit;">7</span>]</span>
 background-color: null;
 font-style: inherit;">hist</span>(std_indirect_boot_est)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2177,13 +3007,18 @@ font-style: inherit;">qqnorm</span>(std_indirect_boot_est)</span>
 background-color: null;
 font-style: inherit;">qqline</span>(std_indirect_boot_est)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>This function is simple to use, at least for me. No need to write custom function, and no need to do bootstrapping twice. In most cases, I don’t even need to specify any additional arguments.</p>
 <p>More about this function can be found in the <a href="https://sfcheung.github.io/semhelpinghands/articles/standardizedSolution_boot_ci.html">vignette</a> for <code>standardizedSolution_boot_ci()</code>.</p>
-<p>If any bug in <code>standardizedSolution_boot_ci()</code> was found, I would appreciate submitting it as a <a href="https://github.com/sfcheung/semhelpinghands/issues">GitHub issue</a>. </p>
+<p>If any bug in <code>standardizedSolution_boot_ci()</code> was found, I would appreciate submitting it as a <a href="https://github.com/sfcheung/semhelpinghands/issues">GitHub issue</a>. {{&lt; emoji ":smile:" &gt;}}</p>
 
+<p>:::</p>
 
 
  ]]></description>
@@ -2193,14 +3028,15 @@ font-style: inherit;">qqline</span>(std_indirect_boot_est)</span></code></pre></
   <category>confidence-intervals</category>
   <category>semhelpinghands</category>
   <category>standardized</category>
-  <guid>https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/</guid>
   <pubDate>Tue, 27 Sep 2022 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Show Options Set by lavaan</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/show_options_set_by_lavaan/index.html</link>
+  <link>https://blogonresearch.github.io/posts/show_options_set_by_lavaan/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2486,14 +3322,15 @@ font-style: inherit;">show_more_options</span>(fit_path_fiml)</span></code></pre
 <p>Only options I think are likely needed (by me) are included in the output.<sup>2</sup> More may be added in the future. In any case, if other options are needed, they can be retrieved by <code>lavaan::lavInspect()</code> or from the <code>Options</code> slot of the output. In most cases I myself encountered, all I want is a simple function that is easy to remember and no need to set any arguments other than the <code>lavaan</code> output. If I need something else, I will just extract the information myself.</p>
 <p>This function was inspired by a script I wrote to enumerate the options set by the prepackaged shortcuts. Interested readers can read <a href="https://groups.google.com/g/lavaan/c/6oLwoboi-vQ/m/IQLAXChPAwAJ">this thread</a> at the <a href="https://groups.google.com/g/lavaan">Google Group for <code>lavaan</code></a> and <a href="https://gist.github.com/sfcheung/baa5e43c32d4763b859f5338a1738d79">this gist</a>, to check how options will be set for different combinations of estimator, data, and some other options.</p>
 <section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
 
-
+<p>:::</p>
 
 
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2">
 <div id="ref-lavaan_2012" class="csl-entry">
 Rosseel, Y. (2012). <span class="nocase">lavaan</span>: An <span>R</span> package for structural equation modeling. <em>Journal of Statistical Software</em>, <em>48</em>(2), 1–36. <a href="https://doi.org/10.18637/jss.v048.i02">https://doi.org/10.18637/jss.v048.i02</a>
 </div>
@@ -2510,14 +3347,15 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
   <category>R</category>
   <category>lavaan</category>
   <category>semhelpinghands</category>
-  <guid>https://blogonresearch.github.io/posts/show_options_set_by_lavaan/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/show_options_set_by_lavaan/</guid>
   <pubDate>Sun, 25 Sep 2022 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>My Own Style in R</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/my_own_style_in_r/index.html</link>
+  <link>https://blogonresearch.github.io/posts/my_own_style_in_r/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2539,6 +3377,7 @@ Savalei, V., &amp; Rosseel, Y. (2022). Computational options for standard errors
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x) {</span>
 <span id="cb1-2">    x<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -2611,8 +3450,10 @@ font-style: inherit;">fl</span>()</span></code></pre></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (j <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -2626,6 +3467,7 @@ font-style: inherit;"># Do something</span></span>
 <span id="cb5-3">  }</span>
 <span id="cb5-4"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (x <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
@@ -2636,6 +3478,7 @@ background-color: null;
 font-style: inherit;"># Do something</span></span>
 <span id="cb5-6">  } <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> {</span>
 <span id="cb5-7">    <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -2670,19 +3513,21 @@ font-style: inherit;">100</span></span></code></pre></div>
 <p><a href="https://github.com/sfcheung/rstylesf" class="uri">https://github.com/sfcheung/rstylesf</a></p>
 <p>So, please pardon me if you find my code for packages at odd with professional style. I myself is the main reader and maintainer of the packages. What work for me matters.</p>
 
+<p>:::</p>
 
 
  ]]></description>
   <category>R</category>
   <category>code-style</category>
-  <guid>https://blogonresearch.github.io/posts/my_own_style_in_r/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/my_own_style_in_r/</guid>
   <pubDate>Fri, 23 Sep 2022 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Customize R GUI For Windows</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/index.html</link>
+  <link>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -2691,7 +3536,7 @@ font-style: inherit;">100</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_startup.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">R Default GUI</figcaption>
+<figcaption>R Default GUI</figcaption>
 </figure>
 </div>
 <p>The console above is not the default one. I like dark theme and single-document interface (SDI). I keep only a limited numbers of windows on my desktop and I never group windows in the taskbar. SDI is much more efficient for me to locate the window I need.</p>
@@ -2699,7 +3544,7 @@ font-style: inherit;">100</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_configuration_annotated.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Rgui configuration</figcaption>
+<figcaption>Rgui configuration</figcaption>
 </figure>
 </div>
 <p>The configuration is saved in the <code>Rconsole</code> file in the folder <code>etc</code> in R’s installation folder. Whenever I upgrade to a new version of R, I simply copy this file to the same folder in the new installation of R to have my preferred configuration. No need to set the configuration again. (I’ve just found that I haven’t changes this configuration for over five years!)</p>
@@ -2707,7 +3552,7 @@ font-style: inherit;">100</span></span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_devtools_menu.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">R GUI pulldown menu</figcaption>
+<figcaption>R GUI pulldown menu</figcaption>
 </figure>
 </div>
 <p>To add a menu, we can use a script and two functions.</p>
@@ -2759,7 +3604,7 @@ font-style: inherit;">"setwd(readClipboard());getwd()"</span>)</span></code></pr
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/rgui_four_instances.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Four instances of R GUI</figcaption>
+<figcaption>Four instances of R GUI</figcaption>
 </figure>
 </div>
 <p>This can be done inside R GUI too:</p>
@@ -2783,6 +3628,7 @@ font-style: inherit;">"utils::loadRconsole('D:/My_Settings/Rconsole_lime_green_a
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> ((<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">Sys.getenv</span>(<span class="st" style="color: #20794D;
@@ -2810,6 +3656,7 @@ font-style: inherit;">"D:/My_Settings/add_style_menu.R"</span>), <span class="at
 background-color: null;
 font-style: inherit;">error =</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(e) e)</span>
 <span id="cb5-3">  }</span></code></pre></div>
 </div>
@@ -2817,19 +3664,21 @@ font-style: inherit;">function</span>(e) e)</span>
 <p>So, whenever I install a new copy or version of R, I just copy and paste the customized <code>Rconsole</code> and <code>Rprofile.site</code> files to <code>etc</code>. I can then happily have my preferred environment. Having the code for menu groups stored in other files allow me to update them without editing <code>Rprofile.site</code>.</p>
 <p>Hope you find these tips useful … if you are R GUI users like me. :)</p>
 
+<p>:::</p>
 
 
  ]]></description>
   <category>R</category>
   <category>gui</category>
-  <guid>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/</guid>
   <pubDate>Mon, 19 Sep 2022 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>One Function or Many Functions</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/one_function_or_many_functions/index.html</link>
+  <link>https://blogonresearch.github.io/posts/one_function_or_many_functions/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -3022,19 +3871,21 @@ font-style: inherit;">+</span> x2)</span></code></pre></div>
 <p>I am not trying to argue that we should use this or that approach. They are not mutually exclusive. I am just wondering how to make using R by writing scripts more accessible to users who are used to GUI, while still keeping the do-one-thing-and-do-it-well principle. Writing these kinds of wrappers may also make it easier to create GUIs for them. For example, as long as <code>...</code> is not used, a generic function can be developed to check the arguments of a function using its definition and then automatically generate a dialog box for it. For a wrapper with a lot of arguments, a configuration file can be used to customize the dialog box.</p>
 <p>P.S.: jamovi is already doing something similar. Behind the dialog boxes are kind of wrapper functions. However, though can be used in console, the modules are, naturally, supposed to be used inside jamovi.</p>
 
+<p>:::</p>
 
 
  ]]></description>
   <category>R</category>
   <category>gui</category>
-  <guid>https://blogonresearch.github.io/posts/one_function_or_many_functions/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/one_function_or_many_functions/</guid>
   <pubDate>Tue, 13 Sep 2022 16:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Plotting Moderation Effects With ggplot2</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/plot_mod/index.html</link>
+  <link>https://blogonresearch.github.io/posts/plot_mod/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -3054,6 +3905,7 @@ font-style: inherit;"># Simple regression model</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x, a, b) {a <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> b <span class="sc" style="color: #5E5E5E;
@@ -3198,7 +4050,7 @@ font-style: inherit;">"red"</span>))</span>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/plot_original-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/plot_original-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -3225,7 +4077,7 @@ font-style: inherit;">"Dependent Variable"</span>)</span>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -3234,20 +4086,22 @@ font-style: inherit;">"Dependent Variable"</span>)</span>
 <p>Though not as elegant as using packages devoted to plotting moderation effects, this solution may be good enough for some simple scenarios. I believe it can be further improved. However, if we want more, maybe it is better to use packages like <code>semTools</code> and <code>visreg</code>.</p>
 <p>P.S.: This post is based on a suggestion I posted to the Google Group for <code>lavaan</code>.</p>
 
+<p>:::</p>
 
 
  ]]></description>
   <category>R</category>
   <category>moderation</category>
-  <guid>https://blogonresearch.github.io/posts/plot_mod/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/plot_mod/</guid>
   <pubDate>Sat, 10 Sep 2022 16:00:00 GMT</pubDate>
   <media:content url="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>Reviving an Old Blog</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/the_first_post/index.html</link>
+  <link>https://blogonresearch.github.io/posts/the_first_post/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -3255,11 +4109,12 @@ font-style: inherit;">"Dependent Variable"</span>)</span>
 <p>This is a “revival” of an old blog of mine on psychological research and methodology (hence the name <em>Blogonresearch</em>). Just anything on research and methodology that are useful to me, and maybe also useful to others.</p>
 <p>Edit 2023-01-28: This is actually the “second revival” as I switched from Hugo to Quarto in early 2023.</p>
 
+<p>:::</p>
 
 
  ]]></description>
   <category>blog</category>
-  <guid>https://blogonresearch.github.io/posts/the_first_post/index.html</guid>
+  <guid>https://blogonresearch.github.io/posts/the_first_post/</guid>
   <pubDate>Sat, 10 Sep 2022 16:00:00 GMT</pubDate>
 </item>
 </channel>

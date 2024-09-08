@@ -190,5 +190,3 @@ to check how options will be set for
 different
 combinations of estimator, data, and
 some other options.
-
-## References

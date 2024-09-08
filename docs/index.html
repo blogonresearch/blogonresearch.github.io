@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -50,7 +50,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -59,6 +65,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -95,19 +102,46 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <meta name="google-site-verification" content="0VLBmFnW_UJFI-7gXnORPBsWxqZwmzuGpK-TeVRLBjQ">
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="Blogonresearch" href="index.xml"></head>
+<link rel="alternate" type="application/rss+xml" title="Blogonresearch" href="index.xml" data-external="1"></head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
     <img src="./blongonresearch_logo.png" alt="" class="navbar-logo">
     </a>
@@ -116,74 +150,74 @@ ul.task-list li input[type="checkbox"] {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages-and-other-tools" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-r-packages-and-other-tools" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">R Packages and Other Tools</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-r-packages-and-other-tools">    
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/manymome/" rel="" target="">
+    <a class="dropdown-item" href="https://sfcheung.github.io/manymome/">
  <span class="dropdown-text">manymome: Mediation, moderation, and moderated mediation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/semhelpinghands/" rel="" target="">
+    <a class="dropdown-item" href="https://sfcheung.github.io/semhelpinghands/">
  <span class="dropdown-text">semhelpinghands: Some helpers for doing SEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/semptools/" rel="" target="">
+    <a class="dropdown-item" href="https://sfcheung.github.io/semptools/">
  <span class="dropdown-text">semptools: Drawing models from lavaan</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/sfcheung/semfindr" rel="" target="">
+    <a class="dropdown-item" href="https://github.com/sfcheung/semfindr">
  <span class="dropdown-text">semfindr: Influential cases in SEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/stdmod/" rel="" target="">
+    <a class="dropdown-item" href="https://sfcheung.github.io/stdmod/">
  <span class="dropdown-text">stdmod: Standardized moderation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://sfcheung.github.io/semlbci/" rel="" target="">
+    <a class="dropdown-item" href="https://sfcheung.github.io/semlbci/">
  <span class="dropdown-text">semlbci: Likelihood-Based Confidence Interval in SEM</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://osf.io/dbm5c/" rel="" target="">
+    <a class="dropdown-item" href="https://osf.io/dbm5c/">
  <span class="dropdown-text">FINDOUT: Influential cases in AMOS</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="https://github.com/sfcheung/diybootstat" rel="" target="">
+    <a class="dropdown-item" href="https://github.com/sfcheung/diybootstat">
  <span class="dropdown-text">DIY Bootstrapping in SPSS</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/blogonresearch" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/blogonresearch"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/blogonresearch" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/blogonresearch"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./index.xml" rel="" target=""><i class="bi bi-rss" role="img">
+    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -196,7 +230,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page-left">
 
       
     
@@ -209,7 +243,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(9)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(8)</span></div><div class="category" data-category="blog">blog <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bootstrapping">bootstrapping <span class="quarto-category-count">(3)</span></div><div class="category" data-category="categorical variables">categorical variables <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code-style">code-style <span class="quarto-category-count">(1)</span></div><div class="category" data-category="confidence-intervals">confidence-intervals <span class="quarto-category-count">(3)</span></div><div class="category" data-category="gui">gui <span class="quarto-category-count">(2)</span></div><div class="category" data-category="lavaan">lavaan <span class="quarto-category-count">(2)</span></div><div class="category" data-category="moderation">moderation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(2)</span></div><div class="category" data-category="semhelpinghands">semhelpinghands <span class="quarto-category-count">(2)</span></div><div class="category" data-category="standardized">standardized <span class="quarto-category-count">(3)</span></div><div class="category" data-category="stdmod">stdmod <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(10)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(9)</span></div><div class="category" data-category="blog">blog <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bootstrapping">bootstrapping <span class="quarto-category-count">(4)</span></div><div class="category" data-category="categorical variables">categorical variables <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code-style">code-style <span class="quarto-category-count">(1)</span></div><div class="category" data-category="confidence-intervals">confidence-intervals <span class="quarto-category-count">(3)</span></div><div class="category" data-category="gui">gui <span class="quarto-category-count">(2)</span></div><div class="category" data-category="lavaan">lavaan <span class="quarto-category-count">(2)</span></div><div class="category" data-category="manymome">manymome <span class="quarto-category-count">(1)</span></div><div class="category" data-category="mediation">mediation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="moderation">moderation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(2)</span></div><div class="category" data-category="semhelpinghands">semhelpinghands <span class="quarto-category-count">(2)</span></div><div class="category" data-category="standardized">standardized <span class="quarto-category-count">(3)</span></div><div class="category" data-category="stdmod">stdmod <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
@@ -218,23 +252,67 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<p>:::</p>
+
 
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,regression,moderation,stdmod,standardized,bootstrapping,confidence-intervals" data-listing-date-sort="1688140800000" data-listing-file-modified-sort="1688169165943" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12">
+<div class="quarto-post image-right" data-index="0" data-categories="R,mediation,manymome,bootstrapping" data-listing-date-sort="1725724800000" data-listing-file-modified-sort="1725773561059" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4354">
 <div class="thumbnail">
-<p><a href="./posts/std_mod/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/manymome_simple_mediation/index.html" class="no-external"></a></p><a href="./posts/manymome_simple_mediation/index.html" class="no-external">
+<p class="card-img-top"><img src="posts\manymome_simple_mediation\index_files\figure-html\fig-full-model-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/manymome_simple_mediation/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/std_mod/index.html">
 <h3 class="no-anchor listing-title">
-Proper Standardization in Moderated Regression Using std_selected_boot()
+<a href="./posts/manymome_simple_mediation/index.html" class="no-external">Simple Mediation in a Regression Model Using manymome: A Tutorial</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/manymome_simple_mediation/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('mediation'); return false;">
+mediation
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('manymome'); return false;">
+manymome
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('bootstrapping'); return false;">
+bootstrapping
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/manymome_simple_mediation/index.html" class="no-external">This tutorial shows how to use the R package <code>manymome</code> <span class="citation" data-cites="cheung_manymome_2023">(S. F. Cheung &amp; Cheung, 2023)</span> to test a mediation effect in a simple mediation model fitted by multiple regression.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/manymome_simple_mediation/index.html" class="no-external">
+<div class="listing-date">
+Sunday, September 8, 2024
+</div>
+<div class="listing-author">
+Shu Fai Cheung
 </div>
 </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="R,regression,moderation,stdmod,standardized,bootstrapping,confidence-intervals" data-listing-date-sort="1688140800000" data-listing-file-modified-sort="1725773337641" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2235">
+<div class="thumbnail">
+<p><a href="./posts/std_mod/index.html" class="no-external"></a></p><a href="./posts/std_mod/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/std_mod/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/std_mod/index.html" class="no-external">Proper Standardization in Moderated Regression Using std_selected_boot()</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/std_mod/index.html" class="no-external"></a>
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -258,14 +336,12 @@ bootstrapping
 confidence-intervals
 </div>
 </div>
-<a href="./posts/std_mod/index.html">
 <div class="listing-description">
-Th…<code></code><code></code>
+<a href="./posts/std_mod/index.html" class="no-external">This post shows one simple way to get correctly standardized regression coefficients in multiple linear regression with a moderator, with appropriate confidence intervals…<code></code><code></code></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/std_mod/index.html">
+<a href="./posts/std_mod/index.html" class="no-external">
 <div class="listing-date">
 Saturday, July 1, 2023
 </div>
@@ -275,19 +351,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,regression,categorical variables,stdmod,standardized,bootstrapping,confidence-intervals" data-listing-date-sort="1687622400000" data-listing-file-modified-sort="1688169129914" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11">
+<div class="quarto-post image-right" data-index="2" data-categories="R,regression,categorical variables,stdmod,standardized,bootstrapping,confidence-intervals" data-listing-date-sort="1687622400000" data-listing-file-modified-sort="1725773286570" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2031">
 <div class="thumbnail">
-<p><a href="./posts/std_dummy/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/std_dummy/index.html" class="no-external"></a></p><a href="./posts/std_dummy/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/std_dummy/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/std_dummy/index.html">
 <h3 class="no-anchor listing-title">
-Standardize Variables Except For Dummy Variables, Using std_selected_boot()
+<a href="./posts/std_dummy/index.html" class="no-external">Standardize Variables Except For Dummy Variables, Using std_selected_boot()</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/std_dummy/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -311,14 +387,12 @@ bootstrapping
 confidence-intervals
 </div>
 </div>
-<a href="./posts/std_dummy/index.html">
 <div class="listing-description">
-This…<code></code><code></code>
+<a href="./posts/std_dummy/index.html" class="no-external">This post shows one simple way to get meaningful standardized regression coefficients in multiple linear regression with dummy variables, with appropriate confidence…<code></code><code></code></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/std_dummy/index.html">
+<a href="./posts/std_dummy/index.html" class="no-external">
 <div class="listing-date">
 Sunday, June 25, 2023
 </div>
@@ -328,19 +402,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="R,lavaan,bootstrapping,confidence-intervals,semhelpinghands,standardized" data-listing-date-sort="1664294400000" data-listing-file-modified-sort="1694691881379" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="3" data-categories="R,lavaan,bootstrapping,confidence-intervals,semhelpinghands,standardized" data-listing-date-sort="1664294400000" data-listing-file-modified-sort="1719494774084" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="849">
 <div class="thumbnail">
-<p><a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html"> <p class="card-img-top"><img src="posts\bootstrap_confidence_intervals_for_standardized_solution_in_lavaan\index_files\figure-html\unnamed-chunk-14-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external"></a></p><a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external">
+<p class="card-img-top"><img src="posts\bootstrap_confidence_intervals_for_standardized_solution_in_lavaan\index_files\figure-html\unnamed-chunk-14-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html">
 <h3 class="no-anchor listing-title">
-Bootstrap Confidence Intervals for Standardized Solution in lavaan
+<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external">Bootstrap Confidence Intervals for Standardized Solution in lavaan</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -361,14 +435,12 @@ semhelpinghands
 standardized
 </div>
 </div>
-<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html">
 <div class="listing-description">
-<code>lavaan</code> supports bootstrap confidence intervals for…
+<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external"><code>lavaan</code> supports bootstrap confidence intervals for free and user-defined parameters. This is useful especially for parameter estimates that may not be approximately normally…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html">
+<a href="./posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html" class="no-external">
 <div class="listing-date">
 Wednesday, September 28, 2022
 </div>
@@ -378,19 +450,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,lavaan,semhelpinghands" data-listing-date-sort="1664121600000" data-listing-file-modified-sort="1694691924344" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="4" data-categories="R,lavaan,semhelpinghands" data-listing-date-sort="1664121600000" data-listing-file-modified-sort="1725773279138" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="703">
 <div class="thumbnail">
-<p><a href="./posts/show_options_set_by_lavaan/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/show_options_set_by_lavaan/index.html" class="no-external"></a></p><a href="./posts/show_options_set_by_lavaan/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/show_options_set_by_lavaan/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/show_options_set_by_lavaan/index.html">
 <h3 class="no-anchor listing-title">
-Show Options Set by lavaan
+<a href="./posts/show_options_set_by_lavaan/index.html" class="no-external">Show Options Set by lavaan</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/show_options_set_by_lavaan/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -402,14 +474,12 @@ lavaan
 semhelpinghands
 </div>
 </div>
-<a href="./posts/show_options_set_by_lavaan/index.html">
 <div class="listing-description">
-<code>lavaan</code> is a convenient tool for doing structural equation modelling in R <span class="citation" data-cites="lavaan_2012">(Rosseel, 2012)</span>. One of its strength is having “prepackaged”…<span class="citation" data-cites="savalei_computational_2022"></span>
+<a href="./posts/show_options_set_by_lavaan/index.html" class="no-external"><code>lavaan</code> is a convenient tool for doing structural equation modelling in R <span class="citation" data-cites="lavaan_2012">(Rosseel, 2012)</span>. One of its strength is having “prepackaged” estimators, which are shortcuts to a…<span class="citation" data-cites="savalei_computational_2022"></span></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/show_options_set_by_lavaan/index.html">
+<a href="./posts/show_options_set_by_lavaan/index.html" class="no-external">
 <div class="listing-date">
 Monday, September 26, 2022
 </div>
@@ -419,19 +489,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="R,code-style" data-listing-date-sort="1663948800000" data-listing-file-modified-sort="1694692039341" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="5" data-categories="R,code-style" data-listing-date-sort="1663948800000" data-listing-file-modified-sort="1719494774098" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="578">
 <div class="thumbnail">
-<p><a href="./posts/my_own_style_in_r/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/my_own_style_in_r/index.html" class="no-external"></a></p><a href="./posts/my_own_style_in_r/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/my_own_style_in_r/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/my_own_style_in_r/index.html">
 <h3 class="no-anchor listing-title">
-My Own Style in R
+<a href="./posts/my_own_style_in_r/index.html" class="no-external">My Own Style in R</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/my_own_style_in_r/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -440,14 +510,12 @@ R
 code-style
 </div>
 </div>
-<a href="./posts/my_own_style_in_r/index.html">
 <div class="listing-description">
-Although I have written programs since I were a high school student, when computer monitor could only display one color, I have no formal training in programming, and I…
+<a href="./posts/my_own_style_in_r/index.html" class="no-external">Although I have written programs since I were a high school student, when computer monitor could only display one color, I have no formal training in programming, and I…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/my_own_style_in_r/index.html">
+<a href="./posts/my_own_style_in_r/index.html" class="no-external">
 <div class="listing-date">
 Saturday, September 24, 2022
 </div>
@@ -457,19 +525,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="R,gui" data-listing-date-sort="1663603200000" data-listing-file-modified-sort="1694692072490" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="6" data-categories="R,gui" data-listing-date-sort="1663603200000" data-listing-file-modified-sort="1719494774085" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="691">
 <div class="thumbnail">
-<p><a href="./posts/customizes_r_gui_for_windows/index.html"> <p class="card-img-top"><img src="posts\customizes_r_gui_for_windows\rgui_startup.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external"></a></p><a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external">
+<p class="card-img-top"><img src="posts\customizes_r_gui_for_windows\rgui_startup.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/customizes_r_gui_for_windows/index.html">
 <h3 class="no-anchor listing-title">
-Customize R GUI For Windows
+<a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external">Customize R GUI For Windows</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -478,14 +546,12 @@ R
 gui
 </div>
 </div>
-<a href="./posts/customizes_r_gui_for_windows/index.html">
 <div class="listing-description">
-Many people use RStudio, and some even mistaken RStudio as R. I mainly work on Windows machines and I did try RStudio for a while a few years ago. However, I switched back…
+<a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external">Many people use RStudio, and some even mistaken RStudio as R. I mainly work on Windows machines and I did try RStudio for a while a few years ago. However, I switched back…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/customizes_r_gui_for_windows/index.html">
+<a href="./posts/customizes_r_gui_for_windows/index.html" class="no-external">
 <div class="listing-date">
 Tuesday, September 20, 2022
 </div>
@@ -495,19 +561,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="R,gui" data-listing-date-sort="1663084800000" data-listing-file-modified-sort="1674923673648" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="7" data-categories="R,gui" data-listing-date-sort="1663084800000" data-listing-file-modified-sort="1719494774098" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="775">
 <div class="thumbnail">
-<p><a href="./posts/one_function_or_many_functions/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/one_function_or_many_functions/index.html" class="no-external"></a></p><a href="./posts/one_function_or_many_functions/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/one_function_or_many_functions/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/one_function_or_many_functions/index.html">
 <h3 class="no-anchor listing-title">
-One Function or Many Functions
+<a href="./posts/one_function_or_many_functions/index.html" class="no-external">One Function or Many Functions</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/one_function_or_many_functions/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -516,14 +582,12 @@ R
 gui
 </div>
 </div>
-<a href="./posts/one_function_or_many_functions/index.html">
 <div class="listing-description">
-I am thinking about the differences between R and SPSS in doing analysis: one function for one analysis, and several functions for one analysis.
+<a href="./posts/one_function_or_many_functions/index.html" class="no-external">I am thinking about the differences between R and SPSS in doing analysis: one function for one analysis, and several functions for one analysis.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/one_function_or_many_functions/index.html">
+<a href="./posts/one_function_or_many_functions/index.html" class="no-external">
 <div class="listing-date">
 Wednesday, September 14, 2022
 </div>
@@ -533,19 +597,19 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="R,moderation" data-listing-date-sort="1662825600000" data-listing-file-modified-sort="1694691503094" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="8" data-categories="R,moderation" data-listing-date-sort="1662825600000" data-listing-file-modified-sort="1719494774099" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="503">
 <div class="thumbnail">
-<p><a href="./posts/plot_mod/index.html"> <img src="./posts/plot_mod/index_files/figure-html/cover-1.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/plot_mod/index.html" class="no-external"></a></p><a href="./posts/plot_mod/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/plot_mod/index_files/figure-html/cover-1.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/plot_mod/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/plot_mod/index.html">
 <h3 class="no-anchor listing-title">
-Plotting Moderation Effects With ggplot2
+<a href="./posts/plot_mod/index.html" class="no-external">Plotting Moderation Effects With ggplot2</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/plot_mod/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -554,14 +618,12 @@ R
 moderation
 </div>
 </div>
-<a href="./posts/plot_mod/index.html">
 <div class="listing-description">
-There are some R packages that help researchers to plot moderation (interaction) effects: The linear relations between <code>x</code> (independent variable / predictor) and <code>y</code> (dependent variable / outcome variable) for two or…<code></code><code></code><code></code><code></code>
+<a href="./posts/plot_mod/index.html" class="no-external">There are some R packages that help researchers to plot moderation (interaction) effects: The linear relations between <code>x</code> (independent variable / predictor) and <code>y</code> (dependent…<code></code><code></code><code></code><code></code></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/plot_mod/index.html">
+<a href="./posts/plot_mod/index.html" class="no-external">
 <div class="listing-date">
 Sunday, September 11, 2022
 </div>
@@ -571,32 +633,30 @@ Shu Fai Cheung
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="blog" data-listing-date-sort="1662825600000" data-listing-file-modified-sort="1674923673655" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="9" data-categories="blog" data-listing-date-sort="1662825600000" data-listing-file-modified-sort="1719494774105" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="50">
 <div class="thumbnail">
-<p><a href="./posts/the_first_post/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/the_first_post/index.html" class="no-external"></a></p><a href="./posts/the_first_post/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/the_first_post/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/the_first_post/index.html">
 <h3 class="no-anchor listing-title">
-Reviving an Old Blog
+<a href="./posts/the_first_post/index.html" class="no-external">Reviving an Old Blog</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/the_first_post/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('blog'); return false;">
 blog
 </div>
 </div>
-<a href="./posts/the_first_post/index.html">
 <div class="listing-description">
-This is a “revival” of an old blog of mine on psychological research and methodology (hence the name <em>Blogonresearch</em>). Just anything on research and…
+<a href="./posts/the_first_post/index.html" class="no-external">This is a “revival” of an old blog of mine on psychological research and methodology (hence the name <em>Blogonresearch</em>). Just anything on research and methodology that are…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/the_first_post/index.html">
+<a href="./posts/the_first_post/index.html" class="no-external">
 <div class="listing-date">
 Sunday, September 11, 2022
 </div>
@@ -652,6 +712,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       } else {
         el.classList.add('notransition');
       }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
     }
   }
   const toggleColorMode = (alternate) => {
@@ -720,13 +807,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return localAlternateSentinel;
     }
   }
-  let localAlternateSentinel = 'default';
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
   // Dark / light mode switch
   window.quartoToggleColorScheme = () => {
     // Read the current dark / light value 
     let toAlternate = !hasAlternateSentinel();
     toggleColorMode(toAlternate);
     setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
   };
   // Ensure there is a toggle, if there isn't float one in the top right
   if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -761,18 +850,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -804,11 +882,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/blogonresearch\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -818,8 +935,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -831,7 +957,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -875,6 +1124,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -900,6 +1150,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -977,6 +1253,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
 
 
 
