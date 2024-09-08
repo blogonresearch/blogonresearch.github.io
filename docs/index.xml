@@ -383,7 +383,7 @@ NOTE:
 <p>Suppose we want to fit a more complicated model, with some other variables included, such as control variables <code>c1</code> and <code>c2</code> in the dataset (Figure&nbsp;4).</p>
 <div class="cell" data-layout-align="center" data-fig-caption="A Simple Mediation Model With Control Variables" data-fig-heigh="4">
 <div class="cell-output-display">
-<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="576">
+<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" width="576" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://blogonresearch.github.io/posts/manymome_simple_mediation/index_files/figure-html/fig-full-model2-1.png" id="fig-full-model2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="576">
