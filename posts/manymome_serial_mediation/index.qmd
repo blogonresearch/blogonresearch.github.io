@@ -2,13 +2,12 @@
 title: "Serial Mediation in R: A Tutorial"
 author: "Shu Fai Cheung"
 date: '2024-09-14'
-categories: ["R", "mediation", "manymome"]
+categories: ["R", "mediation", "manymome", "bootstrapping"]
 bibliography: references.bib
 format:
   html:
     toc: true
 csl: apa.csl
-draft: true
 ---
 
 ```{r}
