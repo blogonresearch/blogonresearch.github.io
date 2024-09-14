@@ -467,7 +467,7 @@ font-style: inherit;">5000</span>,</span>
 background-color: null;
 font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">3456</span>,,</span>
+font-style: inherit;">3456</span>,</span>
 <span id="cb19-8">                              <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">standardized_x =</span> <span class="cn" style="color: #8f5902;
@@ -514,7 +514,7 @@ font-style: inherit;">5000</span>,</span>
 background-color: null;
 font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">3456</span>,,</span>
+font-style: inherit;">3456</span>,</span>
 <span id="cb19-17">                              <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">standardized_x =</span> <span class="cn" style="color: #8f5902;
@@ -711,7 +711,7 @@ with 5000 bootstrap samples.</code></pre>
 <p>Suppose we want to fit a more complicated model, with some other variables included, such as control variables <code>c1</code> and <code>c2</code> in the dataset (Figure&nbsp;5).</p>
 <div class="cell" data-layout-align="center" data-fig-caption="A Parallel Mediation Model With Control Variables" data-fig-heigh="5">
 <div class="cell-output-display">
-<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" width="576" data-fig-align="center">
+<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="576">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://blogonresearch.github.io/posts/manymome_parallel_mediation/index_files/figure-html/fig-full-model2-1.png" id="fig-full-model2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="576">
@@ -1024,31 +1024,115 @@ with 5000 bootstrap samples.</code></pre>
 <h1>No Limit On The Number of Mediators</h1>
 <p>Although the example above only has two mediators, there is no limit on the number of mediators in the parallel mediation model. Just fit all the regression models predicting the mediators, combine them by <code>lm2list()</code>, and compute the indirect effect as illustrated above for each path.</p>
 </section>
+<section id="easy-to-fit-models-with-only-some-paths-included" class="level1">
+<h1>Easy To Fit Models With Only Some Paths Included</h1>
+<p>Although control variables predict all variables other than <code>x</code>, it is easy to fit a model with only paths theoretically meaningful:</p>
+<ul>
+<li>Just fit the desired models by <code>lm()</code> and use <code>indirect_effect()</code> as usual.</li>
+</ul>
+<p>For example, suppose this is the desired model (Figure&nbsp;6):</p>
+<div class="cell" data-layout-align="center" data-fig-caption="A Parallel Mediation Model With Some Paths Omitted" data-fig-heigh="5">
+<div class="cell-output-display">
+<div id="fig-full-model3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="576">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-full-model3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://blogonresearch.github.io/posts/manymome_parallel_mediation/index_files/figure-html/fig-full-model3-1.png" id="fig-full-model3" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-full-model3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The control variable <code>c1</code> only predicts <code>m1</code> and <code>m2</code>, and the control variable <code>c2</code> only predicts <code>y</code>.</p>
+<p>We just fit the three models using <code>lm()</code> based on the hypothesized model:</p>
+<div class="sourceCode" id="cb53" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict m1</span></span>
+<span id="cb53-2">model_m1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(m1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c1,</span>
+<span id="cb53-3">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_parallel)</span>
+<span id="cb53-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict m2</span></span>
+<span id="cb53-5">model_m2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(m2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c1,</span>
+<span id="cb53-6">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_parallel)</span>
+<span id="cb53-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Predict y</span></span>
+<span id="cb53-8">model_y <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> m1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> m2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c2,</span>
+<span id="cb53-9">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_parallel)</span>
+<span id="cb53-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Combine the models</span></span>
+<span id="cb53-11">full_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm2list</span>(model_m1,</span>
+<span id="cb53-12">                      model_m2,</span>
+<span id="cb53-13">                      model_y)</span></code></pre></div>
+<p>Then the indirect effects can be computed as before.</p>
+</section>
 <section id="advanced-topics" class="level1">
 <h1>Advanced Topics</h1>
 <section id="customize-the-printout" class="level2">
 <h2 class="anchored" data-anchor-id="customize-the-printout">Customize the Printout</h2>
 <p>The printout can be customized in several ways. For example:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb54" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print</span>(ind1,</span>
-<span id="cb53-2">      <span class="at" style="color: #657422;
+<span id="cb54-2">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">digits =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>,</span>
-<span id="cb53-3">      <span class="at" style="color: #657422;
+<span id="cb54-3">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">pvalue =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>,</span>
-<span id="cb53-4">      <span class="at" style="color: #657422;
+<span id="cb54-4">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">pvalue_digits =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>,</span>
-<span id="cb53-5">      <span class="at" style="color: #657422;
+<span id="cb54-5">      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">se =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
@@ -1090,10 +1174,10 @@ Coefficients of Component Paths:
 <h2 class="anchored" data-anchor-id="missing-data">Missing Data</h2>
 <p>Care needs to be taken if missing data is present. Let’s remove some data points from the data file:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1">data_parallel_missing <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb56" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1">data_parallel_missing <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> data_parallel</span>
-<span id="cb55-2">data_parallel_missing[<span class="dv" style="color: #AD0000;
+<span id="cb56-2">data_parallel_missing[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1106,7 +1190,7 @@ background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span></span>
-<span id="cb55-3">data_parallel_missing[<span class="dv" style="color: #AD0000;
+<span id="cb56-3">data_parallel_missing[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1119,7 +1203,7 @@ background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span></span>
-<span id="cb55-4">data_parallel_missing[<span class="dv" style="color: #AD0000;
+<span id="cb56-4">data_parallel_missing[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1132,7 +1216,7 @@ background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span></span>
-<span id="cb55-5">data_parallel_missing[<span class="dv" style="color: #AD0000;
+<span id="cb56-5">data_parallel_missing[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1145,7 +1229,7 @@ background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span></span>
-<span id="cb55-6"><span class="fu" style="color: #4758AB;
+<span id="cb56-6"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">head</span>(data_parallel_missing)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1160,33 +1244,33 @@ font-style: inherit;">head</span>(data_parallel_missing)</span></code></pre></di
 </div>
 <p>If we do the regression separately, the cases used in the two models will be different:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb58" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Predict m1</span></span>
-<span id="cb57-2">model_m1_missing <span class="ot" style="color: #003B4F;
+<span id="cb58-2">model_m1_missing <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lm</span>(m1 <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">~</span> x,</span>
-<span id="cb57-3">                      <span class="at" style="color: #657422;
+<span id="cb58-3">                      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">data =</span> data_parallel_missing)</span>
-<span id="cb57-4">model_m2_missing <span class="ot" style="color: #003B4F;
+<span id="cb58-4">model_m2_missing <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lm</span>(m2 <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">~</span> x,</span>
-<span id="cb57-5">                      <span class="at" style="color: #657422;
+<span id="cb58-5">                      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">data =</span> data_parallel_missing)</span>
-<span id="cb57-6"><span class="co" style="color: #5E5E5E;
+<span id="cb58-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Predict y</span></span>
-<span id="cb57-7">model_y_missing <span class="ot" style="color: #003B4F;
+<span id="cb58-7">model_y_missing <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1197,25 +1281,25 @@ background-color: null;
 font-style: inherit;">+</span> m2 <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span> x,</span>
-<span id="cb57-8">                      <span class="at" style="color: #657422;
+<span id="cb58-8">                      <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">data =</span> data_parallel_missing)</span></code></pre></div>
 </div>
 <p>The sample sizes are not the same:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb59" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">nobs</span>(model_m1_missing)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 96</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb60" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb61" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">nobs</span>(model_m2_missing)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 95</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb62" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb63" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">nobs</span>(model_y_missing)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1224,23 +1308,23 @@ font-style: inherit;">nobs</span>(model_y_missing)</span></code></pre></div>
 </div>
 <p>If they are combined by <code>lm2list()</code>, an error will occur. The function <code>lm2list()</code> will compare the data to see if the cases used are likely to be different.<sup>2</sup></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb65" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">lm2list</span>(model_m1_missing,</span>
-<span id="cb64-2">        model_m2_missing,</span>
-<span id="cb64-3">        model_y_missing)</span></code></pre></div>
+<span id="cb65-2">        model_m2_missing,</span>
+<span id="cb65-3">        model_y_missing)</span></code></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in check_lm_consistency(...): The data sets used in the lm models do not have identical sample size. All lm models must be fitted to the same sample.</code></pre>
 </div>
 </div>
 <p>A simple (though not ideal) solution is to use listwise deletion, keeping only cases with complete data. This can be done by <code>na.omit()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1">data_parallel_listwise <span class="ot" style="color: #003B4F;
+<div class="sourceCode cell-code" id="cb67" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1">data_parallel_listwise <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">na.omit</span>(data_parallel_missing)</span>
-<span id="cb66-2"><span class="fu" style="color: #4758AB;
+<span id="cb67-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">head</span>(data_parallel_listwise)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1252,7 +1336,7 @@ font-style: inherit;">head</span>(data_parallel_listwise)</span></code></pre></d
 11  9.214953 17.30516 6.416709 15.66863  3.157459 6.613625
 12 10.178196 17.76963 4.411447 18.68844 -0.127799 5.796077</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb68" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode cell-code" id="cb69" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">nrow</span>(data_parallel_listwise)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
