@@ -1,0 +1,1030 @@
+---
+title: "Parallel Mediation in a Regression Model Using manymome: A Tutorial"
+author: "Shu Fai Cheung"
+date: '2024-09-14'
+categories: ["R", "mediation", "manymome", "bootstrapping"]
+format:
+  html:
+    toc: true
+bibliography: references.bib
+csl: apa.csl
+---
+
+```{r}
+#| echo: false
+coef_str <- function(object) {
+    formatC(coef(object), digits = 3, format = "f")
+  }
+ci_str <- function(object) {
+    ci <- as.vector(confint(object))
+    out <- paste0("[",
+                  paste0(formatC(ci, digits = 3, format = "f"),
+                         collapse = "; "),
+                  "]")
+    out
+  }
+```
+
+This tutorial shows how to use the R
+package [`manymome`](https://sfcheung.github.io/manymome)
+[@cheung_manymome_2023]
+to test two or more mediation effects in
+a parallel mediation model fitted by
+multiple regression.
+
+# Pre-Requisite
+
+Readers are expected to have basic R
+skills and know how to fit a linear
+regression model using `lm()`.
+
+The package `manymome` can be installed
+from CRAN:
+
+```r
+install.packages("manymome")
+```
+
+# Data
+
+This is the data file for illustration,
+from `manymome`:
+
+```{r}
+library(manymome)
+head(data_parallel, 3)
+```
+
+# A Parallel Mediation Model
+
+First we fit a parallel mediation
+model using
+only `x`, `m1`, `m2`, and `y`.
+
+```{r}
+#| label: fig-full-model
+#| fig-cap: "A Parallel Mediation Model"
+#| echo: false
+#| fig-width: 6
+#| fig-heigh: 3
+#| fig-align: center
+library(semPlot)
+library(semptools)
+library(manymome)
+suppressMessages(library(lavaan))
+dat <- data_parallel
+mod <-
+'
+m1 ~ a1 * x
+m2 ~ a2 * x
+y ~ b1 * m1 + b2 * m2 + label("c\'") * x
+'
+fit0 <- sem(mod,
+            dat,
+            do.fit = FALSE,
+            fixed.x = FALSE)
+layout_m <- layout_matrix(x = c(2, 1),
+                          m1 = c(1, 2),
+                          m2 = c(3, 2),
+                          y = c(2, 3))
+p <- semPaths(fit0,
+              what = "path",
+              whatLabels = "label",
+              residuals = FALSE,
+              sizeMan = 8,
+              exoCov = FALSE,
+              node.width = 2,
+              edge.label.cex = 2.5,
+              edge.width = 5,
+              nCharEdges = 0,
+              label.cex = 1.25,
+              style = "ram",
+              color = "lightblue",
+              mar = c(5, 5, 5, 5),
+              layout = layout_m,
+              DoNotPlot = TRUE)
+plot(p)
+```
+
+In this model:
+
+- `x` is the predictor
+(independent variable).
+
+- `y` is the
+outcome variable (dependent variable).
+
+- `m1` and `m2` are the mediators.
+
+The goal is to compute and test the
+two indirect effects:
+
+- From `x` to `y`  through `m1`.
+
+- From `x` to `y`  through `m2`.
+
+# Fit the Models by `lm()`
+
+To estimate all the regression coefficients,
+just fit three regression
+models:
+
+- Predict `m1` by `x` (@fig-m1-model).
+
+- Predict `m2` by `x` (@fig-m2-model).
+
+- Predict `y` by `m1`, `m2`, and `x` (@fig-y-model).
+
+```{r}
+#| label: fig-m1-model
+#| fig-cap: "The Model Predicting `m1`"
+#| echo: false
+#| fig-width: 6
+#| fig-heigh: 3
+#| fig-align: center
+library(semPlot)
+library(semptools)
+library(manymome)
+suppressMessages(library(lavaan))
+dat <- data_parallel
+mod <-
+'
+m1 ~ a1 * x
+m2 ~ a2 * x
+y ~ b1 * m1 + b2 * m2 + label("c\'") * x
+'
+fit0 <- sem(mod,
+            dat,
+            do.fit = FALSE,
+            fixed.x = FALSE)
+layout_m <- layout_matrix(x = c(2, 1),
+                          m1 = c(1, 2),
+                          m2 = c(3, 2),
+                          y = c(2, 3))
+p <- semPaths(fit0,
+              what = "path",
+              whatLabels = "label",
+              residuals = FALSE,
+              sizeMan = 8,
+              exoCov = FALSE,
+              node.width = 2,
+              edge.label.cex = 2.5,
+              edge.width = 5,
+              nCharEdges = 0,
+              label.cex = 1.25,
+              style = "ram",
+              color = c("lightblue", "white", "white", "lightblue"),
+              edge.color = c("black", "white", "white", "white", "white"),
+              border.color = c("black", "white", "white", "black", "black"),
+              label.color = c("black", "white", "white", "black", "black"),
+              mar = c(5, 5, 5, 5),
+              layout = layout_m,
+              DoNotPlot = TRUE)
+plot(p)
+```
+
+```{r}
+#| label: fig-m2-model
+#| fig-cap: "The Model Predicting `m2`"
+#| echo: false
+#| fig-width: 6
+#| fig-heigh: 3
+#| fig-align: center
+library(semPlot)
+library(semptools)
+library(manymome)
+suppressMessages(library(lavaan))
+dat <- data_parallel
+mod <-
+'
+m1 ~ a1 * x
+m2 ~ a2 * x
+y ~ b1 * m1 + b2 * m2 + label("c\'") * x
+'
+fit0 <- sem(mod,
+            dat,
+            do.fit = FALSE,
+            fixed.x = FALSE)
+layout_m <- layout_matrix(x = c(2, 1),
+                          m1 = c(1, 2),
+                          m2 = c(3, 2),
+                          y = c(2, 3))
+p <- semPaths(fit0,
+              what = "path",
+              whatLabels = "label",
+              residuals = FALSE,
+              sizeMan = 8,
+              exoCov = FALSE,
+              node.width = 2,
+              edge.label.cex = 2.5,
+              edge.width = 5,
+              nCharEdges = 0,
+              label.cex = 1.25,
+              style = "ram",
+              color = c("white", "lightblue", "white", "lightblue"),
+              edge.color = c("white", "black", "white", "white", "white"),
+              border.color = c("white", "black", "white", "black", "black"),
+              label.color = c("white", "black", "white", "black", "black"),
+              mar = c(5, 5, 5, 5),
+              layout = layout_m,
+              DoNotPlot = TRUE)
+plot(p)
+```
+
+
+```{r}
+#| label: fig-y-model
+#| fig-cap: "The Model Predicting `y`"
+#| echo: false
+#| fig-width: 6
+#| fig-heigh: 3
+#| fig-align: center
+library(semPlot)
+library(semptools)
+library(manymome)
+suppressMessages(library(lavaan))
+dat <- data_parallel
+mod <-
+'
+m1 ~ a1 * x
+m2 ~ a2 * x
+y ~ b1 * m1 + b2 * m2 + label("c\'") * x
+'
+fit0 <- sem(mod,
+            dat,
+            do.fit = FALSE,
+            fixed.x = FALSE)
+layout_m <- layout_matrix(x = c(2, 1),
+                          m1 = c(1, 2),
+                          m2 = c(3, 2),
+                          y = c(2, 3))
+p <- semPaths(fit0,
+              what = "path",
+              whatLabels = "label",
+              residuals = FALSE,
+              sizeMan = 8,
+              exoCov = FALSE,
+              node.width = 2,
+              edge.label.cex = 2.5,
+              edge.width = 5,
+              nCharEdges = 0,
+              label.cex = 1.25,
+              style = "ram",
+              color = c("lightblue", "lightblue", "lightblue", "lightblue"),
+              edge.color = c("white", "white", "black", "black", "black"),
+              border.color = c("black", "black", "black", "black", "black"),
+              label.color = c("black", "black", "black", "black", "black"),
+              mar = c(5, 5, 5, 5),
+              layout = layout_m,
+              DoNotPlot = TRUE)
+plot(p)
+```
+
+This can be easily done by `lm()` in R:
+
+```{r}
+# Predict m1
+model_m1 <- lm(m1 ~ x,
+               data = data_parallel)
+# Predict m2
+model_m2 <- lm(m2 ~ x,
+               data = data_parallel)
+# Predict y
+model_y <- lm(y ~ m1 + m2 + x,
+              data = data_parallel)
+```
+
+These are the regression results:
+
+```{r}
+#| eval: false
+summary(model_m1)
+```
+
+```{r}
+#| echo: false
+tmp <- capture.output(print(summary(model_m1)))
+tmp <- tmp[-c(1, 5:8, 19)]
+cat(tmp, sep = "\n")
+```
+
+```{r}
+#| eval: false
+summary(model_m2)
+```
+
+```{r}
+#| echo: false
+tmp <- capture.output(print(summary(model_m2)))
+tmp <- tmp[-c(1, 5:8, 19)]
+cat(tmp, sep = "\n")
+```
+
+```{r}
+#| eval: false
+summary(model_y)
+```
+
+```{r}
+#| echo: false
+tmp <- capture.output(print(summary(model_y)))
+tmp <- tmp[-c(1, 5:8, 21)]
+cat(tmp, sep = "\n")
+```
+
+The direct effect is the
+coefficient of `x` in the
+model predicting `y`, which
+is `r coef_str(model_y)["x"]`, and
+not significant.
+
+# The Indirect Effects
+
+The two indirect effects are the product of
+the `a1`-path and `b1`-path and that
+of the `a2`-path and `b2`-path,
+respectively:
+
+- `x` -> `m1` -> `y`
+
+    - Computed by `a1` &times; `b1`
+
+- `x` -> `m2` -> `y`
+
+    - Computed by `a2` &times; `b2`
+
+To test
+these indirect effects, one common method
+is nonparametric bootstrapping [@cheung_comparison_2009
+@mackinnon_comparison_2002].
+This can be done easily by `indirect_effect()`
+from the package `manymome`.
+
+## Combine the Regression Results
+
+We first combine the regression models
+by [`lm2list()`](https://sfcheung.github.io/manymome/reference/lm2list.html)
+into one object to represent the whole model
+(@fig-full-model):[^order]
+
+```{r}
+full_model <- lm2list(model_m1,
+                      model_m2,
+                      model_y)
+full_model
+```
+
+[^order]: The order does not matter when using
+`lm2list`.
+
+## Compute and Test the Indirect Effect
+
+For this parallel mediation model, we can simply use
+[`indirect_effect()`](https://sfcheung.github.io/manymome/reference/cond_indirect.html)
+
+```{r}
+#| echo: false
+#| output: false
+ind1 <- indirect_effect(x = "x",
+                        y = "y",
+                        m = "m1",
+                        fit = full_model,
+                        boot_ci = TRUE,
+                        R = 5000,
+                        seed = 3456,
+                        progress = FALSE)
+```
+
+```{r}
+#| eval: false
+ind1 <- indirect_effect(x = "x",
+                        y = "y",
+                        m = "m1",
+                        fit = full_model,
+                        boot_ci = TRUE,
+                        R = 5000,
+                        seed = 3456)
+```
+
+These are the main arguments:
+
+- `x`: The name of the `x` variable,
+  the start of the indirect path.
+
+- `y`: The name of the `y` variable,
+  the end of the indirect path.
+
+- `m`: The name of the mediator, `m1`
+  in the above example.
+
+- `fit`: The regression models combined
+  by `lm2list()`.
+
+- `boot_ci`: If `TRUE`, bootstrap
+  confidence interval will be formed.
+
+- `R`, the number of bootstrap samples.
+  It is fast for regression models and
+  I recommend using at least 5000
+  bootstrap samples or even 10000, because
+  the results may not be stable enough
+  if indirect effect is close to zero
+  [an example can be found in @cheung_semlbci_2023].
+
+- `seed`: The seed for the random number
+  generator, to make the resampling
+  reproducible. This argument should
+  always be set when doing bootstrapping.
+
+By default, parallel processing will
+be used and a progress bar will be
+displayed.
+
+The other indirect effect can be computed
+similarly:
+
+```{r}
+#| echo: false
+#| output: false
+ind2 <- indirect_effect(x = "x",
+                        y = "y",
+                        m = "m2",
+                        fit = full_model,
+                        boot_ci = TRUE,
+                        R = 5000,
+                        seed = 3456,
+                        progress = FALSE)
+```
+
+```{r}
+#| eval: false
+ind2 <- indirect_effect(x = "x",
+                        y = "y",
+                        m = "m2",
+                        fit = full_model,
+                        boot_ci = TRUE,
+                        R = 5000,
+                        seed = 3456)
+```
+
+Just typing the name of the output can
+print the major results
+
+```{r}
+ind1
+ind2
+```
+
+As shown above, the indirect effect
+through `m1` is
+`r coef_str(ind1)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind1)`. The indirect effect
+is positive and significant.
+
+As shown above, the indirect effect
+through `m2` is
+`r coef_str(ind2)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind2)`. The indirect effect
+is positive and significant.
+
+For transparency, the output also shows
+how the indirect effect was computed.
+
+## Standardized Indirect Effect
+
+To compute and test the standardized
+indirect effect, with both the `x`-variable
+and `y`-variable standardized, add
+`standardized_x = TRUE` and
+`standardized_y = TRUE`:
+
+```{r}
+#| echo: false
+#| output: false
+ind1_stdxy <- indirect_effect(x = "x",
+                              y = "y",
+                              m = "m1",
+                              fit = full_model,
+                              boot_ci = TRUE,
+                              R = 5000,
+                              seed = 3456,
+                              progress = FALSE,
+                              standardized_x = TRUE,
+                              standardized_y = TRUE)
+ind2_stdxy <- indirect_effect(x = "x",
+                              y = "y",
+                              m = "m2",
+                              fit = full_model,
+                              boot_ci = TRUE,
+                              R = 5000,
+                              seed = 3456,
+                              progress = FALSE,
+                              standardized_x = TRUE,
+                              standardized_y = TRUE)
+```
+
+```{r}
+#| eval: false
+ind1_stdxy <- indirect_effect(x = "x",
+                              y = "y",
+                              m = "m1",
+                              fit = full_model,
+                              boot_ci = TRUE,
+                              R = 5000,
+                              seed = 3456,,
+                              standardized_x = TRUE,
+                              standardized_y = TRUE)
+ind2_stdxy <- indirect_effect(x = "x",
+                              y = "y",
+                              m = "m2",
+                              fit = full_model,
+                              boot_ci = TRUE,
+                              R = 5000,
+                              seed = 3456,,
+                              standardized_x = TRUE,
+                              standardized_y = TRUE)
+```
+
+The results can be printed as usual:
+
+```{r}
+ind1_stdxy
+ind2_stdxy
+```
+
+The standardized indirect effect
+through `m1`
+is
+`r coef_str(ind1_stdxy)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind1_stdxy)`, significant.
+
+The standardized indirect effect
+through `m2`
+is
+`r coef_str(ind2_stdxy)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind2_stdxy)`, significant.
+
+# Total Indirect Effect
+
+Suppose we would like to compute the
+total indirect effects from `x` to `y`
+through the two parallel paths. This
+can be done by "adding"
+the indirect effects computed above,
+simply by using the `+` operator:
+
+```{r}
+ind_total <- ind1 + ind2
+```
+
+```{r}
+ind_total
+```
+
+The standardized total indirect effect
+can be computed similarly:
+
+```{r}
+ind_total_stdxy <- ind1_stdxy + ind2_stdxy
+```
+
+```{r}
+ind_total_stdxy
+```
+
+The total indirect effect
+through the two paths is
+`r coef_str(ind_total)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind_total)`, significant.
+
+The total standardized indirect effect
+through the two paths is
+`r coef_str(ind_total_stdxy)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind_total_stdxy)`
+
+# Difference in Indirect Effects
+
+The indirect effects through the two
+paths are substantially different
+(`r coef_str(ind1)` vs. `r coef_str(ind2)`).
+Suppose we would like to compare the
+two paths by computing the *difference*
+in indirect effect and forming the
+bootstrap confidence interval of this
+difference. This can be done by
+literally computing the difference using
+the `-` operator:
+
+```{r}
+ind_diff <- ind1 - ind2
+```
+
+```{r}
+ind_diff
+```
+
+Interestingly, despite the apparent
+magnitude of the difference, the two
+indirect effects are not significantly
+different, probably due to the small
+sample size (`r nrow(data_parallel)`).
+
+The difference in standardized indirect
+effects (`r coef_str(ind1_stdxy)` vs. `r coef_str(ind2_stdxy)`)
+can be computed similarly:
+
+```{r}
+ind_stdxy_diff <- ind1_stdxy - ind2_stdxy
+```
+
+```{r}
+ind_stdxy_diff
+```
+
+# A Parallel Mediation Model With Some Control Variables
+
+Suppose we want to fit a more complicated
+model, with some other variables included,
+such as control variables `c1` and `c2`
+in the dataset (@fig-full-model2).
+
+```{r}
+#| label: fig-full-model2
+#| fig-caption: "A Parallel Mediation Model With Control Variables"
+#| echo: false
+#| fig-width: 6
+#| fig-heigh: 5
+#| fig-align: center
+library(semPlot)
+library(semptools)
+library(manymome)
+suppressMessages(library(lavaan))
+dat <- data_parallel
+mod <-
+"
+m1 ~ x + c1 + c2
+m2 ~ x + c1 + c2
+y ~ m1 + m2 + x + c1 + c2
+"
+fit0 <- sem(mod,
+            dat,
+            do.fit = FALSE,
+            fixed.x = FALSE)
+layout_m <- layout_matrix(x = c(2, 1),
+                          c1 = c(4, 1),
+                          c2 = c(5, 1),
+                          m1 = c(1, 2),
+                          m2 = c(3, 2),
+                          y = c(2, 3))
+p <- semPaths(fit0,
+              what = "path",
+              whatLabels = "label",
+              residuals = FALSE,
+              sizeMan = 13,
+              exoCov = FALSE,
+              # node.width = 2,
+              edge.label.cex = 2.5,
+              edge.width = 5,
+              nCharEdges = 0,
+              label.cex = 1.25,
+              edge.color = c("black", "grey80", "grey80", "black",
+                             "grey80", "grey80", "black", "black",
+                             "black", "grey80", "grey80"),
+              style = "ram",
+              color = c("lightblue",
+                        "lightblue",
+                        "lightblue",
+                        "lightblue",
+                        "grey90",
+                        "grey90"),
+              mar = c(5, 5, 5, 5),
+              layout = layout_m,
+              DoNotPlot = TRUE)
+my_curves <- c("y ~ c1" = -2,
+             c("y ~ c2" = -3))
+p2 <- p |>
+        set_curve(my_curves)
+plot(p2)
+```
+
+Although there are more predictors (`c1`
+and `c2`) and more direct and indirect
+paths (e.g., `c1` to `y` through `m1`),
+there are still only just three regression
+models. We can fit them as usual by
+`lm()`:
+
+```{r}
+model2_m1 <- lm(m1 ~ x + c1 + c2,
+                data = data_parallel)
+model2_m2 <- lm(m2 ~ x + c1 + c2,
+                data = data_parallel)
+model2_y <- lm(y ~ m1 + m2 + x + c1 + c2,
+               data = data_parallel)
+```
+
+These are the regression results:
+
+```{r}
+#| eval: false
+summary(model2_m1)
+```
+
+```{r}
+#| echo: false
+tmp <- capture.output(print(summary(model2_m1)))
+tmp <- tmp[-c(1, 5:8, 21)]
+cat(tmp, sep = "\n")
+```
+
+```{r}
+#| eval: false
+summary(model2_m2)
+```
+
+```{r}
+#| echo: false
+tmp <- capture.output(print(summary(model2_m2)))
+tmp <- tmp[-c(1, 5:8, 21)]
+cat(tmp, sep = "\n")
+```
+
+```{r}
+#| eval: false
+summary(model2_y)
+```
+
+```{r}
+#| echo: false
+tmp <- capture.output(print(summary(model2_y)))
+tmp <- tmp[-c(1, 5:8, 21)]
+cat(tmp, sep = "\n")
+```
+
+We then just combine them by `lm2list()`:
+
+```{r}
+full_model2 <- lm2list(model2_m1,
+                       model2_m2,
+                       model2_y)
+full_model2
+```
+
+The indirect effects can be computed
+and tested in exactly the same way:
+
+```{r}
+#| echo: false
+#| output: false
+ind2_1 <- indirect_effect(x = "x",
+                          y = "y",
+                          m = "m1",
+                          fit = full_model2,
+                          boot_ci = TRUE,
+                          R = 5000,
+                          seed = 3456,
+                          progress = FALSE)
+```
+
+```{r}
+#| eval: false
+ind2_1 <- indirect_effect(x = "x",
+                          y = "y",
+                          m = "m1",
+                          fit = full_model2,
+                          boot_ci = TRUE,
+                          R = 5000,
+                          seed = 3456)
+```
+
+
+```{r}
+#| echo: false
+#| output: false
+ind2_2 <- indirect_effect(x = "x",
+                          y = "y",
+                          m = "m2",
+                          fit = full_model2,
+                          boot_ci = TRUE,
+                          R = 5000,
+                          seed = 3456,
+                          progress = FALSE)
+```
+
+```{r}
+#| eval: false
+ind2_2 <- indirect_effect(x = "x",
+                          y = "y",
+                          m = "m2",
+                          fit = full_model2,
+                          boot_ci = TRUE,
+                          R = 5000,
+                          seed = 3456)
+```
+
+This is the result:
+
+```{r}
+ind2_1
+ind2_2
+```
+
+The indirect effect through
+`m1`
+is
+`r coef_str(ind2_1)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind2_1)`, slightly decreased after the
+control variables are included, but
+still significant.
+
+The indirect effect through
+`m2`
+is
+`r coef_str(ind2_2)`.
+The 95% bootstrap confidence interval is
+`r ci_str(ind2_2)`, decreased after the
+control variables are included, but
+still significant.
+
+Standardized indirect effects can also
+be computed and tested just by adding
+`standardized_x = TRUE` and
+`standardized_y = TRUE`.
+
+The total indirect effect can also be
+computed using `+`:
+
+```{r}
+ind2_total <- ind2_1 + ind2_2
+ind2_total
+```
+
+# No Limit On The Number of Mediators
+
+Although the example above only has two
+mediators, there is no limit on the
+number of mediators in the parallel
+mediation model. Just fit all the
+regression models predicting the mediators,
+combine them by `lm2list()`, and compute
+the indirect effect as illustrated above
+for each path.
+
+# Advanced Topics
+
+## Customize the Printout
+
+The printout can be customized in
+several ways. For example:
+
+```{r}
+print(ind1,
+      digits = 2,
+      pvalue = TRUE,
+      pvalue_digits = 3,
+      se = TRUE)
+```
+
+- `digits`: The number of digits after
+  the decimal point for major output.
+  Default is 3.
+
+- `pvalue`: Whether bootstrapping
+  *p*-value is printed. The method
+  by @asparouhov_bootstrap_2021 is used.
+
+- `pvalue_digits`: The number of digits
+  after the decimal point for the
+  *p*-value. Default is 3.
+
+- `se`: The standard error based on
+  bootstrapping (i.e., the standard
+  deviation of the bootstrap estimates).
+
+## Missing Data
+
+Care needs to be taken if missing data
+is present. Let's remove some data
+points from the data file:
+
+```{r}
+data_parallel_missing <- data_parallel
+data_parallel_missing[1:3, "x"] <- NA
+data_parallel_missing[2:4, "m1"] <- NA
+data_parallel_missing[3:5, "m2"] <- NA
+data_parallel_missing[3:6, "y"] <- NA
+head(data_parallel_missing)
+```
+
+If we do the regression separately,
+the cases used in the two models will
+be different:
+
+```{r}
+# Predict m1
+model_m1_missing <- lm(m1 ~ x,
+                      data = data_parallel_missing)
+model_m2_missing <- lm(m2 ~ x,
+                      data = data_parallel_missing)
+# Predict y
+model_y_missing <- lm(y ~ m1 + m2 + x,
+                      data = data_parallel_missing)
+```
+
+The sample sizes are not the same:
+
+```{r}
+nobs(model_m1_missing)
+nobs(model_m2_missing)
+nobs(model_y_missing)
+```
+
+If they are combined by `lm2list()`,
+an error will occur. The function `lm2list()`
+will compare the data to see if the cases
+used are likely to be different.[^compare]
+
+[^compare]: The function `lm2list()` checks
+not only sample sizes. Even if the sample
+sizes are the same, an error will still
+be raised if there is evidence suggesting
+that the samples are not the same, such
+as different values of `x` in the two
+models.
+
+```{r}
+#| error: true
+lm2list(model_m1_missing,
+        model_m2_missing,
+        model_y_missing)
+```
+
+A simple (though not ideal) solution is
+to use listwise deletion, keeping only
+cases with complete data. This can be done
+by `na.omit()`:
+
+```{r}
+data_parallel_listwise <- na.omit(data_parallel_missing)
+head(data_parallel_listwise)
+nrow(data_parallel_listwise)
+```
+
+The number of cases using listwise deletion
+is `r nrow(data_parallel_listwise)`, less than
+the full sample with missing data
+(`r nrow(data_parallel_listwise)`).
+
+The steps above can then be proceed as
+usual.
+
+# Functions Used In This Example
+
+These are the main functions used:
+
+- [`lm2list()`](https://sfcheung.github.io/manymome/reference/lm2list.html): Combining the results of
+  several one-outcome regression models.
+
+- [`indirect_effect()`](https://sfcheung.github.io/manymome/reference/cond_indirect.html): Compute
+  and test an indirect effect.
+
+# Further Information
+
+The package `manymome` has no inherent
+limitations on the number of variables and
+the form of the mediation models. An
+illustration using a more complicated
+models with both parallel and serial
+mediation paths can be found in
+[this online article](https://sfcheung.github.io/manymome/articles/med_lm.html).
+
+Other features of `manymome` can be
+found in [the website](https://sfcheung.github.io/manymome/)
+for it.
+
+# Disclaimer: Similarity Across Tutorials
+
+To keep each tutorial self-contained,
+some sections are intentionally repeated
+nearly verbatim ("recycled")
+to reduce the hassle to read several articles
+to learn how to do one task.
+
+# Revision History and Issues
+
+The revision history of this post can
+be find in the [GitHub history of
+the source file](https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/manymome_simple_mediation/index.qmd).
+
+For issues on this post, such as corrections
+and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)
+for the GitHub repository for this blog.
+Thanks.
+

@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shu Fai Cheung">
-<meta name="dcterms.date" content="2024-09-08">
+<meta name="dcterms.date" content="2024-09-14">
 
-<title>Simple Mediation in a Regression Model Using manymome: A Tutorial – Blogonresearch</title>
+<title>Parallel Mediation in a Regression Model Using manymome: A Tutorial – Blogonresearch</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -220,7 +220,7 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Simple Mediation in a Regression Model Using manymome: A Tutorial</h1>
+      <h1 class="title">Parallel Mediation in a Regression Model Using manymome: A Tutorial</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">mediation</div>
@@ -243,7 +243,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 8, 2024</p>
+        <p class="date">September 14, 2024</p>
       </div>
     </div>
     
@@ -261,15 +261,18 @@ div.csl-indent {
   <ul>
   <li><a href="#pre-requisite" id="toc-pre-requisite" class="nav-link active" data-scroll-target="#pre-requisite">Pre-Requisite</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#a-simple-mediation-model" id="toc-a-simple-mediation-model" class="nav-link" data-scroll-target="#a-simple-mediation-model">A Simple Mediation Model</a></li>
+  <li><a href="#a-parallel-mediation-model" id="toc-a-parallel-mediation-model" class="nav-link" data-scroll-target="#a-parallel-mediation-model">A Parallel Mediation Model</a></li>
   <li><a href="#fit-the-models-by-lm" id="toc-fit-the-models-by-lm" class="nav-link" data-scroll-target="#fit-the-models-by-lm">Fit the Models by <code>lm()</code></a></li>
-  <li><a href="#the-indirect-effect" id="toc-the-indirect-effect" class="nav-link" data-scroll-target="#the-indirect-effect">The Indirect Effect</a>
+  <li><a href="#the-indirect-effects" id="toc-the-indirect-effects" class="nav-link" data-scroll-target="#the-indirect-effects">The Indirect Effects</a>
   <ul class="collapse">
   <li><a href="#combine-the-regression-results" id="toc-combine-the-regression-results" class="nav-link" data-scroll-target="#combine-the-regression-results">Combine the Regression Results</a></li>
   <li><a href="#compute-and-test-the-indirect-effect" id="toc-compute-and-test-the-indirect-effect" class="nav-link" data-scroll-target="#compute-and-test-the-indirect-effect">Compute and Test the Indirect Effect</a></li>
   <li><a href="#standardized-indirect-effect" id="toc-standardized-indirect-effect" class="nav-link" data-scroll-target="#standardized-indirect-effect">Standardized Indirect Effect</a></li>
   </ul></li>
-  <li><a href="#a-simple-mediation-model-with-some-control-variables" id="toc-a-simple-mediation-model-with-some-control-variables" class="nav-link" data-scroll-target="#a-simple-mediation-model-with-some-control-variables">A Simple Mediation Model With Some Control Variables</a></li>
+  <li><a href="#total-indirect-effect" id="toc-total-indirect-effect" class="nav-link" data-scroll-target="#total-indirect-effect">Total Indirect Effect</a></li>
+  <li><a href="#difference-in-indirect-effects" id="toc-difference-in-indirect-effects" class="nav-link" data-scroll-target="#difference-in-indirect-effects">Difference in Indirect Effects</a></li>
+  <li><a href="#a-parallel-mediation-model-with-some-control-variables" id="toc-a-parallel-mediation-model-with-some-control-variables" class="nav-link" data-scroll-target="#a-parallel-mediation-model-with-some-control-variables">A Parallel Mediation Model With Some Control Variables</a></li>
+  <li><a href="#no-limit-on-the-number-of-mediators" id="toc-no-limit-on-the-number-of-mediators" class="nav-link" data-scroll-target="#no-limit-on-the-number-of-mediators">No Limit On The Number of Mediators</a></li>
   <li><a href="#advanced-topics" id="toc-advanced-topics" class="nav-link" data-scroll-target="#advanced-topics">Advanced Topics</a>
   <ul class="collapse">
   <li><a href="#customize-the-printout" id="toc-customize-the-printout" class="nav-link" data-scroll-target="#customize-the-printout">Customize the Printout</a></li>
@@ -289,7 +292,7 @@ div.csl-indent {
 
 
 
-<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(<a href="#ref-cheung_manymome_2023" role="doc-biblioref">S. F. Cheung &amp; Cheung, 2023</a>)</span> to test a mediation effect in a simple mediation model fitted by multiple regression.</p>
+<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(<a href="#ref-cheung_manymome_2023" role="doc-biblioref">S. F. Cheung &amp; Cheung, 2023</a>)</span> to test two or more mediation effects in a parallel mediation model fitted by multiple regression.</p>
 <section id="pre-requisite" class="level1">
 <h1>Pre-Requisite</h1>
 <p>Readers are expected to have basic R skills and know how to fit a linear regression model using <code>lm()</code>.</p>
@@ -301,19 +304,19 @@ div.csl-indent {
 <p>This is the data file for illustration, from <code>manymome</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(manymome)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_med, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_parallel, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          x        m        y       c1       c2
-1  9.931992 17.89644 20.73893 1.426513 6.103290
-2  8.331493 17.92150 22.91594 2.940388 3.832698
-3 10.327471 17.83178 22.14201 3.012678 5.770532</code></pre>
+<pre><code>         x       m1       m2        y       c1       c2
+1 9.652688 20.77622 8.977183 16.85574 2.385207 4.009182
+2 9.011756 18.28393 6.518089 15.99256 2.585124 5.980229
+3 9.343317 18.00133 6.271594 20.12393 2.667239 4.170771</code></pre>
 </div>
 </div>
 </section>
-<section id="a-simple-mediation-model" class="level1">
-<h1>A Simple Mediation Model</h1>
-<p>First we fit a simple mediation model using only <code>x</code>, <code>m</code>, and <code>y</code>.</p>
-<div class="cell" data-layout-align="center" data-fig-heigh="2">
+<section id="a-parallel-mediation-model" class="level1">
+<h1>A Parallel Mediation Model</h1>
+<p>First we fit a parallel mediation model using only <code>x</code>, <code>m1</code>, <code>m2</code>, and <code>y</code>.</p>
+<div class="cell" data-layout-align="center" data-fig-heigh="3">
 <div class="cell-output-display">
 <div id="fig-full-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -321,7 +324,7 @@ div.csl-indent {
 <img src="index_files/figure-html/fig-full-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-full-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: A Simple Mediation Model
+Figure&nbsp;1: A Parallel Mediation Model
 </figcaption>
 </figure>
 </div>
@@ -331,32 +334,51 @@ Figure&nbsp;1: A Simple Mediation Model
 <ul>
 <li><p><code>x</code> is the predictor (independent variable).</p></li>
 <li><p><code>y</code> is the outcome variable (dependent variable).</p></li>
-<li><p><code>m</code> is the mediator.</p></li>
+<li><p><code>m1</code> and <code>m2</code> are the mediators.</p></li>
 </ul>
-<p>The goal is to compute and test the indirect effect from <code>x</code> to <code>y</code> through <code>m</code>.</p>
+<p>The goal is to compute and test the two indirect effects:</p>
+<ul>
+<li><p>From <code>x</code> to <code>y</code> through <code>m1</code>.</p></li>
+<li><p>From <code>x</code> to <code>y</code> through <code>m2</code>.</p></li>
+</ul>
 </section>
 <section id="fit-the-models-by-lm" class="level1">
 <h1>Fit the Models by <code>lm()</code></h1>
-<p>To estimate all the regression coefficients, just fit two regression models:</p>
+<p>To estimate all the regression coefficients, just fit three regression models:</p>
 <ul>
-<li><p>Predict <code>m</code> by <code>x</code> (<a href="#fig-m-model" class="quarto-xref">Figure&nbsp;2</a>).</p></li>
-<li><p>Predict <code>y</code> by <code>m</code> and <code>x</code> (<a href="#fig-y-model" class="quarto-xref">Figure&nbsp;3</a>).</p></li>
+<li><p>Predict <code>m1</code> by <code>x</code> (<a href="#fig-m1-model" class="quarto-xref">Figure&nbsp;2</a>).</p></li>
+<li><p>Predict <code>m2</code> by <code>x</code> (<a href="#fig-m2-model" class="quarto-xref">Figure&nbsp;3</a>).</p></li>
+<li><p>Predict <code>y</code> by <code>m1</code>, <code>m2</code>, and <code>x</code> (<a href="#fig-y-model" class="quarto-xref">Figure&nbsp;4</a>).</p></li>
 </ul>
-<div class="cell" data-layout-align="center" data-fig-heigh="2">
+<div class="cell" data-layout-align="center" data-fig-heigh="3">
 <div class="cell-output-display">
-<div id="fig-m-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-m1-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-m-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-m-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+<div aria-describedby="fig-m1-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-m1-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-m-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: The Model Predicting <code>m</code>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-m1-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The Model Predicting <code>m1</code>
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-fig-heigh="2">
+<div class="cell" data-layout-align="center" data-fig-heigh="3">
+<div class="cell-output-display">
+<div id="fig-m2-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-m2-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-m2-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-m2-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The Model Predicting <code>m2</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig-heigh="3">
 <div class="cell-output-display">
 <div id="fig-y-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -364,7 +386,7 @@ Figure&nbsp;2: The Model Predicting <code>m</code>
 <img src="index_files/figure-html/fig-y-model-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-y-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: The Model Predicting <code>y</code>
+Figure&nbsp;4: The Model Predicting <code>y</code>
 </figcaption>
 </figure>
 </div>
@@ -372,290 +394,586 @@ Figure&nbsp;3: The Model Predicting <code>y</code>
 </div>
 <p>This can be easily done by <code>lm()</code> in R:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict m</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>model_m <span class="ot">&lt;-</span> <span class="fu">lm</span>(m <span class="sc">~</span> x,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data_med)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict y</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>model_y <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> m <span class="sc">+</span> x,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data_med)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict m1</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>model_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(m1 <span class="sc">~</span> x,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> data_parallel)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict m2</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>model_m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(m2 <span class="sc">~</span> x,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> data_parallel)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict y</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>model_y <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> m1 <span class="sc">+</span> m2 <span class="sc">+</span> x,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data_parallel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>These are the regression results:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-lm(formula = m ~ x, data = data_med)
+lm(formula = m1 ~ x, data = data_parallel)
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  9.39332    0.83320   11.27   &lt;2e-16 ***
-x            0.92400    0.08358   11.06   &lt;2e-16 ***
+(Intercept)   9.0203     1.1288   7.991 2.65e-12 ***
+x             0.9247     0.1128   8.200 9.49e-13 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.8774 on 98 degrees of freedom
-Multiple R-squared:  0.555, Adjusted R-squared:  0.5505 
-F-statistic: 122.2 on 1 and 98 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 1.125 on 98 degrees of freedom
+Multiple R-squared:  0.4069,    Adjusted R-squared:  0.4009 
+F-statistic: 67.24 on 1 and 98 DF,  p-value: 9.488e-13</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-lm(formula = y ~ m + x, data = data_med)
+lm(formula = m2 ~ x, data = data_parallel)
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   3.3618     2.9480   1.140 0.256930    
-m             0.8596     0.2358   3.645 0.000432 ***
-x             0.4277     0.2925   1.462 0.146862    
+(Intercept)   2.5066     1.1248   2.229 0.028128 *  
+x             0.3921     0.1124   3.490 0.000726 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.048 on 97 degrees of freedom
-Multiple R-squared:  0.3512,    Adjusted R-squared:  0.3378 
-F-statistic: 26.26 on 2 and 97 DF,  p-value: 7.704e-10</code></pre>
+Residual standard error: 1.121 on 98 degrees of freedom
+Multiple R-squared:  0.1105,    Adjusted R-squared:  0.1015 
+F-statistic: 12.18 on 1 and 98 DF,  p-value: 0.000726</code></pre>
 </div>
 </div>
-<p>The direct effect is the coefficient of <code>x</code> in the model predicting <code>y</code>, which is 0.428, and not significant.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lm(formula = y ~ m1 + m2 + x, data = data_parallel)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)   2.4554     2.6015   0.944   0.3476  
+m1            0.4784     0.1861   2.571   0.0117 *
+m2            0.4684     0.1867   2.508   0.0138 *
+x             0.3003     0.2646   1.135   0.2593  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.017 on 96 degrees of freedom
+Multiple R-squared:  0.2823,    Adjusted R-squared:  0.2599 
+F-statistic: 12.59 on 3 and 96 DF,  p-value: 5.212e-07</code></pre>
+</div>
+</div>
+<p>The direct effect is the coefficient of <code>x</code> in the model predicting <code>y</code>, which is 0.300, and not significant.</p>
 </section>
-<section id="the-indirect-effect" class="level1">
-<h1>The Indirect Effect</h1>
-<p>The indirect effect is the product of the <code>a</code>-path and the <code>b</code>-path. To test this indirect effect, one common method is nonparametric bootstrapping <span class="citation" data-cites="cheung_comparison_2009">MacKinnon et al. (<a href="#ref-mackinnon_comparison_2002" role="doc-biblioref">2002</a>)</span>. This can be done easily by <code>indirect_effect()</code> from the package <code>manymome</code>.</p>
+<section id="the-indirect-effects" class="level1">
+<h1>The Indirect Effects</h1>
+<p>The two indirect effects are the product of the <code>a1</code>-path and <code>b1</code>-path and that of the <code>a2</code>-path and <code>b2</code>-path, respectively:</p>
+<ul>
+<li><p><code>x</code> -&gt; <code>m1</code> -&gt; <code>y</code></p>
+<ul>
+<li>Computed by <code>a1</code> × <code>b1</code></li>
+</ul></li>
+<li><p><code>x</code> -&gt; <code>m2</code> -&gt; <code>y</code></p>
+<ul>
+<li>Computed by <code>a2</code> × <code>b2</code></li>
+</ul></li>
+</ul>
+<p>To test these indirect effects, one common method is nonparametric bootstrapping <span class="citation" data-cites="cheung_comparison_2009">MacKinnon et al. (<a href="#ref-mackinnon_comparison_2002" role="doc-biblioref">2002</a>)</span>. This can be done easily by <code>indirect_effect()</code> from the package <code>manymome</code>.</p>
 <section id="combine-the-regression-results" class="level2">
 <h2 class="anchored" data-anchor-id="combine-the-regression-results">Combine the Regression Results</h2>
 <p>We first combine the regression models by <a href="https://sfcheung.github.io/manymome/reference/lm2list.html"><code>lm2list()</code></a> into one object to represent the whole model (<a href="#fig-full-model" class="quarto-xref">Figure&nbsp;1</a>):<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>full_model <span class="ot">&lt;-</span> <span class="fu">lm2list</span>(model_m,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                      model_y)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>full_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>full_model <span class="ot">&lt;-</span> <span class="fu">lm2list</span>(model_m1,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                      model_m2,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                      model_y)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>full_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The models:
-m ~ x
-y ~ m + x</code></pre>
+m1 ~ x
+m2 ~ x
+y ~ m1 + m2 + x</code></pre>
 </div>
 </div>
 </section>
 <section id="compute-and-test-the-indirect-effect" class="level2">
 <h2 class="anchored" data-anchor-id="compute-and-test-the-indirect-effect">Compute and Test the Indirect Effect</h2>
-<p>For this simple model, we can simply use <a href="https://sfcheung.github.io/manymome/reference/cond_indirect.html"><code>indirect_effect()</code></a></p>
+<p>For this parallel mediation model, we can simply use <a href="https://sfcheung.github.io/manymome/reference/cond_indirect.html"><code>indirect_effect()</code></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">y =</span> <span class="st">"y"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">m =</span> <span class="st">"m"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">fit =</span> full_model,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">R =</span> <span class="dv">5000</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">seed =</span> <span class="dv">3456</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ind1 <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="st">"y"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">m =</span> <span class="st">"m1"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fit =</span> full_model,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">R =</span> <span class="dv">5000</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">seed =</span> <span class="dv">3456</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>These are the main arguments:</p>
 <ul>
 <li><p><code>x</code>: The name of the <code>x</code> variable, the start of the indirect path.</p></li>
 <li><p><code>y</code>: The name of the <code>y</code> variable, the end of the indirect path.</p></li>
-<li><p><code>m</code>: The name of the mediator.</p></li>
+<li><p><code>m</code>: The name of the mediator, <code>m1</code> in the above example.</p></li>
 <li><p><code>fit</code>: The regression models combined by <code>lm2list()</code>.</p></li>
 <li><p><code>boot_ci</code>: If <code>TRUE</code>, bootstrap confidence interval will be formed.</p></li>
 <li><p><code>R</code>, the number of bootstrap samples. It is fast for regression models and I recommend using at least 5000 bootstrap samples or even 10000, because the results may not be stable enough if indirect effect is close to zero <span class="citation" data-cites="cheung_semlbci_2023">(an example can be found in <a href="#ref-cheung_semlbci_2023" role="doc-biblioref">S. F. Cheung &amp; Pesigan, 2023</a>)</span>.</p></li>
 <li><p><code>seed</code>: The seed for the random number generator, to make the resampling reproducible. This argument should always be set when doing bootstrapping.</p></li>
 </ul>
 <p>By default, parallel processing will be used and a progress bar will be displayed.</p>
+<p>The other indirect effect can be computed similarly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ind2 <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="st">"y"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">m =</span> <span class="st">"m2"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fit =</span> full_model,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">R =</span> <span class="dv">5000</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">seed =</span> <span class="dv">3456</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Just typing the name of the output can print the major results</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ind</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ind1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 == Indirect Effect  ==
                                      
- Path:               x -&gt; m -&gt; y     
- Indirect Effect:    0.794           
- 95.0% Bootstrap CI: [0.393 to 1.250]
+ Path:               x -&gt; m1 -&gt; y    
+ Indirect Effect:    0.442           
+ 95.0% Bootstrap CI: [0.103 to 0.803]
 
 Computation Formula:
-  (b.m~x)*(b.y~m)
+  (b.m1~x)*(b.y~m1)
 Computation:
-  (0.92400)*(0.85957)
+  (0.92471)*(0.47840)
 
 Percentile confidence interval formed by nonparametric bootstrapping
 with 5000 bootstrap samples.
 
 Coefficients of Component Paths:
  Path Coefficient
-  m~x       0.924
-  y~m       0.860</code></pre>
+ m1~x       0.925
+ y~m1       0.478</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ind2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                     
+ Path:               x -&gt; m2 -&gt; y    
+ Indirect Effect:    0.184           
+ 95.0% Bootstrap CI: [0.027 to 0.402]
+
+Computation Formula:
+  (b.m2~x)*(b.y~m2)
+Computation:
+  (0.39215)*(0.46844)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+ m2~x       0.392
+ y~m2       0.468</code></pre>
 </div>
 </div>
-<p>As shown above, the indirect effect is 0.794. The 95% bootstrap confidence interval is [0.393; 1.250]. The indirect effect is positive and significant.</p>
+<p>As shown above, the indirect effect through <code>m1</code> is 0.442. The 95% bootstrap confidence interval is [0.103; 0.803]. The indirect effect is positive and significant.</p>
+<p>As shown above, the indirect effect through <code>m2</code> is 0.184. The 95% bootstrap confidence interval is [0.027; 0.402]. The indirect effect is positive and significant.</p>
 <p>For transparency, the output also shows how the indirect effect was computed.</p>
 </section>
 <section id="standardized-indirect-effect" class="level2">
 <h2 class="anchored" data-anchor-id="standardized-indirect-effect">Standardized Indirect Effect</h2>
 <p>To compute and test the standardized indirect effect, with both the <code>x</code>-variable and <code>y</code>-variable standardized, add <code>standardized_x = TRUE</code> and <code>standardized_y = TRUE</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ind_stdxy <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">y =</span> <span class="st">"y"</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">m =</span> <span class="st">"m"</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">fit =</span> full_model,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                             <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                             <span class="at">R =</span> <span class="dv">5000</span>,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                             <span class="at">seed =</span> <span class="dv">3456</span>,,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">standardized_x =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                             <span class="at">standardized_y =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ind1_stdxy <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">y =</span> <span class="st">"y"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">m =</span> <span class="st">"m1"</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">fit =</span> full_model,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                              <span class="at">R =</span> <span class="dv">5000</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                              <span class="at">seed =</span> <span class="dv">3456</span>,,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">standardized_x =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                              <span class="at">standardized_y =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>ind2_stdxy <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                              <span class="at">y =</span> <span class="st">"y"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                              <span class="at">m =</span> <span class="st">"m2"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">fit =</span> full_model,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                              <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                              <span class="at">R =</span> <span class="dv">5000</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                              <span class="at">seed =</span> <span class="dv">3456</span>,,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                              <span class="at">standardized_x =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                              <span class="at">standardized_y =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The results can be printed as usual:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ind_stdxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ind1_stdxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 == Indirect Effect (Both 'x' and 'y' Standardized) ==
                                      
- Path:               x -&gt; m -&gt; y     
- Indirect Effect:    0.333           
- 95.0% Bootstrap CI: [0.170 to 0.512]
+ Path:               x -&gt; m1 -&gt; y    
+ Indirect Effect:    0.189           
+ 95.0% Bootstrap CI: [0.045 to 0.340]
 
 Computation Formula:
-  (b.m~x)*(b.y~m)*sd_x/sd_y
+  (b.m1~x)*(b.y~m1)*sd_x/sd_y
 Computation:
-  (0.92400)*(0.85957)*(1.05515)/(2.51729)
+  (0.92471)*(0.47840)*(1.00306)/(2.34506)
 
 Percentile confidence interval formed by nonparametric bootstrapping
 with 5000 bootstrap samples.
 
 Coefficients of Component Paths:
  Path Coefficient
-  m~x       0.924
-  y~m       0.860
+ m1~x       0.925
+ y~m1       0.478
+
+NOTE:
+- The effects of the component paths are from the model, not
+  standardized.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ind2_stdxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect (Both 'x' and 'y' Standardized) ==
+                                     
+ Path:               x -&gt; m2 -&gt; y    
+ Indirect Effect:    0.079           
+ 95.0% Bootstrap CI: [0.013 to 0.166]
+
+Computation Formula:
+  (b.m2~x)*(b.y~m2)*sd_x/sd_y
+Computation:
+  (0.39215)*(0.46844)*(1.00306)/(2.34506)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+ m2~x       0.392
+ y~m2       0.468
 
 NOTE:
 - The effects of the component paths are from the model, not
   standardized.</code></pre>
 </div>
 </div>
-<p>The standardized indirect effect is 0.333. The 95% bootstrap confidence interval is [0.170; 0.512], significant.</p>
+<p>The standardized indirect effect through <code>m1</code> is 0.189. The 95% bootstrap confidence interval is [0.045; 0.340], significant.</p>
+<p>The standardized indirect effect through <code>m2</code> is 0.079. The 95% bootstrap confidence interval is [0.013; 0.166], significant.</p>
 </section>
 </section>
-<section id="a-simple-mediation-model-with-some-control-variables" class="level1">
-<h1>A Simple Mediation Model With Some Control Variables</h1>
-<p>Suppose we want to fit a more complicated model, with some other variables included, such as control variables <code>c1</code> and <code>c2</code> in the dataset (<a href="#fig-full-model2" class="quarto-xref">Figure&nbsp;4</a>).</p>
-<div class="cell" data-layout-align="center" data-fig-caption="A Simple Mediation Model With Control Variables" data-fig-heigh="4">
+<section id="total-indirect-effect" class="level1">
+<h1>Total Indirect Effect</h1>
+<p>Suppose we would like to compute the total indirect effects from <code>x</code> to <code>y</code> through the two parallel paths. This can be done by “adding” the indirect effects computed above, simply by using the <code>+</code> operator:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ind_total <span class="ot">&lt;-</span> ind1 <span class="sc">+</span> ind2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ind_total</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                      
+ Path:                x -&gt; m1 -&gt; y    
+ Path:                x -&gt; m2 -&gt; y    
+ Function of Effects: 0.626           
+ 95.0% Bootstrap CI:  [0.276 to 1.065]
+
+Computation of the Function of Effects:
+ (x-&gt;m1-&gt;y)
++(x-&gt;m2-&gt;y) 
+
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.</code></pre>
+</div>
+</div>
+<p>The standardized total indirect effect can be computed similarly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ind_total_stdxy <span class="ot">&lt;-</span> ind1_stdxy <span class="sc">+</span> ind2_stdxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ind_total_stdxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect (Both 'x' and 'y' Standardized) ==
+                                      
+ Path:                x -&gt; m1 -&gt; y    
+ Path:                x -&gt; m2 -&gt; y    
+ Function of Effects: 0.268           
+ 95.0% Bootstrap CI:  [0.122 to 0.431]
+
+Computation of the Function of Effects:
+ (x-&gt;m1-&gt;y)
++(x-&gt;m2-&gt;y) 
+
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.</code></pre>
+</div>
+</div>
+<p>The total indirect effect through the two paths is 0.626. The 95% bootstrap confidence interval is [0.276; 1.065], significant.</p>
+<p>The total standardized indirect effect through the two paths is 0.268. The 95% bootstrap confidence interval is [0.122; 0.431]</p>
+</section>
+<section id="difference-in-indirect-effects" class="level1">
+<h1>Difference in Indirect Effects</h1>
+<p>The indirect effects through the two paths are substantially different (0.442 vs.&nbsp;0.184). Suppose we would like to compare the two paths by computing the <em>difference</em> in indirect effect and forming the bootstrap confidence interval of this difference. This can be done by literally computing the difference using the <code>-</code> operator:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ind_diff <span class="ot">&lt;-</span> ind1 <span class="sc">-</span> ind2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ind_diff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                       
+ Path:                x -&gt; m1 -&gt; y     
+ Path:                x -&gt; m2 -&gt; y     
+ Function of Effects: 0.259            
+ 95.0% Bootstrap CI:  [-0.165 to 0.659]
+
+Computation of the Function of Effects:
+ (x-&gt;m1-&gt;y)
+-(x-&gt;m2-&gt;y) 
+
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.</code></pre>
+</div>
+</div>
+<p>Interestingly, despite the apparent magnitude of the difference, the two indirect effects are not significantly different, probably due to the small sample size (100).</p>
+<p>The difference in standardized indirect effects (0.189 vs.&nbsp;0.079) can be computed similarly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ind_stdxy_diff <span class="ot">&lt;-</span> ind1_stdxy <span class="sc">-</span> ind2_stdxy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>ind_stdxy_diff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect (Both 'x' and 'y' Standardized) ==
+                                       
+ Path:                x -&gt; m1 -&gt; y     
+ Path:                x -&gt; m2 -&gt; y     
+ Function of Effects: 0.111            
+ 95.0% Bootstrap CI:  [-0.072 to 0.281]
+
+Computation of the Function of Effects:
+ (x-&gt;m1-&gt;y)
+-(x-&gt;m2-&gt;y) 
+
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.</code></pre>
+</div>
+</div>
+</section>
+<section id="a-parallel-mediation-model-with-some-control-variables" class="level1">
+<h1>A Parallel Mediation Model With Some Control Variables</h1>
+<p>Suppose we want to fit a more complicated model, with some other variables included, such as control variables <code>c1</code> and <code>c2</code> in the dataset (<a href="#fig-full-model2" class="quarto-xref">Figure&nbsp;5</a>).</p>
+<div class="cell" data-layout-align="center" data-fig-caption="A Parallel Mediation Model With Control Variables" data-fig-heigh="5">
 <div class="cell-output-display">
-<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="576">
+<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" width="576" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="index_files/figure-html/fig-full-model2-1.png" id="fig-full-model2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="576">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4
+Figure&nbsp;5
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Although there are more predictors (<code>c1</code> and <code>c2</code>) and more direct and indirect paths (e.g., <code>c1</code> to <code>y</code> through <code>m</code>), there are still only just two regression models. We can fit them as usual by <code>lm()</code>:</p>
+<p>Although there are more predictors (<code>c1</code> and <code>c2</code>) and more direct and indirect paths (e.g., <code>c1</code> to <code>y</code> through <code>m1</code>), there are still only just three regression models. We can fit them as usual by <code>lm()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model2_m <span class="ot">&lt;-</span> <span class="fu">lm</span>(m <span class="sc">~</span> x <span class="sc">+</span> c1 <span class="sc">+</span> c2,</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> data_med)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>model2_y <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> m <span class="sc">+</span> x <span class="sc">+</span> c1 <span class="sc">+</span> c2,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> data_med)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model2_m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(m1 <span class="sc">~</span> x <span class="sc">+</span> c1 <span class="sc">+</span> c2,</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> data_parallel)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>model2_m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(m2 <span class="sc">~</span> x <span class="sc">+</span> c1 <span class="sc">+</span> c2,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> data_parallel)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>model2_y <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> m1 <span class="sc">+</span> m2 <span class="sc">+</span> x <span class="sc">+</span> c1 <span class="sc">+</span> c2,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> data_parallel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>These are the regression results:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2_m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-lm(formula = m ~ x + c1 + c2, data = data_med)
+lm(formula = m1 ~ x + c1 + c2, data = data_parallel)
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  9.68941    0.91979  10.534   &lt;2e-16 ***
-x            0.93469    0.08083  11.563   &lt;2e-16 ***
-c1           0.19778    0.07678   2.576   0.0115 *  
-c2          -0.16841    0.10305  -1.634   0.1055    
+(Intercept)  9.39260    1.40019   6.708 1.37e-09 ***
+x            0.87694    0.11441   7.665 1.45e-11 ***
+c1           0.25189    0.11131   2.263   0.0259 *  
+c2          -0.09293    0.12255  -0.758   0.4501    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.8425 on 96 degrees of freedom
-Multiple R-squared:  0.5981,    Adjusted R-squared:  0.5855 
-F-statistic: 47.62 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 1.106 on 96 degrees of freedom
+Multiple R-squared:  0.4394,    Adjusted R-squared:  0.4219 
+F-statistic: 25.08 on 3 and 96 DF,  p-value: 4.558e-12</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2_y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2_m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-lm(formula = y ~ m + x + c1 + c2, data = data_med)
+lm(formula = m2 ~ x + c1 + c2, data = data_parallel)
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)   
-(Intercept)   4.4152     3.3016   1.337  0.18432   
-m             0.7847     0.2495   3.145  0.00222 **
-x             0.5077     0.3057   1.661  0.10004   
-c1            0.1405     0.1941   0.724  0.47093   
-c2           -0.1544     0.2554  -0.604  0.54695   
+(Intercept)   4.3796     1.3463   3.253  0.00158 **
+x             0.2968     0.1100   2.698  0.00825 **
+c1            0.2746     0.1070   2.566  0.01185 * 
+c2           -0.3125     0.1178  -2.652  0.00937 **
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.06 on 95 degrees of freedom
-Multiple R-squared:  0.3576,    Adjusted R-squared:  0.3305 </code></pre>
+Residual standard error: 1.063 on 96 degrees of freedom
+Multiple R-squared:  0.2171,    Adjusted R-squared:  0.1927 
+F-statistic: 8.875 on 3 and 96 DF,  p-value: 3e-05</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2_y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lm(formula = y ~ m1 + m2 + x + c1 + c2, data = data_parallel)
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  2.65618    3.17697   0.836   0.4052  
+m1           0.48642    0.19106   2.546   0.0125 *
+m2           0.47128    0.19871   2.372   0.0197 *
+x            0.29112    0.26939   1.081   0.2826  
+c1          -0.05256    0.21557  -0.244   0.8079  
+c2          -0.03212    0.23411  -0.137   0.8912  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.038 on 94 degrees of freedom
+F-statistic:  7.42 on 5 and 94 DF,  p-value: 6.649e-06</code></pre>
 </div>
 </div>
 <p>We then just combine them by <code>lm2list()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>full_model2 <span class="ot">&lt;-</span> <span class="fu">lm2list</span>(model2_m,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                       model2_y)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>full_model2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>full_model2 <span class="ot">&lt;-</span> <span class="fu">lm2list</span>(model2_m1,</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>                       model2_m2,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                       model2_y)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>full_model2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The models:
-m ~ x + c1 + c2
-y ~ m + x + c1 + c2</code></pre>
+m1 ~ x + c1 + c2
+m2 ~ x + c1 + c2
+y ~ m1 + m2 + x + c1 + c2</code></pre>
 </div>
 </div>
-<p>The indirect effect can be computed and tested in exactly the same way:</p>
+<p>The indirect effects can be computed and tested in exactly the same way:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ind2 <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="st">"y"</span>,</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">m =</span> <span class="st">"m"</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">fit =</span> full_model2,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">R =</span> <span class="dv">5000</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">seed =</span> <span class="dv">3456</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>ind2_1 <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> <span class="st">"y"</span>,</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">m =</span> <span class="st">"m1"</span>,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">fit =</span> full_model2,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">R =</span> <span class="dv">5000</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">seed =</span> <span class="dv">3456</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ind2_2 <span class="ot">&lt;-</span> <span class="fu">indirect_effect</span>(<span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> <span class="st">"y"</span>,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">m =</span> <span class="st">"m2"</span>,</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">fit =</span> full_model2,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">boot_ci =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">R =</span> <span class="dv">5000</span>,</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">seed =</span> <span class="dv">3456</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This is the result:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ind2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>ind2_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 == Indirect Effect  ==
                                      
- Path:               x -&gt; m -&gt; y     
- Indirect Effect:    0.733           
- 95.0% Bootstrap CI: [0.288 to 1.203]
+ Path:               x -&gt; m1 -&gt; y    
+ Indirect Effect:    0.427           
+ 95.0% Bootstrap CI: [0.095 to 0.804]
 
 Computation Formula:
-  (b.m~x)*(b.y~m)
+  (b.m1~x)*(b.y~m1)
 Computation:
-  (0.93469)*(0.78469)
+  (0.87694)*(0.48642)
 
 Percentile confidence interval formed by nonparametric bootstrapping
 with 5000 bootstrap samples.
 
 Coefficients of Component Paths:
  Path Coefficient
-  m~x       0.935
-  y~m       0.785</code></pre>
+ m1~x       0.877
+ y~m1       0.486</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>ind2_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                     
+ Path:               x -&gt; m2 -&gt; y    
+ Indirect Effect:    0.140           
+ 95.0% Bootstrap CI: [0.006 to 0.359]
+
+Computation Formula:
+  (b.m2~x)*(b.y~m2)
+Computation:
+  (0.29677)*(0.47128)
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.
+
+Coefficients of Component Paths:
+ Path Coefficient
+ m2~x       0.297
+ y~m2       0.471</code></pre>
 </div>
 </div>
-<p>The indirect effect is 0.733. The 95% bootstrap confidence interval is [0.288; 1.203], decreased after the control variables are included, but still significant.</p>
-<p>Standardized indirect effect can also be computed and tested just by adding <code>standardized_x = TRUE</code> and <code>standardized_y = TRUE</code>.</p>
+<p>The indirect effect through <code>m1</code> is 0.427. The 95% bootstrap confidence interval is [0.095; 0.804], slightly decreased after the control variables are included, but still significant.</p>
+<p>The indirect effect through <code>m2</code> is 0.140. The 95% bootstrap confidence interval is [0.006; 0.359], decreased after the control variables are included, but still significant.</p>
+<p>Standardized indirect effects can also be computed and tested just by adding <code>standardized_x = TRUE</code> and <code>standardized_y = TRUE</code>.</p>
+<p>The total indirect effect can also be computed using <code>+</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>ind2_total <span class="ot">&lt;-</span> ind2_1 <span class="sc">+</span> ind2_2</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>ind2_total</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+== Indirect Effect  ==
+                                      
+ Path:                x -&gt; m1 -&gt; y    
+ Path:                x -&gt; m2 -&gt; y    
+ Function of Effects: 0.566           
+ 95.0% Bootstrap CI:  [0.227 to 1.020]
+
+Computation of the Function of Effects:
+ (x-&gt;m1-&gt;y)
++(x-&gt;m2-&gt;y) 
+
+
+Percentile confidence interval formed by nonparametric bootstrapping
+with 5000 bootstrap samples.</code></pre>
+</div>
+</div>
+</section>
+<section id="no-limit-on-the-number-of-mediators" class="level1">
+<h1>No Limit On The Number of Mediators</h1>
+<p>Although the example above only has two mediators, there is no limit on the number of mediators in the parallel mediation model. Just fit all the regression models predicting the mediators, combine them by <code>lm2list()</code>, and compute the indirect effect as illustrated above for each path.</p>
 </section>
 <section id="advanced-topics" class="level1">
 <h1>Advanced Topics</h1>
@@ -663,25 +981,25 @@ Coefficients of Component Paths:
 <h2 class="anchored" data-anchor-id="customize-the-printout">Customize the Printout</h2>
 <p>The printout can be customized in several ways. For example:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ind,</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">2</span>,</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">pvalue =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">pvalue_digits =</span> <span class="dv">3</span>,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">se =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ind1,</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">pvalue =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">pvalue_digits =</span> <span class="dv">3</span>,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">se =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 == Indirect Effect  ==
                                    
- Path:               x -&gt; m -&gt; y   
- Indirect Effect:    0.79          
- 95.0% Bootstrap CI: [0.39 to 1.25]
- Bootstrap p-value:  0.000         
- Bootstrap SE:       0.22          
+ Path:               x -&gt; m1 -&gt; y  
+ Indirect Effect:    0.44          
+ 95.0% Bootstrap CI: [0.10 to 0.80]
+ Bootstrap p-value:  0.006         
+ Bootstrap SE:       0.18          
 
 Computation Formula:
-  (b.m~x)*(b.y~m)
+  (b.m1~x)*(b.y~m1)
 Computation:
-  (0.92400)*(0.85957)
+  (0.92471)*(0.47840)
 
 Percentile confidence interval formed by nonparametric bootstrapping
 with 5000 bootstrap samples.
@@ -690,8 +1008,8 @@ bootstrap samples.
 
 Coefficients of Component Paths:
  Path Coefficient
-  m~x        0.92
-  y~m        0.86</code></pre>
+ m1~x        0.92
+ y~m1        0.48</code></pre>
 </div>
 </div>
 <ul>
@@ -705,68 +1023,76 @@ Coefficients of Component Paths:
 <h2 class="anchored" data-anchor-id="missing-data">Missing Data</h2>
 <p>Care needs to be taken if missing data is present. Let’s remove some data points from the data file:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>data_med_missing <span class="ot">&lt;-</span> data_med</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>data_med_missing[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="st">"x"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>data_med_missing[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="st">"m"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>data_med_missing[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>, <span class="st">"y"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_med_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>data_parallel_missing <span class="ot">&lt;-</span> data_parallel</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>data_parallel_missing[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="st">"x"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>data_parallel_missing[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="st">"m1"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>data_parallel_missing[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>, <span class="st">"m2"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>data_parallel_missing[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>, <span class="st">"y"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_parallel_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          x        m        y       c1       c2
-1        NA 17.89644 20.73893 1.426513 6.103290
-2        NA       NA 22.91594 2.940388 3.832698
-3        NA       NA       NA 3.012678 5.770532
-4 11.196969       NA       NA 3.120056 4.654931
-5 11.887811 22.08645       NA 4.440018 3.959033
-6  8.198297 16.95198       NA 2.495083 3.763712</code></pre>
+<pre><code>         x       m1       m2        y       c1       c2
+1       NA 20.77622 8.977183 16.85574 2.385207 4.009182
+2       NA       NA 6.518089 15.99256 2.585124 5.980229
+3       NA       NA       NA       NA 2.667239 4.170771
+4 9.272600       NA       NA       NA 2.021972 3.819458
+5 9.845673 18.29027       NA       NA 3.796376 4.375370
+6 9.147475 18.21173 7.167020       NA 3.686640 5.283557</code></pre>
 </div>
 </div>
 <p>If we do the regression separately, the cases used in the two models will be different:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict m</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>model_m_missing <span class="ot">&lt;-</span> <span class="fu">lm</span>(m <span class="sc">~</span> x,</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> data_med_missing)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict y</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>model_y_missing <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> m <span class="sc">+</span> x,</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> data_med_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict m1</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>model_m1_missing <span class="ot">&lt;-</span> <span class="fu">lm</span>(m1 <span class="sc">~</span> x,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> data_parallel_missing)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>model_m2_missing <span class="ot">&lt;-</span> <span class="fu">lm</span>(m2 <span class="sc">~</span> x,</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> data_parallel_missing)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict y</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>model_y_missing <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> m1 <span class="sc">+</span> m2 <span class="sc">+</span> x,</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> data_parallel_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The sample sizes are not the same:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(model_m_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(model_m1_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 96</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(model_y_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(model_m2_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 95</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(model_y_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 94</code></pre>
 </div>
 </div>
 <p>If they are combined by <code>lm2list()</code>, an error will occur. The function <code>lm2list()</code> will compare the data to see if the cases used are likely to be different.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm2list</span>(model_m_missing,</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>        model_y_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm2list</span>(model_m1_missing,</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>        model_m2_missing,</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>        model_y_missing)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in check_lm_consistency(...): The data sets used in the lm models do not have identical sample size. All lm models must be fitted to the same sample.</code></pre>
 </div>
 </div>
 <p>A simple (though not ideal) solution is to use listwise deletion, keeping only cases with complete data. This can be done by <code>na.omit()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>data_med_listwise <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data_med_missing)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_med_listwise)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>data_parallel_listwise <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data_parallel_missing)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_parallel_listwise)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           x        m        y         c1       c2
-7  10.091769 19.42649 26.14005  2.5023227 6.196603
-8   9.307707 18.29251 24.24033  1.3108621 4.892843
-9   6.904119 15.91634 23.97662  1.3010467 3.796913
-10 10.706891 18.00798 26.55098  1.9488566 5.835160
-11  9.524557 17.80304 24.14855 -0.4604918 3.663987
-12  9.307470 17.21214 23.17019  4.2970431 5.538241</code></pre>
+<pre><code>           x       m1       m2        y        c1       c2
+7  10.602289 17.75832 5.944234 18.76106  1.570251 5.629544
+8  10.244337 19.31993 6.367723 21.26092  2.140513 5.243080
+9   8.877403 16.03285 4.035743 15.64276  2.697043 6.316437
+10  9.995130 17.84715 6.219250 12.16667  1.557163 5.536002
+11  9.214953 17.30516 6.416709 15.66863  3.157459 6.613625
+12 10.178196 17.76963 4.411447 18.68844 -0.127799 5.796077</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(data_med_listwise)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(data_parallel_listwise)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 94</code></pre>
 </div>
 </div>
-<p>The number of cases using listwise deletion is 94, less than the full sample with missing data (100).</p>
+<p>The number of cases using listwise deletion is 94, less than the full sample with missing data (94).</p>
 <p>The steps above can then be proceed as usual.</p>
 </section>
 </section>
