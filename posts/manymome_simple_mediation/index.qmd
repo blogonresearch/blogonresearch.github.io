@@ -1,5 +1,5 @@
 ---
-title: "Simple Mediation in a Regression Model Using manymome: A Tutorial"
+title: "Simple Mediation in R: A Tutorial"
 author: "Shu Fai Cheung"
 date: '2024-09-08'
 categories: ["R", "mediation", "manymome", "bootstrapping"]
@@ -27,8 +27,9 @@ ci_str <- function(object) {
 
 This tutorial shows how to use the R
 package [`manymome`](https://sfcheung.github.io/manymome)
-[@cheung_manymome_2023]
-to test a mediation effect in a simple
+[@cheung_manymome_2023], a flexible
+package for mediation analysis,
+to test an indirect effect in a simple
 mediation model fitted by multiple
 regression.
 

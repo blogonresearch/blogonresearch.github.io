@@ -1,5 +1,5 @@
 ---
-title: "Parallel Mediation in a Regression Model Using manymome: A Tutorial"
+title: "Parallel Mediation in R: A Tutorial"
 author: "Shu Fai Cheung"
 date: '2024-09-14'
 categories: ["R", "mediation", "manymome", "bootstrapping"]
@@ -27,10 +27,11 @@ ci_str <- function(object) {
 
 This tutorial shows how to use the R
 package [`manymome`](https://sfcheung.github.io/manymome)
-[@cheung_manymome_2023]
-to test two or more mediation effects in
-a parallel mediation model fitted by
-multiple regression.
+[@cheung_manymome_2023], a flexible
+package for mediation analysis,
+to test indirect effects in a parallel
+mediation model fitted by multiple
+regression.
 
 # Pre-Requisite
 
