@@ -12,7 +12,7 @@
 <generator>quarto-1.5.57</generator>
 <lastBuildDate>Fri, 13 Sep 2024 16:00:00 GMT</lastBuildDate>
 <item>
-  <title>Parallel Mediation in a Regression Model Using manymome: A Tutorial</title>
+  <title>Parallel Mediation in R: A Tutorial</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
   <link>https://blogonresearch.github.io/posts/manymome_parallel_mediation/</link>
   <description><![CDATA[ 
@@ -21,7 +21,7 @@
 
 
 
-<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(S. F. Cheung &amp; Cheung, 2023)</span> to test two or more mediation effects in a parallel mediation model fitted by multiple regression.</p>
+<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(S. F. Cheung &amp; Cheung, 2023)</span>, a flexible package for mediation analysis, to test indirect effects in a parallel mediation model fitted by multiple regression.</p>
 <section id="pre-requisite" class="level1">
 <h1>Pre-Requisite</h1>
 <p>Readers are expected to have basic R skills and know how to fit a linear regression model using <code>lm()</code>.</p>
@@ -1282,7 +1282,7 @@ font-style: inherit;">nrow</span>(data_parallel_listwise)</span></code></pre></d
 </section>
 <section id="revision-history-and-issues" class="level1">
 <h1>Revision History and Issues</h1>
-<p>The revision history of this post can be find in the <a href="https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/manymome_simple_mediation/index.qmd">GitHub history of the source file</a>.</p>
+<p>The revision history of this post can be find in the <a href="https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/manymome_parallel_mediation/index.qmd">GitHub history of the source file</a>.</p>
 <p>For issues on this post, such as corrections and mistakes, please <a href="https://github.com/blogonresearch/blogonresearch.github.io/issues">open an issue</a> for the GitHub repository for this blog. Thanks.</p>
 
 <p>:::</p>
@@ -1322,7 +1322,7 @@ MacKinnon, D. P., Lockwood, C. M., Hoffman, J. M., West, S. G., &amp; Sheets, V.
   <pubDate>Fri, 13 Sep 2024 16:00:00 GMT</pubDate>
 </item>
 <item>
-  <title>Simple Mediation in a Regression Model Using manymome: A Tutorial</title>
+  <title>Simple Mediation in R: A Tutorial</title>
   <dc:creator>Shu Fai Cheung</dc:creator>
   <link>https://blogonresearch.github.io/posts/manymome_simple_mediation/</link>
   <description><![CDATA[ 
@@ -1331,7 +1331,7 @@ MacKinnon, D. P., Lockwood, C. M., Hoffman, J. M., West, S. G., &amp; Sheets, V.
 
 
 
-<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(S. F. Cheung &amp; Cheung, 2023)</span> to test a mediation effect in a simple mediation model fitted by multiple regression.</p>
+<p>This tutorial shows how to use the R package <a href="https://sfcheung.github.io/manymome"><code>manymome</code></a> <span class="citation" data-cites="cheung_manymome_2023">(S. F. Cheung &amp; Cheung, 2023)</span>, a flexible package for mediation analysis, to test an indirect effect in a simple mediation model fitted by multiple regression.</p>
 <section id="pre-requisite" class="level1">
 <h1>Pre-Requisite</h1>
 <p>Readers are expected to have basic R skills and know how to fit a linear regression model using <code>lm()</code>.</p>
@@ -1693,7 +1693,7 @@ NOTE:
 <p>Suppose we want to fit a more complicated model, with some other variables included, such as control variables <code>c1</code> and <code>c2</code> in the dataset (Figure&nbsp;4).</p>
 <div class="cell" data-layout-align="center" data-fig-caption="A Simple Mediation Model With Control Variables" data-fig-heigh="4">
 <div class="cell-output-display">
-<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="576">
+<div id="fig-full-model2" class="quarto-float quarto-figure quarto-figure-center anchored" width="576" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-full-model2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://blogonresearch.github.io/posts/manymome_simple_mediation/index_files/figure-html/fig-full-model2-1.png" id="fig-full-model2" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="576">

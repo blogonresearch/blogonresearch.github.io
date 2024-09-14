@@ -1022,7 +1022,7 @@ to learn how to do one task.
 
 The revision history of this post can
 be find in the [GitHub history of
-the source file](https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/manymome_simple_mediation/index.qmd).
+the source file](https://github.com/blogonresearch/blogonresearch.github.io/commits/main/posts/manymome_parallel_mediation/index.qmd).
 
 For issues on this post, such as corrections
 and mistakes, please [open an issue](https://github.com/blogonresearch/blogonresearch.github.io/issues)
