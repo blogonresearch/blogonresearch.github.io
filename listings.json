@@ -2,8 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/manymome_serial_mediation/index.html",
       "/posts/manymome_parallel_mediation/index.html",
+      "/posts/manymome_serial_mediation/index.html",
       "/posts/manymome_simple_mediation/index.html",
       "/posts/std_mod/index.html",
       "/posts/std_dummy/index.html",
@@ -12,8 +12,8 @@
       "/posts/my_own_style_in_r/index.html",
       "/posts/customizes_r_gui_for_windows/index.html",
       "/posts/one_function_or_many_functions/index.html",
-      "/posts/the_first_post/index.html",
-      "/posts/plot_mod/index.html"
+      "/posts/plot_mod/index.html",
+      "/posts/the_first_post/index.html"
     ]
   }
 ]
