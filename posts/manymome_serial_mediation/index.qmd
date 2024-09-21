@@ -27,7 +27,7 @@ ci_str <- function(object) {
 
 This tutorial shows how to use the R
 package [`manymome`](https://sfcheung.github.io/manymome)
-[@cheung_manymome_2023], a flexible
+[@cheung_manymome_2024], a flexible
 package for mediation analysis,
 to test indirect effects in
 a serial mediation model fitted by

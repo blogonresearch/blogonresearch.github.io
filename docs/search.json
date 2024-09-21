@@ -60,7 +60,7 @@
     "href": "posts/manymome_serial_mediation/index.html",
     "title": "Serial Mediation in R: A Tutorial",
     "section": "",
-    "text": "This tutorial shows how to use the R package manymome (S. F. Cheung & Cheung, 2023), a flexible package for mediation analysis, to test indirect effects in a serial mediation model fitted by multiple regression."
+    "text": "This tutorial shows how to use the R package manymome (S. F. Cheung & Cheung, 2024), a flexible package for mediation analysis, to test indirect effects in a serial mediation model fitted by multiple regression."
   },
   {
     "objectID": "posts/manymome_serial_mediation/index.html#combine-the-regression-results",
@@ -137,7 +137,7 @@
     "href": "posts/manymome_parallel_mediation/index.html",
     "title": "Parallel Mediation in R: A Tutorial",
     "section": "",
-    "text": "This tutorial shows how to use the R package manymome (S. F. Cheung & Cheung, 2023), a flexible package for mediation analysis, to test indirect effects in a parallel mediation model fitted by multiple regression."
+    "text": "This tutorial shows how to use the R package manymome (S. F. Cheung & Cheung, 2024), a flexible package for mediation analysis, to test indirect effects in a parallel mediation model fitted by multiple regression."
   },
   {
     "objectID": "posts/manymome_parallel_mediation/index.html#combine-the-regression-results",
@@ -186,7 +186,7 @@
     "href": "posts/manymome_simple_mediation/index.html",
     "title": "Simple Mediation in R: A Tutorial",
     "section": "",
-    "text": "This tutorial shows how to use the R package manymome (S. F. Cheung & Cheung, 2023), a flexible package for mediation analysis, to test an indirect effect in a simple mediation model fitted by multiple regression."
+    "text": "This tutorial shows how to use the R package manymome (S. F. Cheung & Cheung, 2024), a flexible package for mediation analysis, to test an indirect effect in a simple mediation model fitted by multiple regression."
   },
   {
     "objectID": "posts/manymome_simple_mediation/index.html#combine-the-regression-results",
