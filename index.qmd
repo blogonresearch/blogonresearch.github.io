@@ -9,7 +9,9 @@ listing:
   filter-ui: false
   max-items: 10
   date-format: full
-  feed: true
+  feed:
+    categories:
+      - R
 page-layout: full
 title-block-banner: true
 format:
