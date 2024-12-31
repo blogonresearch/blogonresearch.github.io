@@ -6,8 +6,8 @@
       version="2.0">
 <channel>
 <title>Blogonresearch</title>
-<link>https://blogonresearch.github.io/</link>
-<atom:link href="https://blogonresearch.github.io/index.xml" rel="self" type="application/rss+xml"/>
+<link>https://blogonresearch.github.io/#category=R</link>
+<atom:link href="https://blogonresearch.github.io/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>A blog on psychological research and methodology.</description>
 <generator>quarto-1.6.39</generator>
 <lastBuildDate>Sat, 14 Sep 2024 00:00:00 GMT</lastBuildDate>
@@ -7045,26 +7045,6 @@ font-style: inherit;">"Dependent Variable"</span>)</span>
   <guid>https://blogonresearch.github.io/posts/plot_mod/</guid>
   <pubDate>Sun, 11 Sep 2022 00:00:00 GMT</pubDate>
   <media:content url="https://blogonresearch.github.io/posts/plot_mod/index_files/figure-html/cover-1.png" medium="image" type="image/png"/>
-</item>
-<item>
-  <title>Reviving an Old Blog</title>
-  <dc:creator>Shu Fai Cheung</dc:creator>
-  <link>https://blogonresearch.github.io/posts/the_first_post/</link>
-  <description><![CDATA[ 
-
-
-
-
-
-<p>This is a “revival” of an old blog of mine on psychological research and methodology (hence the name <em>Blogonresearch</em>). Just anything on research and methodology that are useful to me, and maybe also useful to others.</p>
-<p>Edit 2023-01-28: This is actually the “second revival” as I switched from Hugo to Quarto in early 2023.</p>
-
-
-
- ]]></description>
-  <category>blog</category>
-  <guid>https://blogonresearch.github.io/posts/the_first_post/</guid>
-  <pubDate>Sun, 11 Sep 2022 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

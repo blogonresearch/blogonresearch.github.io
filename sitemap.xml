@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://blogonresearch.github.io/about.html</loc>
-    <lastmod>2024-09-21T02:23:20.693Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/my_own_style_in_r/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.735Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/manymome_simple_mediation/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.735Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/one_function_or_many_functions/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.735Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.721Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/plot_mod/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.735Z</lastmod>
+    <loc>https://blogonresearch.github.io/posts/the_first_post/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
   </url>
   <url>
     <loc>https://blogonresearch.github.io/posts/std_dummy/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.736Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.720Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/std_mod/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.737Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/the_first_post/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.737Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/manymome_parallel_mediation/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.734Z</lastmod>
-  </url>
-  <url>
-    <loc>https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.720Z</lastmod>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
   </url>
   <url>
     <loc>https://blogonresearch.github.io/posts/manymome_serial_mediation/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.734Z</lastmod>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/manymome_simple_mediation/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/my_own_style_in_r/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/one_function_or_many_functions/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.036Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/about.html</loc>
+    <lastmod>2024-12-31T15:46:31.008Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/manymome_parallel_mediation/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/bootstrap_confidence_intervals_for_standardized_solution_in_lavaan/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.036Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/plot_mod/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/std_mod/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://blogonresearch.github.io/posts/customizes_r_gui_for_windows/index.html</loc>
+    <lastmod>2024-12-31T15:46:31.036Z</lastmod>
   </url>
   <url>
     <loc>https://blogonresearch.github.io/posts/show_options_set_by_lavaan/index.html</loc>
-    <lastmod>2024-09-21T02:23:20.735Z</lastmod>
+    <lastmod>2024-12-31T15:46:31.052Z</lastmod>
   </url>
 </urlset>
